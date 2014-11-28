@@ -8,5 +8,5 @@ object Main extends App {
     cfg.height = 480
     cfg.width = 800
     cfg.forceExit = false
-    new LwjglApplication(new Hack, cfg)
+    new LwjglApplication(new HackGame, cfg)
 }
