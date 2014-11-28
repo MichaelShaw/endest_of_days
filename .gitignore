@@ -1,0 +1,11 @@
+.DS_Store
+.idea
+.idea_modules
+lib/
+libs/
+target/
+src_managed/
+project/boot/
+project/plugins/project
+bin/
+gen/
