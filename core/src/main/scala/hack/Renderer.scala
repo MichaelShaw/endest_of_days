@@ -222,7 +222,16 @@ class Renderer {
             throw new Exception("failed to draw " + e.arch)
           }
           if (draw) {
-            mainBatch.draw(tr, e.smoothedPosition.x, e.smoothedPosition.y, tr.getRegionWidth * upScale, tr.getRegionHeight * upScale)
+            if(e.velocity.x > 0.0) {
+              mainBatch.draw(tr, e.smoothedPosition.x, e.smoothedPosition.y, tr.getRegionWidth * upScale, tr.getRegionHeight * upScale)
+            } else {
+              // public void draw(Texture texture, float x, float y, float width, float height, float u, float v, float u2, float v2) {
+//              mainBatch.draw(tr, e.smoothedPosition.x, e.smoothedPosition.y, tr.getRegionWidth * upScale, tr.getRegionHeight * upScale)
+              mainBatch.draw(tileTexture, e.smoothedPosition.x, e.smoothedPosition.y, tr.getRegionWidth * upScale, tr.getRegionHeight * upScale,
+                tr.getU2, tr.getV2, tr.getU, tr.getV)
+            }
+
+
           }
 
         }
