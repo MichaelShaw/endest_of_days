@@ -32,7 +32,7 @@ class InputHandler(world : World) extends InputProcessor with ControllerListener
   def placeTile(player : Int) : Unit = {
     val p : Player = world.players(player)
     val t : Tile = Tile.impassableGround // TODO
-    world.setTileAt(p.x, p.y, t)
+    world.placeTileAt(p.x, p.y, t)
   }
 
   def setAsListener() : Unit = {
