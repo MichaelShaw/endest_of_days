@@ -105,16 +105,16 @@ class Renderer {
   archs(Arch.bigBeetle.id) = new TextureRegion(tileTexture,192, 96, 19, 17)
   archs(Arch.smallBeetle.id) = new TextureRegion(tileTexture,213, 98, 6, 6)
 
-  val white = Array(1f, 1f, 1f, 1f)
-  val playerColours = Array[Array[Float]](
-    Array(1f,1f,1f,1f),
-    Array(1f,1f,1f,1f)
+  val white = new Color(1f, 1f, 1f, 1f)
+  val black = new Color(0f, 0f, 0f, 0f)
+  val playerColours = Array[Color](
+    new Color(144f / 255f,255f / 255f,254f / 255f,0f),
+    new Color(142f / 255f,42f / 255f, 39f / 255f,0f)
   )
 
   def render(world : World, simulationAccu : Double, simulationTickSize : Double, delta:Double) {
     camera.position.set(world.width / 2 * tileSizeScreen, world.height / 2 * tileSizeScreen, 0)
     camera.update()
-
 
 
     fbo.begin()
@@ -126,10 +126,10 @@ class Renderer {
     mainBatch.begin()
     mainBatch.setShader(toFrameBufferShader)
 
-    toFrameBufferShader.setUniform4fv("u_colour", white, 0, 4)
 
     renderTiles(world)
     renderLivings(world, simulationAccu, simulationTickSize, delta)
+    mainBatch.setColor(black)
     renderHands(world, simulationAccu, simulationTickSize)
     renderCursors(world)
 
@@ -221,27 +221,32 @@ class Renderer {
           e.velocity = newVelocity
 
 
-          val draw = if (e.lastStruckAt == world.tick - 1 && simulationAccu < 0.4) {
+          val flash = if (e.lastStruckAt == world.tick - 1 && simulationAccu < 0.4) {
             flashing(0.10)
           } else {
-            true
+            false
           }
           if(tr == null) {
             throw new Exception("failed to draw " + e.arch)
           }
-          if (draw) {
-            if(e.velocity.x > 0.0) {
-              mainBatch.draw(tr, e.smoothedPosition.x, e.smoothedPosition.y, tr.getRegionWidth * upScale, tr.getRegionHeight * upScale)
-            } else {
-              // public void draw(Texture texture, float x, float y, float width, float height, float u, float v, float u2, float v2) {
-//              mainBatch.draw(tr, e.smoothedPosition.x, e.smoothedPosition.y, tr.getRegionWidth * upScale, tr.getRegionHeight * upScale)
-              mainBatch.draw(tileTexture, e.smoothedPosition.x, e.smoothedPosition.y, tr.getRegionWidth * upScale, tr.getRegionHeight * upScale,
-                tr.getU2, tr.getV2, tr.getU, tr.getV)
-            }
 
-
+          val colourToBind = if(flash) {
+            println("FLASH GOD DAMNIT")
+            playerColours(e.playerId)
+            new Color(0.4f, 0.2f, 0.2f, 0f)
+          } else {
+            black
           }
+          mainBatch.setColor(colourToBind)
 
+          if(e.velocity.x > 0.0) {
+            mainBatch.draw(tr, e.smoothedPosition.x, e.smoothedPosition.y, tr.getRegionWidth * upScale, tr.getRegionHeight * upScale)
+          } else {
+            // public void draw(Texture texture, float x, float y, float width, float height, float u, float v, float u2, float v2) {
+//              mainBatch.draw(tr, e.smoothedPosition.x, e.smoothedPosition.y, tr.getRegionWidth * upScale, tr.getRegionHeight * upScale)
+            mainBatch.draw(tileTexture, e.smoothedPosition.x, e.smoothedPosition.y, tr.getRegionWidth * upScale, tr.getRegionHeight * upScale,
+              tr.getU2, tr.getV2, tr.getU, tr.getV)
+          }
         }
         slot += 1
       }
