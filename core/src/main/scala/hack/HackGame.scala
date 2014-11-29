@@ -45,14 +45,14 @@ class GameScreen extends Screen {
     placeHomeBaseBackage(Vec2i(0, halfHeight), 0)
     placeHomeBaseBackage(Vec2i(w.width - 1, w.height / 2), 1)
 
-    w.placeTileAt(Vec2i(1, halfHeight), Tile.captainSpawner, 0)
-    w.placeTileAt(Vec2i(w.width - 2, halfHeight), Tile.impSpawner, 1)
+//    w.placeTileAt(Vec2i(1, halfHeight), Tile.captainSpawner, 0)
+//    w.placeTileAt(Vec2i(w.width - 2, halfHeight), Tile.impSpawner, 1)
 
 //    w.placeTileAt(Vec2i(1, halfHeight), Tile.bigBeetleSpawner, 0)
 //    w.placeTileAt(Vec2i(w.width - 2, halfHeight), Tile.fexSpawner, 1)
 
-//        w.placeTileAt(Vec2i(1, halfHeight), Tile.eyeBallSpawner, 0)
-//        w.placeTileAt(Vec2i(w.width - 2, halfHeight), Tile.wormSpawner, 1)
+        w.placeTileAt(Vec2i(1, halfHeight), Tile.eyeBallSpawner, 0)
+        w.placeTileAt(Vec2i(w.width - 2, halfHeight), Tile.wormSpawner, 1)
 
     val withGate = false
     if(withGate) {

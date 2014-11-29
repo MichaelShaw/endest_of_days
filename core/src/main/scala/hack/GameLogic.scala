@@ -232,7 +232,14 @@ case object Draw extends GameOutcome
 
       val primaryTarget = Seq(sample(validEnemies))
 
-      hitEnemy(living.arch.attack, primaryTarget)
+      var primaryDamage = living.arch.attack
+
+      if(world.validLivingsAt(living.currentLocation).exists(l => l.playerId == living.playerId && l.arch == Arch.eyeBall)) {
+//        println("eyeball bonus damage")
+        primaryDamage += 1
+      }
+
+      hitEnemy(primaryDamage, primaryTarget)
 
 
       if (living.arch.aeDamage > 0) {
