@@ -52,7 +52,7 @@ class GameScreen extends Screen {
 //    w.placeTileAt(12, 0, Tile.playerADefenderFactory)
 
     w.placeTileAt(Vec2i(8, 0), Tile.cultistSpawner, 0)
-    w.placeTileAt(Vec2i(12, 0), Tile.captainSpawner, 0)
+    w.placeTileAt(Vec2i(12, 0), Tile.bigBeetleSpawner, 0)
 
     w
   }
@@ -69,7 +69,7 @@ class GameScreen extends Screen {
 
   var t = 0.0
   var simulationAccu = 0.0
-  val simulationTickEvery = 0.01  // every 1 second
+  val simulationTickEvery = 0.15  // every 1 second
 
   var running = true
 

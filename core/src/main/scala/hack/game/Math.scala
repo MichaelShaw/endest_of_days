@@ -32,4 +32,7 @@ object Direction {
   val w = Vec2i(-1, 0)
   val s = Vec2i(0, -1)
   val directions = Array(e, n, w, s)
+
+  val z = Vec2i(0, 0)
+  val directionsWithZero = directions ++ Array(z)
 }

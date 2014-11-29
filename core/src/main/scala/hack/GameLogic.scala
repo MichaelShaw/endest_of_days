@@ -17,6 +17,7 @@ object GameLogic {
   def sample[T](arr:Array[T]) : T = {
     arr(rand.nextInt(arr.length))
   }
+
   def sampleMaybe[T](arr:Array[T]) : Option[T] = {
     if(arr.length == 0) {
       None
@@ -205,6 +206,26 @@ case object Draw extends GameOutcome
         //        println(s"${living.arch} striking ${enemy.arch} for ${living.arch.attack}")
         enemy.health -= living.arch.attack
         enemy.lastStruckAt = world.tick
+
+        for(arch <- enemy.arch.onHitSpawns) {
+//          println("beetle was hit")
+          if(world.hasSpaceAt(at)) {
+            // spawn one here
+//            println("spawning one here")
+            spawnAt(world, at, enemy.playerId, arch)
+          } else {
+            val validDirections = Direction.directions.filter { d =>
+              val neighbour = at + d
+              // is in bounds, has space to spawn something, and can be pathed on
+              world.inBounds(neighbour) && world.hasSpaceAt(neighbour) && world.tileAt(neighbour).canBeWalkedOn
+            }
+            sampleMaybe(validDirections).foreach { d =>
+//              println("spawning one adjacent")
+              val neighbour = at + d
+              spawnAt(world, neighbour, enemy.playerId, arch)
+            }
+          }
+        }
       }
 
       if (living.arch.explodeOnAttack) {

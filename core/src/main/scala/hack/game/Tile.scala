@@ -41,13 +41,17 @@ object Tile {
   val impassableGround = register(new Tile(nextId, "impassable", canBeWalkedOn = false))
   val groundTiles = Array(standardGround, impassableGround)
 
+  val gate = register(new Gate(nextId, "gate"))
+
   val cultistSpawner = register(new Factory(nextId, "cultist_spawner", factoryHealth, produceEveryNTicks = 2, produceArch = Arch.cultist, requiredSummoners = 0))
   val impSpawner = register(new Factory(nextId, "imp_spawner", factoryHealth, produceEveryNTicks = 1, produceArch = Arch.imp, requiredSummoners = 6))
   val captainSpawner = register(new Factory(nextId, "captain_spawner", factoryHealth, produceEveryNTicks = 3, produceArch = Arch.captain, requiredSummoners = 6))
+  val bigBeetleSpawner = register(new Factory(nextId, "bigBeetle_spawner", factoryHealth, produceEveryNTicks = 5, produceArch = Arch.bigBeetle, requiredSummoners = 6))
+
 //  val aeFactory = register(new Factory(nextId, "ae_factory", factoryHealth, produceEveryNTicks = 5, produceArch = Arch.ae, requiredSummoners = 6))
 //  val defenderFactory = register(new Factory(nextId, "defender_factory", factoryHealth, produceEveryNTicks = 2, produceArch = Arch.defender))
   val factoryTiles = Array(cultistSpawner, impSpawner, captainSpawner) // , aeFactory
 
-  val gate = register(new Gate(nextId, "gate"))
+
 
 }

@@ -59,16 +59,18 @@ class Renderer {
   tileAtlas(Tile.cultistSpawner.id) = tileRegion(2, 0)
   tileAtlas(Tile.impSpawner.id) = tileRegion(3, 2)
   tileAtlas(Tile.captainSpawner.id) = tileRegion(3, 1)
+  tileAtlas(Tile.bigBeetleSpawner.id) = tileRegion(4, 1)
 //  tileAtlas(Tile.aeFactory.id) = tileRegion(5, 0)
 
 
-  tileAtlas(Tile.gate.id) = tileRegion(6, 0)
-
-  val ownedTileAtlas : Array[Array[TextureRegion]] = (1 to 2).map { n =>
-    (0 to 6).map { t =>
-      tileRegion(t, n)
-    }.toArray
-  }.toArray
+  val cultistSpawners = Array(
+    tileRegion(2, 1),
+    tileRegion(2, 2)
+  )
+  val gates = Array(
+    tileRegion(5, 1),
+    tileRegion(5, 2)
+  )
 
   // 2 players
 
@@ -84,6 +86,8 @@ class Renderer {
   val archs = new Array[TextureRegion](16)
   archs(Arch.imp.id) = new TextureRegion(tileTexture, 240, 64, 16, 16)
   archs(Arch.captain.id) = new TextureRegion(tileTexture, 240, 32, 16, 16)
+  archs(Arch.bigBeetle.id) = new TextureRegion(tileTexture,192, 96, 19, 17)
+  archs(Arch.smallBeetle.id) = new TextureRegion(tileTexture,213, 98, 6, 6)
 
   def render(world : World, simulationAccu : Double, simulationTickSize : Double) {
     camera.position.set(world.width / 2 * tileSizeScreen, world.height / 2 * tileSizeScreen, 0)
@@ -137,16 +141,15 @@ class Renderer {
       val tile = world.tileAt(v)
       val owned = world.owned.get(v)
       val textureRegion : TextureRegion = tile match {
+        case Tile.gate =>
+          gates(owned)
         case Tile.cultistSpawner =>
-          ownedTileAtlas(owned)(tile.id)
+          cultistSpawners(owned)
         case f:Factory =>
           tileAtlas(f.id)
         case _ =>
-          if (owned >= 0) {
-            ownedTileAtlas(owned)(tile.id)
-          } else {
-            tileAtlas(tile.id)
-          }
+          tileAtlas(tile.id)
+
       }
 
 
