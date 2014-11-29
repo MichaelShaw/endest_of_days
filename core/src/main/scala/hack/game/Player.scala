@@ -42,6 +42,7 @@ class Player(val id : Int, var cursorPosition : Vec2i, var tile : Int, val terra
   def availableTiles = tileQueue(placedTiles)
 
   def handlePlacement() {
+    tile = 0
     placedTiles += 1
   }
 

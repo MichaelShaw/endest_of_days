@@ -30,6 +30,20 @@ object Vec2f {
   }
 }
 
+object Bias {
+  def clamp(d:Double) : Double = if(d < 0.0) {
+    0.0
+  } else if (d > 1.0) {
+    1.0
+  } else {
+    d
+  }
+
+  def getBias(time:Double, bias:Double) : Double = {
+    time / ((((1.0/bias) - 2.0)*(1.0 - time))+1.0)
+  }
+}
+
 object Spring {
   // smoothtime 0.1
   // )

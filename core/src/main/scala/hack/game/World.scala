@@ -31,7 +31,7 @@ class World(val width : Int, val height : Int, val startingTile : Tile, val slot
   var tick = 0
 
 
-  def ticksPerPlace = 10
+  def ticksPerPlace = 5
   var placementTimer = ticksPerPlace
   var placementStage = 0
 

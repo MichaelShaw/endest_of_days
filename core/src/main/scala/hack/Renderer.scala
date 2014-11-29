@@ -116,7 +116,7 @@ class Renderer {
 
     renderTiles(world)
     renderLivings(world, simulationAccu, simulationTickSize, delta)
-    renderHands(world)
+    renderHands(world, simulationAccu, simulationTickSize)
     renderCursors(world)
 
     mainBatch.end()
@@ -222,14 +222,25 @@ class Renderer {
     }
   }
 
-  def renderHands(world : World) : Unit = {
+  def renderHands(world : World, simulationAccu:Double, simulationTick:Double) : Unit = {
     def renderHand(player : Player, cursorTextureRegion : TextureRegion, xOffset : Int) : Unit = {
       if(player.canPlaceTiles(world)) {
+
+        val yOffset = if(player.placedTiles == world.placementStage && world.placementTimer == world.ticksPerPlace) {
+          // player is up to date and it's the first simulation tick
+          val progress = Bias.getBias(Bias.clamp(simulationAccu * 2 / simulationTick), 0.75)
+          ((1 - progress) * -32).asInstanceOf[Int]
+        } else {
+          0
+        }
+
+
+
         for (t <- 0 until player.availableTiles.length) {
           val x : Int = t + xOffset
           val y : Int = -2
 
-          mainBatch.draw(trForTile(player.availableTiles(t), player.id), x * tileSizeScreen, y * tileSizeScreen, tileSizeScreen, tileSizeScreen)
+          mainBatch.draw(trForTile(player.availableTiles(t), player.id), x * tileSizeScreen, y * tileSizeScreen + yOffset, tileSizeScreen, tileSizeScreen)
 
           if (t == player.tile) {
             mainBatch.draw(cursorTextureRegion, x * tileSizeScreen, y * tileSizeScreen, tileSizeScreen, tileSizeScreen)

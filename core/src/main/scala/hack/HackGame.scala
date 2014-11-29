@@ -36,17 +36,8 @@ class GameScreen extends Screen {
       w.placeTileAt(v, Tile.cultistSpawner, playerId)
     }
 
-
-
-//    w.placeTileAt(6, 15, Tile.playerBSoldierFactory)
-//    w.placeTileAt(8, 15, Tile.playerBCaptainFactory)
-//    w.placeTileAt(10, 15, Tile.playerBAEFactory)
-//    w.placeTileAt(12, 15, Tile.playerBDefenderFactory)
-
     placeHomeBaseBackage(Vec2i(8, 15), 1)
-    w.placeTileAt(Vec2i(12, 15), Tile.impSpawner, 1)
-
-//    w.placeTileAt(Vec2i(2, 13), Tile.gate, 1)
+    placeHomeBaseBackage(Vec2i(8, 0), 0)
 
     for {
       x <- 3 to 15
@@ -58,16 +49,6 @@ class GameScreen extends Screen {
     } {
       w.placeTileAt(Vec2i(3, y), Tile.impassableGround, -1)
     }
-
-//    w.placeTileAt(Vec2i(2, 3), Tile.gate, 0)
-
-//    w.placeTileAt(6, 0, Tile.playerASoldierFactory)
-//    w.placeTileAt(8, 0, Tile.playerACaptainFactory)
-//    w.placeTileAt(10, 0, Tile.playerAAEFactory)
-//    w.placeTileAt(12, 0, Tile.playerADefenderFactory)
-
-    placeHomeBaseBackage(Vec2i(8, 0), 0)
-    w.placeTileAt(Vec2i(12, 0), Tile.bigBeetleSpawner, 0)
 
     w
   }
