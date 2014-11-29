@@ -11,6 +11,7 @@ import com.badlogic.gdx.controllers.PovDirection
 import com.badlogic.gdx.math.Vector3
 import hack.game.Direction
 import hack.game.Player
+import hack.game.Tile
 import hack.game.Vec2i
 import hack.game.World
 
@@ -25,15 +26,22 @@ class InputHandler(var world : World) extends InputProcessor with ControllerList
   }
 
   def selectTile(player : Int, dt : Int) : Unit = {
-    // TODO
+    val p : Player = world.players(player)
+    val t = p.tile + dt
+
+    if (t >= 0 && t < p.tiles.size) {
+      p.tile = t
+    }
   }
 
   def placeTile(player : Int) : Unit = {
     val p : Player = world.players(player)
     assert(p.id == player)
 
-    if (world.canPlaceTileAt(p.cursorPosition, p.nextTile, p.id)) {
-      world.placeTileAt(p.cursorPosition, p.nextTile, p.id)
+    val t : Tile = p.tiles(p.tile)
+
+    if (world.canPlaceTileAt(p.cursorPosition, t, p.id)) {
+      world.placeTileAt(p.cursorPosition, t, p.id)
     }
   }
 

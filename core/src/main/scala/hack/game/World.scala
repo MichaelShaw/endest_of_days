@@ -148,9 +148,11 @@ class World(val width : Int, val height : Int, val startingTile : Tile, val slot
     throw new Exception("couldnt find living to unregister")
   }
 
+  val defaultPlayerTiles : Array[Tile] = Tile.groundTiles ++ Tile.factoryTiles
+
   // TODO: derive from initial tiles
-  val playerA = new Player(0, Vec2i(8, 1), Tile.impassableGround)
-  val playerB = new Player(1, Vec2i(8, 14), Tile.impassableGround)
+  val playerA = new Player(0, Vec2i(8, 1), 0, defaultPlayerTiles)
+  val playerB = new Player(1, Vec2i(8, 14), 0, defaultPlayerTiles)
   val players = Array(playerA, playerB)
 
   // floodfills
