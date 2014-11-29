@@ -86,7 +86,7 @@ object FloodFill {
   val unreachable = Int.MaxValue - 1000 // (to be safe from overflow)
   type CostFunction = Vec2i => Int
 
-  def produceFor(goals:Set[Vec2i], world:World) : FloodFill = {
+  def produceFor(goals:Set[Vec2i], world:World, playerId:Int) : FloodFill = {
     val ff = new FloodFill(world.width, world.height)
 
     val spreadFrom = new mutable.Queue[Vec2i]()
@@ -102,7 +102,10 @@ object FloodFill {
     while(spreadFrom.nonEmpty) {
       val loc = spreadFrom.dequeue()
       val d = ff.get(loc)
-      val nd = d + 1
+
+      val fullOfFriendlies = world.validLivingsAt(loc).count(_.playerId == playerId) == 9
+      val cost = if(fullOfFriendlies) 4 else 1
+      val nd = d + cost
 
       for(d <- Direction.directions) {
         val neighbour = d + loc

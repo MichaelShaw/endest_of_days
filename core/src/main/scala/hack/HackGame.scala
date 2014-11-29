@@ -38,6 +38,8 @@ class GameScreen extends Screen {
       w.players(playerId).cursorPosition = v
     }
 
+    w.simulationTickEvery = simulationTickEvery
+
     WorldGen.terraform(w, seed, spreadStepMin = 16 )
 
     val halfHeight = w.height / 2
@@ -85,10 +87,10 @@ class GameScreen extends Screen {
 
   var seed = 0L
 
-  var simulationTickEvery = 0.5
+  var simulationTickEvery = 1.0
 
   def resetGame() {
-    simulationTickEvery *= 0.5
+//    simulationTickEvery *= 0.5
     t = 0.0
     seed += 1
     world = generateWorld()

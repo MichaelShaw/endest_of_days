@@ -44,7 +44,7 @@ object GameLogic {
           case _ => false
         }
       })
-      val floodFill = FloodFill.produceFor(goals, world)
+      val floodFill = FloodFill.produceFor(goals, world, player.id)
       world.aggressionFloodFills(player.id) = floodFill
 
       val factoriesThatRequireSummoners = matchingTiles(world, {(x, y) =>
@@ -65,7 +65,7 @@ object GameLogic {
         }
       })
 
-      val summonerFloodFill = FloodFill.produceFor(factoriesThatRequireSummoners, world)
+      val summonerFloodFill = FloodFill.produceFor(factoriesThatRequireSummoners, world, player.id)
 
       if(player.id == 0) {
 //        summonerFloodFill.printDebug("player 0 summoner")
