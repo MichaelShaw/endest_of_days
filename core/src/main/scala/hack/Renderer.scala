@@ -77,7 +77,7 @@ class Renderer {
 
     renderTiles(world)
     renderLivings(world, simulationAccu, simulationTickSize)
-    renderPlayerTiles(world)
+    renderHands(world)
     renderCursors(world)
 
     mainBatch.end()
@@ -146,15 +146,22 @@ class Renderer {
     }
   }
 
-  def renderPlayerTiles(world : World) : Unit = {
-    for (i <- 0 until world.playerA.tiles.length) {
-      mainBatch.draw(tileAtlas(world.playerA.tiles(i).id), i * tileSizeScreen, -2 * tileSizeScreen, tileSizeScreen, tileSizeScreen)
+  def renderHands(world : World) : Unit = {
+    def renderHand(player : Player, cursorTextureRegion : TextureRegion, xOffset : Int) : Unit = {
+      for (t <- 0 until player.tiles.length) {
+        val x : Int = t + xOffset
+        val y : Int = -2
+
+        mainBatch.draw(tileAtlas(player.tiles(t).id), x * tileSizeScreen, y * tileSizeScreen, tileSizeScreen, tileSizeScreen)
+
+        if (t == player.tile) {
+          mainBatch.draw(cursorTextureRegion, x * tileSizeScreen, y * tileSizeScreen, tileSizeScreen, tileSizeScreen)
+        }
+      }
     }
 
-    for (i <- 0 until world.playerB.tiles.length) {
-      val x : Int = world.width - world.playerB.tiles.length
-      mainBatch.draw(tileAtlas(world.playerB.tiles(i).id), (i + x) * tileSizeScreen, -2 * tileSizeScreen, tileSizeScreen, tileSizeScreen)
-    }
+    renderHand(world.playerA, playerACursor, 0)
+    renderHand(world.playerB, playerBCursor, world.width - world.playerB.tiles.length)
   }
 
   def renderCursors(world : World) : Unit = {
