@@ -40,12 +40,30 @@ class GameScreen extends Screen {
 
     WorldGen.terraform(w, seed)
 
-    placeHomeBaseBackage(Vec2i(0, w.height / 2), 0)
+    val halfHeight = w.height / 2
+
+    placeHomeBaseBackage(Vec2i(0, halfHeight), 0)
     placeHomeBaseBackage(Vec2i(w.width - 1, w.height / 2), 1)
 
+//    w.placeTileAt(Vec2i(1, halfHeight), Tile.captainSpawner, 0)
+//    w.placeTileAt(Vec2i(w.width - 2, halfHeight), Tile.impSpawner, 1)
+
+//    w.placeTileAt(Vec2i(1, halfHeight), Tile.bigBeetleSpawner, 0)
+//    w.placeTileAt(Vec2i(w.width - 2, halfHeight), Tile.fexSpawner, 1)
+
+        w.placeTileAt(Vec2i(1, halfHeight), Tile.eyeBallSpawner, 0)
+        w.placeTileAt(Vec2i(w.width - 2, halfHeight), Tile.wormSpawner, 1)
+
+    val withGate = false
+    if(withGate) {
+      w.placeTileAt(Vec2i(4, halfHeight), Tile.gate, 0)
+      w.placeTileAt(Vec2i(w.width - 4, halfHeight), Tile.gate, 1)
+    }
 
     w
   }
+
+  val simulationTickEvery = 1.0  // every 1 second
 
   def show() = {}
 
@@ -59,7 +77,9 @@ class GameScreen extends Screen {
 
   var t = 0.0
   var simulationAccu = 0.0
-  val simulationTickEvery = 1.0  // every 1 second
+
+
+
 
   var running = true
 

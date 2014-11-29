@@ -231,7 +231,7 @@ class Renderer {
           }
 
           val colourToBind = if(flash) {
-            println("FLASH GOD DAMNIT")
+//            println("FLASH GOD DAMNIT")
             playerColours(e.playerId)
             new Color(0.4f, 0.2f, 0.2f, 0f)
           } else {

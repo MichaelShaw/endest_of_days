@@ -193,45 +193,51 @@ case object Draw extends GameOutcome
       stampActionDuration(1)
     }
     def strike(at: Vec2i) {
-      def validEnemies = world.validLivingsAt(at).filter { e =>
-        e.playerId != living.playerId && e.health > 0 // only strike enemies with health
-      }
-      val toAttack: Seq[Living] = if (living.arch.aeAttack) {
-        validEnemies
-      } else {
-        Seq(sample(validEnemies))
-      }
+      def hitEnemy(damage:Int, enemies:Seq[Living]) {
+        for (enemy <- enemies) {
+          //        println(s"${living.arch} striking ${enemy.arch} for ${living.arch.attack}")
+          enemy.health -= damage
+          enemy.lastStruckAt = world.tick
 
-      for (enemy <- toAttack) {
-        //        println(s"${living.arch} striking ${enemy.arch} for ${living.arch.attack}")
-        enemy.health -= living.arch.attack
-        enemy.lastStruckAt = world.tick
+          if(enemy.health <= 0 && living.arch.maxHealth >= 10) {
+            world.playMediumHurtSound = true
+          } else if(enemy.arch != Arch.cultist) {
+            world.playSmallHurtSound = true
+          }
 
-        if(enemy.health <= 0 && living.arch.maxHealth >= 10) {
-          world.playMediumHurtSound = true
-        } else if(enemy.arch != Arch.cultist) {
-          world.playSmallHurtSound = true
-        }
-
-        for(arch <- enemy.arch.onHitSpawns) {
-//          println("beetle was hit")
-          if(world.hasSpaceAt(at)) {
-            // spawn one here
-//            println("spawning one here")
-            spawnAt(world, at, enemy.playerId, arch)
-          } else {
-            val validDirections = Direction.directions.filter { d =>
-              val neighbour = at + d
-              // is in bounds, has space to spawn something, and can be pathed on
-              world.inBounds(neighbour) && world.hasSpaceAt(neighbour) && world.tileAt(neighbour).canBeWalkedOn
-            }
-            sampleMaybe(validDirections).foreach { d =>
-//              println("spawning one adjacent")
-              val neighbour = at + d
-              spawnAt(world, neighbour, enemy.playerId, arch)
+          for(arch <- enemy.arch.onHitSpawns) {
+            //          println("beetle was hit")
+            if(world.hasSpaceAt(at)) {
+              // spawn one here
+              //            println("spawning one here")
+              spawnAt(world, at, enemy.playerId, arch)
+            } else {
+              val validDirections = Direction.directions.filter { d =>
+                val neighbour = at + d
+                // is in bounds, has space to spawn something, and can be pathed on
+                world.inBounds(neighbour) && world.hasSpaceAt(neighbour) && world.tileAt(neighbour).canBeWalkedOn
+              }
+              sampleMaybe(validDirections).foreach { d =>
+                //              println("spawning one adjacent")
+                val neighbour = at + d
+                spawnAt(world, neighbour, enemy.playerId, arch)
+              }
             }
           }
         }
+      }
+      def validEnemies = world.validLivingsAt(at).filter { e =>
+        e.playerId != living.playerId && e.health > 0 // only strike enemies with health
+      }
+
+      val primaryTarget = Seq(sample(validEnemies))
+
+      hitEnemy(living.arch.attack, primaryTarget)
+
+
+      if (living.arch.aeDamage > 0) {
+        val otherEnemies = validEnemies.toSet -- primaryTarget.toSet
+        hitEnemy(living.arch.aeDamage, otherEnemies.toSeq)
       }
 
       if (living.arch.explodeOnAttack) {

@@ -39,7 +39,7 @@ class Living(val id:Int,
 
 // describes a unit type
 case class Arch(id:Int, name:String, attack:Int, maxHealth:Int,
-                explodeOnAttack:Boolean = false, aeAttack:Boolean = false,
+                explodeOnAttack:Boolean = false, aeDamage:Int = 0,
                 canHelpSummon:Boolean = false,
                 onHitSpawns:Option[Arch] = None) {
 
@@ -50,14 +50,13 @@ object Arch {
 
   val imp = Arch(1, "imp", attack = 1, maxHealth = 4)
   val worm = Arch(2, "worm", attack = 5, maxHealth = 6)
-  val fex = Arch(3, "fex", attack = 3, maxHealth = 18, aeAttack = true)
+  val fex = Arch(3, "fex", attack = 4, maxHealth = 14, aeDamage = 1)
 
   val captain = Arch(4, "captain", attack = 3, maxHealth = 10)
   val eyeBall = Arch(5, "eye_ball", attack = 2, maxHealth = 4)
+
   val smallBeetle = Arch(6, "small_beetle", attack = 1, maxHealth = 2)
   val bigBeetle = Arch(7, "big_beetle", attack = 1, maxHealth = 12, onHitSpawns = Some(smallBeetle))
-
-
 
   val count = 8
 }
