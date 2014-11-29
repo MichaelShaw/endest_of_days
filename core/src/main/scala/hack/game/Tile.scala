@@ -34,6 +34,4 @@ object Tile {
   val impassableGround = register(new Tile(nextId, "impassable", canBeWalkedOn = false))
   val playerAFactory = register(new Factory(nextId, 0, factoryHealth))
   val playerBFactory = register(new Factory(nextId, 1, factoryHealth))
-  val playerA = register(new Tile(nextId, "playerA"))
-  val playerB = register(new Tile(nextId, "playerB"))
 }
