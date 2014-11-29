@@ -51,8 +51,8 @@ class GameScreen extends Screen {
 //    w.placeTileAt(Vec2i(1, halfHeight), Tile.bigBeetleSpawner, 0)
 //    w.placeTileAt(Vec2i(w.width - 2, halfHeight), Tile.fexSpawner, 1)
 
-        w.placeTileAt(Vec2i(1, halfHeight), Tile.eyeBallSpawner, 0)
-        w.placeTileAt(Vec2i(w.width - 2, halfHeight), Tile.wormSpawner, 1)
+//        w.placeTileAt(Vec2i(1, halfHeight), Tile.eyeBallSpawner, 0)
+//        w.placeTileAt(Vec2i(w.width - 2, halfHeight), Tile.wormSpawner, 1)
 
     val withGate = false
     if(withGate) {
@@ -101,6 +101,8 @@ class GameScreen extends Screen {
       running = true
     }
 
+
+
     t += delta
     if(running) {
       simulationAccu += delta
@@ -109,6 +111,8 @@ class GameScreen extends Screen {
     // determine game ticks here
 
     if (simulationAccu >= simulationTickEvery) {
+      AI.evaluate(world, inputHandler)
+
       world.tick += 1
       GameLogic.updateWorld(world)
 

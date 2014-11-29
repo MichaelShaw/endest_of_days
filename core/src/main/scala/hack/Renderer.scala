@@ -135,6 +135,7 @@ class Renderer {
 
     mainBatch.setColor(black)
     renderHands(world, simulationAccu, simulationTickSize)
+    mainBatch.setColor(black)
     renderCursors(world)
 
 

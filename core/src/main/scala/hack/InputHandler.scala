@@ -21,6 +21,8 @@ class InputHandler(var world : World) extends InputProcessor with ControllerList
   var placeTileSound:Boolean = false
   var triggerSound:Boolean = false
 
+  var playerAi = Array.fill[Boolean](2){ false }
+
   def movePlayer(player : Int, deltaPosition : Vec2i) : Unit = {
     val p : Player = world.players(player)
     val cp = p.cursorPosition + deltaPosition
@@ -62,21 +64,24 @@ class InputHandler(var world : World) extends InputProcessor with ControllerList
 
   override def keyDown(i : Int) : Boolean = {
     i match {
-      case Keys.LEFT => movePlayer(0, Direction.w)
-      case Keys.RIGHT => movePlayer(0, Direction.e)
-      case Keys.DOWN => movePlayer(0, Direction.s)
-      case Keys.UP => movePlayer(0, Direction.n)
-      case Keys.LEFT_BRACKET => selectTile(0, -1)
-      case Keys.RIGHT_BRACKET => selectTile(0, 1)
-      case Keys.BACKSLASH => placeTile(0)
+      case Keys.LEFT => movePlayer(1, Direction.w)
+      case Keys.RIGHT => movePlayer(1, Direction.e)
+      case Keys.DOWN => movePlayer(1, Direction.s)
+      case Keys.UP => movePlayer(1, Direction.n)
+      case Keys.LEFT_BRACKET => selectTile(1, -1)
+      case Keys.RIGHT_BRACKET => selectTile(1, 1)
+      case Keys.BACKSLASH => placeTile(1)
 
-      case Keys.A => movePlayer(1, Direction.w)
-      case Keys.D => movePlayer(1, Direction.e)
-      case Keys.S => movePlayer(1, Direction.s)
-      case Keys.W => movePlayer(1, Direction.n)
-      case Keys.Z => selectTile(1, -1)
-      case Keys.X => selectTile(1, 1)
-      case Keys.C => placeTile(1)
+      case Keys.A => movePlayer(0, Direction.w)
+      case Keys.D => movePlayer(0, Direction.e)
+      case Keys.S => movePlayer(0, Direction.s)
+      case Keys.W => movePlayer(0, Direction.n)
+      case Keys.Z => selectTile(0, -1)
+      case Keys.X => selectTile(0, 1)
+      case Keys.C => placeTile(0)
+
+      case Keys.Y => playerAi(0) = !playerAi(0)
+      case Keys.U => playerAi(1) = !playerAi(1)
 
       case Keys.H => resetWorld = true
 

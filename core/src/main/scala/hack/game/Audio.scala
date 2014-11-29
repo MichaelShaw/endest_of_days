@@ -30,7 +30,7 @@ class AudioRenderer {
   }
 
   def smallHurt() {
-    smallHurtSound.play(0.1f, randomPitch(0.2f), 0f)
+//    smallHurtSound.play(0.1f, randomPitch(0.2f), 0f)
   }
 
   def mediumHurt() {
