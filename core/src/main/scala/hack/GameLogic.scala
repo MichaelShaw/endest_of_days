@@ -55,8 +55,8 @@ object GameLogic {
       x <- 0 until world.width
       y <- 0 until world.height
     } {
-      if(world.tileAt(x, y).isInstanceOf[Factory]) {
-        factoryOwnerShip += world.owned.get(x, y)
+      if(world.tileAt(Vec2i(x, y)).isInstanceOf[Factory]) {
+        factoryOwnerShip += world.owned.get(Vec2i(x, y))
       }
     }
 
