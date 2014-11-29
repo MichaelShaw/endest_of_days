@@ -2,30 +2,24 @@ package hack.game
 
 // all state
 
-class MetaLayer(val width : Int, val height : Int, val startingValue:Int) {
+class MetaLayer(val width : Int, val height : Int, val startingValue : Int) {
   def cells = width * height
 
-  def gridLocation(v : Vec2i) : Int = gridLocation(v.x, v.y)
-
-  def gridLocation(x : Int, y : Int) : Int = {
-    assert(x < width && x >= 0 && y < height && y >= 0, "asked for out of bounds tile location")
-    x * height + y
+  def gridLocation(v : Vec2i) : Int = {
+    assert(v.x < width && v.x >= 0 && v.y < height && v.y >= 0, "asked for out of bounds tile location")
+    v.x * height + v.y
   }
 
   val meta = Array.fill[Int](cells) {
     startingValue
   }
 
-  def get(v : Vec2i) : Int = get(v.x, v.y)
-
-  def get(x:Int, y:Int) : Int = meta(gridLocation(x, y))
-
-  def set(v : Vec2i, m : Int) {
-    set(v.x, v.y, m)
+  def get(v : Vec2i) : Int = {
+    meta(gridLocation(v))
   }
 
-  def set(x : Int, y : Int, m : Int) {
-    meta(gridLocation(x, y)) = m
+  def set(v : Vec2i, m : Int) {
+    meta(gridLocation(v)) = m
   }
 }
 
@@ -37,36 +31,44 @@ class World(val width : Int, val height : Int, val startingTile : Tile, val slot
 
   val owned = new MetaLayer(width, height, -1) // since 0 is a player id
 
-  def canPlaceTileAt(v : Vec2i, tile : Tile) : Boolean = canPlaceTileAt(v.x, v.y, tile)
+  def canPlaceTileAt(v : Vec2i, tile : Tile, player : Int) : Boolean = {
 
-  def canPlaceTileAt(x : Int, y : Int, tile : Tile) : Boolean = {
-    inBounds(x, y)
+    def notOwnedByOtherPlayer : Boolean = {
+      inBounds(v) && (owned.get(v) == -1 || owned.get(v) == player)
+    }
+
+    def ownedByPlayer(v : Vec2i) : Boolean = {
+      inBounds(v) && owned.get(v) == player
+    }
+
+    val anyNeighborOwnedByPlayer = Direction.directions.exists { d =>
+      ownedByPlayer(d + v)
+    }
+
+    notOwnedByOtherPlayer && anyNeighborOwnedByPlayer
+
     // TODO: disallow placing tile on factory
     // TODO: disallow completely seal off factories from each other?
   }
 
-  def placeTileAt(v : Vec2i, tile : Tile) : Unit = placeTileAt(v.x, v.y, tile)
-
-  def placeTileAt(x : Int, y : Int, tile : Tile, ownedBy:Int = -1) : Unit = {
-    setTileAt(x, y, tile)
+  def placeTileAt(v : Vec2i, tile : Tile, ownedBy : Int) : Unit = {
+    setTileAt(v, tile)
 
     val startingHealth : Int = tile match {
       case f : Factory => f.startingHealth
       case _ => 0
     }
-    health.set(x, y, startingHealth)
-    val startingTimer :Int = tile match {
-      case f:Factory => f.produceEveryNTicks
+    health.set(v, startingHealth)
+    val startingTimer : Int = tile match {
+      case f : Factory => f.produceEveryNTicks
       case _ => 0
     }
-    timer.set(x, y, startingTimer)
-    owned.set(x, y, ownedBy)
+    timer.set(v, startingTimer)
+    owned.set(v, ownedBy)
   }
 
-  def inBounds(v : Vec2i) : Boolean = inBounds(v.x, v.y)
-
-  def inBounds(x : Int, y : Int) : Boolean = {
-    x >= 0 && x < width && y >= 0 && y < height
+  def inBounds(v : Vec2i) : Boolean = {
+    v.x >= 0 && v.x < width && v.y >= 0 && v.y < height
   }
 
   // TILE LOGIC
@@ -76,13 +78,9 @@ class World(val width : Int, val height : Int, val startingTile : Tile, val slot
     startingTile
   }
 
-  def tileAt(v : Vec2i) : Tile = tileAt(v.x, v.y)
+  def tileAt(v : Vec2i) : Tile = tiles(gridLocation(v.x, v.y))
 
-  def tileAt(x : Int, y : Int) : Tile = tiles(gridLocation(x, y))
-
-  def setTileAt(x : Int, y : Int, tile : Tile) {
-    tiles(gridLocation(x, y)) = tile
-  }
+  def setTileAt(v : Vec2i, tile : Tile) = tiles(gridLocation(v.x, v.y)) = tile
 
   def gridLocation(v : Vec2i) : Int = gridLocation(v.x, v.y)
 

@@ -1,6 +1,7 @@
 package hack
 
 import com.badlogic.gdx.{Game, Screen}
+import hack.game.Vec2i
 import hack.game.{Arch, Tile, World}
 
 class HackGame extends Game {
@@ -27,18 +28,18 @@ class GameScreen extends Screen {
 //    w.placeTileAt(10, 15, Tile.playerBAEFactory)
 //    w.placeTileAt(12, 15, Tile.playerBDefenderFactory)
 
-    w.placeTileAt(6, 15, Tile.captainFactory, ownedBy = 1)
+    w.placeTileAt(Vec2i(6, 15), Tile.captainFactory, 1)
 
-    w.placeTileAt(7, 7, Tile.impassableGround)
-    w.placeTileAt(8, 7, Tile.impassableGround)
-    w.placeTileAt(9, 7, Tile.impassableGround)
+    w.placeTileAt(Vec2i(7, 7), Tile.impassableGround, -1)
+    w.placeTileAt(Vec2i(8, 7), Tile.impassableGround, -1)
+    w.placeTileAt(Vec2i(9, 7), Tile.impassableGround, -1)
 
 //    w.placeTileAt(6, 0, Tile.playerASoldierFactory)
 //    w.placeTileAt(8, 0, Tile.playerACaptainFactory)
 //    w.placeTileAt(10, 0, Tile.playerAAEFactory)
 //    w.placeTileAt(12, 0, Tile.playerADefenderFactory)
 
-    w.placeTileAt(6, 0, Tile.soldierFactory, ownedBy = 0)
+    w.placeTileAt(Vec2i(6, 0), Tile.soldierFactory, 0)
 
     w
   }

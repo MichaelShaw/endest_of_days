@@ -35,9 +35,10 @@ object GameLogic {
   def calculateFloodFills(world:World) {
     for(player <- world.players) {
       val goals = matchingTiles(world, { (x, y) =>
-        val tile = world.tileAt(x, y)
+        val v = Vec2i(x, y)
+        val tile = world.tileAt(v)
         tile match {
-          case f:Factory => world.owned.get(x, y) != player.id // opponent factory
+          case f:Factory => world.owned.get(v) != player.id // opponent factory
           case _ => false
         }
       })
@@ -85,16 +86,18 @@ case object Draw extends GameOutcome
       x <- 0 until world.width
       y <- 0 until world.height
     } {
-      val tile = world.tileAt(x, y)
+      val v = Vec2i(x, y)
+      val tile = world.tileAt(v)
       tile match {
         case f:Factory =>
-          val timer = world.timer.get(x, y)
+          val v = Vec2i(x, y)
+          val timer = world.timer.get(v)
           if(timer == 1) {
             // spawn time
-            spawnNear(world, x, y, world.owned.get(x, y), f.produceArch)
-            world.timer.set(x, y, f.produceEveryNTicks)
+            spawnNear(world, x, y, world.owned.get(v), f.produceArch)
+            world.timer.set(v, f.produceEveryNTicks)
           } else {
-            world.timer.set(x, y, timer - 1)
+            world.timer.set(v, timer - 1)
           }
         case _ =>
       }
@@ -177,7 +180,7 @@ case object Draw extends GameOutcome
       val healthRemaining = world.health.get(at) - living.arch.attack
 
       if(healthRemaining <= 0) {
-        world.placeTileAt(at, Tile.standardGround)
+        world.placeTileAt(at, Tile.standardGround, -1)
       } else {
         world.health.set(at, healthRemaining)
       }

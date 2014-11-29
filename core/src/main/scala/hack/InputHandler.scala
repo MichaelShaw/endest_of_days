@@ -31,8 +31,11 @@ class InputHandler(world : World) extends InputProcessor with ControllerListener
 
   def placeTile(player : Int) : Unit = {
     val p : Player = world.players(player)
+    assert(p.id == player)
 
-    world.placeTileAt(p.cursorPosition, p.nextTile)
+    if (world.canPlaceTileAt(p.cursorPosition, p.nextTile, p.id)) {
+      world.placeTileAt(p.cursorPosition, p.nextTile, p.id)
+    }
   }
 
   def setAsListener() : Unit = {

@@ -85,8 +85,9 @@ class Renderer {
       x <- 0 until world.width
       y <- 0 until world.height
     } {
-      val tile = world.tileAt(x, y)
-      val owned = world.owned.get(x, y)
+      val v = Vec2i(x, y)
+      val tile = world.tileAt(v)
+      val owned = world.owned.get(v)
       val textureRegion : TextureRegion = if(owned >= 0) {
         ownedTileAtlas(owned)(tile.id)
 
