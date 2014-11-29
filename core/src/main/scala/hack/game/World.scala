@@ -71,8 +71,10 @@ class World(val width:Int, val height:Int, val startingTile:Tile, val slotsPerTi
     throw new Exception("couldnt find living to unregister")
   }
 
-  val player = new Player(0)
-  val playerB = new Player(1)
+  val playerA = new Player(0, 1, 1)
+  val playerB = new Player(1, 5, 5)
+
+  val players = Array(playerA, playerB)
 }
 
 

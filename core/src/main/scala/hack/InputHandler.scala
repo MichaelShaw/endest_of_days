@@ -5,11 +5,18 @@ import com.badlogic.gdx.Input.Keys
 import com.badlogic.gdx.InputProcessor
 import com.badlogic.gdx.controllers.{Controller, ControllerListener, Controllers, PovDirection}
 import com.badlogic.gdx.math.Vector3
-import hack.game.World
+import hack.game.{Player, World}
 
 class InputHandler(world : World) extends InputProcessor with ControllerListener {
   def movePlayer(player : Int, dx : Int, dy : Int) : Unit = {
-    // TODO
+    val p : Player = world.players(player)
+    val x = p.x + dx
+    val y = p.y + dy
+
+    if (world.inBounds(x, y)) {
+      p.x = x
+      p.y = y
+    }
   }
 
   def selectTile(player : Int, dt : Int) : Unit = {
