@@ -127,7 +127,7 @@ object GameLogic {
       }
 
       for(enemy <- toAttack) {
-        println(s"${living.arch} striking ${enemy.arch} for ${living.arch.attack}")
+//        println(s"${living.arch} striking ${enemy.arch} for ${living.arch.attack}")
         enemy.health -= living.arch.attack
         enemy.lastStruckAt = world.tick
       }

@@ -41,7 +41,7 @@ class Renderer {
 
 
 
-  val playerA = tileRegion(2, 1)
+  val playerA = tileRegion(6, 1)
 
   val playerAGuys = Array(
     new TextureRegion(tileTexture, 224, 32, 16, 16),
@@ -51,7 +51,7 @@ class Renderer {
   )
 
   // soldier, captain, ae, defender
-  val playerB = tileRegion(2, 2)
+  val playerB = tileRegion(6, 2)
   val playerBGuys = Array(
     new TextureRegion(tileTexture, 224, 64, 16, 16),
     new TextureRegion(tileTexture, 240, 64, 16, 16),
