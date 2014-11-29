@@ -3,7 +3,7 @@ package hack
 import com.badlogic.gdx.Gdx.{app, input}
 import com.badlogic.gdx.Input.Keys
 import com.badlogic.gdx.{Game, Screen}
-import hack.game.{Tile, World}
+import hack.game.{Arch, Tile, World}
 
 class HackGame extends Game {
   override def create() {
@@ -13,7 +13,7 @@ class HackGame extends Game {
 
 class GameScreen extends Screen {
   // static initialization hack
-  val hck = (Tile.impassableGround)
+  val hck = (Tile.impassableGround, Arch.soldier)
 
   val inputHandler = new InputHandler()
   val world = generateWorld()
@@ -96,7 +96,7 @@ class GameScreen extends Screen {
     val input1: PlayerInput = keyboardInput(PlayerKeys.Player1)
     val input2: PlayerInput = keyboardInput(PlayerKeys.Player2)
 
-    renderer.render(world)
+    renderer.render(world, simulationAccu)
   }
 
   def resize(width: Int, height: Int) {

@@ -6,4 +6,6 @@ package hack.game
 
 case class Vec2i(x:Int, y:Int) {
   def plus(xa:Int, ya:Int) = Vec2i(x + xa, y + ya)
+  def *(n:Int) = Vec2i(x * n, y * n)
+  def +(other:Vec2i) = Vec2i(x + other.x, y + other.y)
 }

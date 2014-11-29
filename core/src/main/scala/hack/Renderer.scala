@@ -3,7 +3,7 @@ package hack
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.g2d.{TextureRegion, SpriteBatch}
 import com.badlogic.gdx.graphics.{Texture, GL20, OrthographicCamera}
-import hack.game.{Tile, World}
+import hack.game.{Vec2i, Tile, World}
 
 /**
  * Created by michael on 29/11/14.
@@ -30,7 +30,10 @@ class Renderer {
   tileAtlas(Tile.playerAFactory.id) = tileRegion(2, 0)
   tileAtlas(Tile.playerBFactory.id) = tileRegion(3, 0)
 
-  def render(world:World) {
+  val playerAGuy = new TextureRegion(tileTexture, 128, 0, 16, 16)
+  val playerBGuy = new TextureRegion(tileTexture, 144, 0, 16, 16)
+
+  def render(world:World, simulationAccu:Double) {
     camera.position.set(world.width / 2 * tileSizeScreen, world.height / 2 * tileSizeScreen, 0 )
     camera.update()
 
@@ -40,6 +43,13 @@ class Renderer {
     mainBatch.setProjectionMatrix(camera.combined)
     mainBatch.begin()
 
+    renderTiles(world)
+    renderLivings(world, simulationAccu)
+
+    mainBatch.end()
+  }
+
+  def renderTiles(world:World) {
     for {
       x <- 0 until world.width
       y <- 0 until world.height
@@ -48,12 +58,34 @@ class Renderer {
       val textureRegion = tileAtlas(tile.id)
       mainBatch.draw(textureRegion, x * tileSizeScreen, y * tileSizeScreen, tileSizeScreen, tileSizeScreen )
     }
-
-    mainBatch.end()
   }
 
-  def renderTiles(world:World) {
+  val innerTileLocations = (for {
+    x <- 0 to 2
+    y <- 0 to 2
+  } yield Vec2i(4 + x * 8, 4 + y * 8)).toArray // need better logic here
 
+  // simulation accu for partial tick
+  def renderLivings(world:World, simulationAccu:Double) {
+    for {
+      x <- 0 until world.width
+      y <- 0 until world.height
+    } {
+      val entities = world.livingsAt(x, y)
+      var slot = 0; while(slot < world.slotsPerTile) {
+        val e = entities(slot)
+        if(e != null) {
+          val at = (Vec2i(x, y) * tileSizeScreen) + innerTileLocations(slot)
+          val tr:TextureRegion = if(e.playerId == 0) {
+            playerAGuy
+          } else {
+            playerBGuy
+          }
+
+          mainBatch.draw(tr,at.x , at.y, 16, 16)
+        }
+        slot += 1
+      }
+    }
   }
-
 }

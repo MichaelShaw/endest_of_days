@@ -39,6 +39,8 @@ class World(val width:Int, val height:Int, val startingTile:Tile, val slotsPerTi
 
   val livings = Array.fill[Array[Living]](cells) { new Array[Living](slotsPerTile) }
 
+  def livingsAt(v:Vec2i) : Array[Living] = livingsAt(v.x, v.y)
+  def livingsAt(x:Int, y:Int) : Array[Living] = livings(tileLocation(x, y))
   def hasSpaceAt(v:Vec2i) : Boolean = hasSpaceAt(v.x, v.y)
   def hasSpaceAt(x:Int, y:Int) : Boolean = spaceAt(x, y) > 0
   def spaceAt(x:Int, y:Int) = livings(tileLocation(x, y)).count(_ == null)
