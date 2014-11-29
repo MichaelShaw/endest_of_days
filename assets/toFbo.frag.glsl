@@ -9,7 +9,7 @@ uniform sampler2D u_texture;
 uniform mat4 u_projTrans;
 
 void main() {
-   vec4 color = texture2D(u_texture, v_texCoords);
+   vec4 color = texture2D(u_texture, v_texCoords) * v_color;
    if(color.a < 0.05) {
      discard;
    }

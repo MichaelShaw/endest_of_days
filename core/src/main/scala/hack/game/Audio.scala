@@ -42,6 +42,6 @@ class AudioRenderer {
   }
 
   def finalDestruction() {
-    finalDestructionSound.play()
+    finalDestructionSound.play(0.6f, 1f, 0f)
   }
 }

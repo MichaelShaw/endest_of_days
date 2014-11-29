@@ -37,7 +37,7 @@ class World(val width : Int, val height : Int, val startingTile : Tile, val slot
 
   def ticksPerPlace = 5
   var placementTimer = ticksPerPlace
-  var placementStage = 0
+  var placementStage = 1 // so you can place 2 tiles immediately
 
 
   val timer = new MetaLayer(width, height, 0)

@@ -105,6 +105,12 @@ class Renderer {
   archs(Arch.bigBeetle.id) = new TextureRegion(tileTexture,192, 96, 19, 17)
   archs(Arch.smallBeetle.id) = new TextureRegion(tileTexture,213, 98, 6, 6)
 
+  val white = Array(1f, 1f, 1f, 1f)
+  val playerColours = Array[Array[Float]](
+    Array(1f,1f,1f,1f),
+    Array(1f,1f,1f,1f)
+  )
+
   def render(world : World, simulationAccu : Double, simulationTickSize : Double, delta:Double) {
     camera.position.set(world.width / 2 * tileSizeScreen, world.height / 2 * tileSizeScreen, 0)
     camera.update()
@@ -119,6 +125,8 @@ class Renderer {
     mainBatch.setProjectionMatrix(camera.combined)
     mainBatch.begin()
     mainBatch.setShader(toFrameBufferShader)
+
+    toFrameBufferShader.setUniform4fv("u_colour", white, 0, 4)
 
     renderTiles(world)
     renderLivings(world, simulationAccu, simulationTickSize, delta)

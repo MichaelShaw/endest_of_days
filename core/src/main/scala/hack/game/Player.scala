@@ -20,6 +20,27 @@ class Player(val id : Int, var cursorPosition : Vec2i, var tile : Int, val terra
       }
       tileQueue += factoryTiles
     }
+    def pushGate() {
+      val toShuffle = new mutable.ArrayBuffer[Seq[Tile]]()
+      (1 to 3).foreach(n => toShuffle += terrainTiles )
+      toShuffle += (Array(Tile.gate) ++ terrainTiles)
+
+      val shuffled = rand.shuffle(toShuffle)
+      shuffled += factoryTiles
+
+      tileQueue ++= shuffled
+    }
+
+    pushStandard()
+    pushGate()
+    pushStandard()
+    pushStandard()
+    pushGate()
+    pushStandard()
+    pushStandard()
+    pushStandard()
+    pushGate()
+
     for {
       n <- 1 to 100
     } {
