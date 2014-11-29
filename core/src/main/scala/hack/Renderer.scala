@@ -244,13 +244,14 @@ class Renderer {
     def renderHand(player : Player, cursorTextureRegion : TextureRegion, xOffset : Int) : Unit = {
       if(player.canPlaceTiles(world)) {
 
-        val yOffset = if(player.placedTiles == world.placementStage && world.placementTimer == world.ticksPerPlace) {
+        val yOffset = (if(player.placedTiles == world.placementStage && world.placementTimer == world.ticksPerPlace) {
           // player is up to date and it's the first simulation tick
           val progress = Bias.getBias(Bias.clamp(simulationAccu * 2 / simulationTick), 0.75)
-          ((1 - progress) * -32).asInstanceOf[Int]
+//          println("progress -> " + progress)
+          ((1 - progress) * -tileSizeScreen).asInstanceOf[Int]
         } else {
           0
-        } - 15
+        }) - 15
 
 
 
