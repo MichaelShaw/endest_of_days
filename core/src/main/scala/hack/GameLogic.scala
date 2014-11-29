@@ -1,10 +1,16 @@
 package hack
 
 import hack.game._
+import collection.mutable
 
 /**
  * Created by michael on 29/11/14.
  */
+
+trait GameOutcome
+case class PlayerWon(playerId:Int) extends GameOutcome
+case object Draw extends GameOutcome
+
 object GameLogic {
   val rand = new scala.util.Random()
 
@@ -39,6 +45,34 @@ object GameLogic {
       world.aggressionFloodFills(player.id) = floodFill
     }
   }
+
+  // winning player id
+  def gameFinished(world:World) : Option[GameOutcome] = {
+    // draw is when there are no factories
+    val factoryOwnerShip = new mutable.HashSet[Int]
+    for {
+      x <- 0 until world.width
+      y <- 0 until world.height
+    } {
+      if(world.tileAt(x, y).isInstanceOf[Factory]) {
+        factoryOwnerShip += world.owned.get(x, y)
+      }
+    }
+
+    if(factoryOwnerShip.isEmpty) {
+      Some(Draw)
+    } else if(factoryOwnerShip.size == 1) {
+      Some(PlayerWon(factoryOwnerShip.head))
+    } else {
+      None
+    }
+  }
+
+  /*
+  trait GameOutcome
+case class PlayerWon(playerId:Int) extends GameOutcome
+case object Draw extends GameOutcome
+   */
 
   def updateWorld(world:World) { // update worlds by a tick ... maybe accumulates events
     println(s"game update tick ${world.tick}")
@@ -138,6 +172,7 @@ object GameLogic {
 
       stampActionDuration(1)
     }
+
     def strikeBuilding(at:Vec2i): Unit = {
       val healthRemaining = world.health.get(at) - living.arch.attack
 

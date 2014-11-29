@@ -55,17 +55,33 @@ class GameScreen extends Screen {
 
   var t = 0.0
   var simulationAccu = 0.0
-  val simulationTickEvery = 1.0 // every 1 second
+  val simulationTickEvery = 0.15 // every 1 second
+
+  var running = true
 
   def render(delta : Float) {
     t += delta
-    simulationAccu += delta
+    if(running) {
+      simulationAccu += delta
+    }
+
     // determine game ticks here
 
     if (simulationAccu >= simulationTickEvery) {
       GameLogic.updateWorld(world)
       world.tick += 1
       simulationAccu -= simulationTickEvery
+    }
+
+    GameLogic.gameFinished(world) match {
+      case Some(Draw) =>
+        println("DRAW")
+        running = false
+      case Some(PlayerWon(playerId)) =>
+        println(s"Player $playerId won")
+        running = false
+      case None =>
+
     }
 
     renderer.render(world, simulationAccu)
