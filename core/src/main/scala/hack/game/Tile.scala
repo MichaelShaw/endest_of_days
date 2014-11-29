@@ -44,17 +44,15 @@ object Tile {
   val gate = register(new Gate(nextId, "gate"))
 
   val cultistSpawner = register(new Factory(nextId, "cultist_spawner", factoryHealth, produceEveryNTicks = 2, produceArch = Arch.cultist, requiredSummoners = 0))
-  val impSpawner = register(new Factory(nextId, "imp_spawner", factoryHealth, produceEveryNTicks = 1, produceArch = Arch.imp, requiredSummoners = 6))
-  val captainSpawner = register(new Factory(nextId, "captain_spawner", factoryHealth, produceEveryNTicks = 3, produceArch = Arch.captain, requiredSummoners = 6))
-  val bigBeetleSpawner = register(new Factory(nextId, "bigBeetle_spawner", factoryHealth, produceEveryNTicks = 5, produceArch = Arch.bigBeetle, requiredSummoners = 6))
 
-  val playerAFactories = Array(captainSpawner, bigBeetleSpawner)
-  val playerBFactories = Array(impSpawner)
+  val impSpawner = register(new Factory(nextId, "imp_spawner", factoryHealth, produceEveryNTicks = 1, produceArch = Arch.imp, requiredSummoners = 5))
+  val wormSpawner = register(new Factory(nextId, "worm_spawner", factoryHealth, produceEveryNTicks = 4, produceArch = Arch.worm, requiredSummoners = 6))
+  val fexSpawner = register(new Factory(nextId, "fex_spawner", factoryHealth, produceEveryNTicks = 10, produceArch = Arch.fex, requiredSummoners = 7))
 
-//  val aeFactory = register(new Factory(nextId, "ae_factory", factoryHealth, produceEveryNTicks = 5, produceArch = Arch.ae, requiredSummoners = 6))
-//  val defenderFactory = register(new Factory(nextId, "defender_factory", factoryHealth, produceEveryNTicks = 2, produceArch = Arch.defender))
-//  val factoryTiles = Array(cultistSpawner, impSpawner, captainSpawner) // , aeFactory
+  val captainSpawner = register(new Factory(nextId, "captain_spawner", factoryHealth, produceEveryNTicks = 3, produceArch = Arch.captain, requiredSummoners = 5))
+  val eyeBallSpawner = register(new Factory(nextId, "eyeBall_spawner", factoryHealth, produceEveryNTicks = 6, produceArch = Arch.eyeBall, requiredSummoners = 6))
+  val bigBeetleSpawner = register(new Factory(nextId, "bigBeetle_spawner", factoryHealth, produceEveryNTicks = 8, produceArch = Arch.bigBeetle, requiredSummoners = 7))
 
-
-
+  val playerAFactories = Array(captainSpawner, eyeBallSpawner, bigBeetleSpawner)
+  val playerBFactories = Array(impSpawner, wormSpawner, fexSpawner)
 }

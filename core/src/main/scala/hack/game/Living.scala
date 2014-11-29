@@ -49,11 +49,16 @@ object Arch {
   val cultist = Arch(0, "cultist", 1, 2, canHelpSummon = true)
 
   val imp = Arch(1, "imp", attack = 1, maxHealth = 4)
-  val captain = Arch(2, "captain", attack = 3, maxHealth = 10)
+  val worm = Arch(2, "worm", attack = 5, maxHealth = 6)
+  val fex = Arch(3, "fex", attack = 3, maxHealth = 18, aeAttack = true)
 
-  val smallBeetle = Arch(3, "small_beetle", attack = 1, maxHealth = 2)
-  val bigBeetle = Arch(4, "big_beetle", attack = 1, maxHealth = 12, onHitSpawns = Some(smallBeetle))
+  val captain = Arch(4, "captain", attack = 3, maxHealth = 10)
+  val eyeBall = Arch(5, "eye_ball", attack = 2, maxHealth = 4)
+  val smallBeetle = Arch(6, "small_beetle", attack = 1, maxHealth = 2)
+  val bigBeetle = Arch(7, "big_beetle", attack = 1, maxHealth = 12, onHitSpawns = Some(smallBeetle))
 
-  val count = 5
+
+
+  val count = 8
 }
 

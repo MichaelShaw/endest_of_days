@@ -23,7 +23,8 @@ class Player(val id : Int, var cursorPosition : Vec2i, var tile : Int, val terra
     for {
       n <- 1 to 100
     } {
-      pushStandard()
+      tileQueue += (terrainTiles ++ factoryTiles)
+//      pushStandard()
     }
   }
 

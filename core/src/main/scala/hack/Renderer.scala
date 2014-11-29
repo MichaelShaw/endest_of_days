@@ -67,12 +67,13 @@ class Renderer {
   tileAtlas(Tile.standardGround.id) = tileRegion(0, 0)
   tileAtlas(Tile.impassableGround.id) = tileRegion(1, 0)
 
-  tileAtlas(Tile.cultistSpawner.id) = tileRegion(2, 0)
   tileAtlas(Tile.impSpawner.id) = tileRegion(3, 2)
-  tileAtlas(Tile.captainSpawner.id) = tileRegion(3, 1)
-  tileAtlas(Tile.bigBeetleSpawner.id) = tileRegion(4, 1)
-//  tileAtlas(Tile.aeFactory.id) = tileRegion(5, 0)
+  tileAtlas(Tile.wormSpawner.id) = tileRegion(4, 2)
+  tileAtlas(Tile.fexSpawner.id) = tileRegion(5, 2)
 
+  tileAtlas(Tile.captainSpawner.id) = tileRegion(3, 1)
+  tileAtlas(Tile.eyeBallSpawner.id) = tileRegion(4, 1)
+  tileAtlas(Tile.bigBeetleSpawner.id) = tileRegion(5, 1)
 
   val cultistSpawners = Array(
     tileRegion(2, 1),
@@ -96,7 +97,11 @@ class Renderer {
   )
   val archs = new Array[TextureRegion](16)
   archs(Arch.imp.id) = new TextureRegion(tileTexture, 240, 64, 16, 16)
+  archs(Arch.worm.id) = new TextureRegion(tileTexture, 224, 80, 16, 16)
+  archs(Arch.fex.id) = new TextureRegion(tileTexture, 224, 96, 24, 20)
+
   archs(Arch.captain.id) = new TextureRegion(tileTexture, 240, 32, 16, 16)
+  archs(Arch.eyeBall.id) = new TextureRegion(tileTexture, 224, 48, 16, 16)
   archs(Arch.bigBeetle.id) = new TextureRegion(tileTexture,192, 96, 19, 17)
   archs(Arch.smallBeetle.id) = new TextureRegion(tileTexture,213, 98, 6, 6)
 
@@ -212,6 +217,9 @@ class Renderer {
             flashing(0.10)
           } else {
             true
+          }
+          if(tr == null) {
+            throw new Exception("failed to draw " + e.arch)
           }
           if (draw) {
             mainBatch.draw(tr, e.smoothedPosition.x, e.smoothedPosition.y, tr.getRegionWidth * upScale, tr.getRegionHeight * upScale)
