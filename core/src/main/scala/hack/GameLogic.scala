@@ -19,18 +19,21 @@ object GameLogic {
     }
   }
 
-  def matchingTiles(world:World, pred:Tile => Boolean) : Set[Vec2i] = {
+  def matchingTiles(world:World, pred:(Int, Int) => Boolean) : Set[Vec2i] = {
     (for {
       x <- 0 until world.width
-      y <- 0 until world.height if pred(world.tileAt(x, y))
+      y <- 0 until world.height if pred(x, y)
     } yield Vec2i(x, y)).toSet
   }
 
   def calculateFloodFills(world:World) {
     for(player <- world.players) {
-      val goals = matchingTiles(world, {
-        case f:Factory => f.playerId != player.id // opponent factory
-        case _ => false
+      val goals = matchingTiles(world, { (x, y) =>
+        val tile = world.tileAt(x, y)
+        tile match {
+          case f:Factory => world.owned.get(x, y) != player.id // opponent factory
+          case _ => false
+        }
       })
       val floodFill = FloodFill.produceFor(goals, world)
       world.aggressionFloodFills(player.id) = floodFill
@@ -54,7 +57,7 @@ object GameLogic {
           val timer = world.timer.get(x, y)
           if(timer == 1) {
             // spawn time
-            spawnNear(world, x, y, f.playerId, f.produceArch)
+            spawnNear(world, x, y, world.owned.get(x, y), f.produceArch)
             world.timer.set(x, y, f.produceEveryNTicks)
           } else {
             world.timer.set(x, y, timer - 1)
@@ -163,7 +166,7 @@ object GameLogic {
       val neighbour = living.currentLocation + dir
       if(ff.inBounds(neighbour)) {
         world.tileAt(neighbour) match {
-          case f:Factory => f.playerId != living.playerId && world.health.get(neighbour) > 0 // meta is health channel for factory
+          case f:Factory => world.owned.get(neighbour) != living.playerId && world.health.get(neighbour) > 0 // meta is health channel for factory
           case _ => false
         }
       } else {

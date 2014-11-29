@@ -12,10 +12,10 @@ class Tile(val id:Int,
 }
 
 class Factory(id:Int,
-              val playerId:Int,
+              name:String,
               val startingHealth:Int,
               val produceEveryNTicks:Int = 1,
-              val produceArch:Arch) extends Tile(id, s"factory_$playerId", canBeWalkedOn = false)
+              val produceArch:Arch) extends Tile(id, name, canBeWalkedOn = false)
 
 object Tile {
   // fuck, do we even need ids if we're never going to serialize *anything*
@@ -36,17 +36,12 @@ object Tile {
 
   val standardGround = register(new Tile(nextId, "ground"))
   val impassableGround = register(new Tile(nextId, "impassable", canBeWalkedOn = false))
+  val groundTiles = Array(standardGround, impassableGround)
 
-  val playerASoldierFactory = register(new Factory(nextId, 0, factoryHealth, produceEveryNTicks = 1, produceArch = Arch.soldier))
-  val playerACaptainFactory = register(new Factory(nextId, 0, factoryHealth, produceEveryNTicks = 3, produceArch = Arch.captain))
-  val playerAAEFactory = register(new Factory(nextId, 0, factoryHealth, produceEveryNTicks = 5, produceArch = Arch.ae))
-  val playerADefenderFactory = register(new Factory(nextId, 0, factoryHealth, produceEveryNTicks = 2, produceArch = Arch.defender))
+  val soldierFactory = register(new Factory(nextId, "soldier_factory", factoryHealth, produceEveryNTicks = 1, produceArch = Arch.soldier))
+  val captainFactory = register(new Factory(nextId, "captain_factory", factoryHealth, produceEveryNTicks = 3, produceArch = Arch.captain))
+  val aeFactory = register(new Factory(nextId, "ae_factory", factoryHealth, produceEveryNTicks = 5, produceArch = Arch.ae))
+  val defenderFactory = register(new Factory(nextId, "defender_factory", factoryHealth, produceEveryNTicks = 2, produceArch = Arch.defender))
+  val factoryTiles = Array(soldierFactory, captainFactory, aeFactory, defenderFactory)
 
-  val playerBSoldierFactory = register(new Factory(nextId, 1, factoryHealth, produceEveryNTicks = 1, produceArch = Arch.soldier))
-  val playerBCaptainFactory = register(new Factory(nextId, 1, factoryHealth, produceEveryNTicks = 3, produceArch = Arch.captain))
-  val playerBAEFactory = register(new Factory(nextId, 1, factoryHealth, produceEveryNTicks = 5, produceArch = Arch.ae))
-  val playerBDefenderFactory = register(new Factory(nextId, 1, factoryHealth, produceEveryNTicks = 2, produceArch = Arch.defender))
-
-  val playerA = register(new Tile(nextId, "playerA"))
-  val playerB = register(new Tile(nextId, "playerB"))
 }

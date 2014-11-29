@@ -25,32 +25,38 @@ class Renderer {
   val tileAtlas = new Array[TextureRegion](Tile.count)
   tileAtlas(Tile.standardGround.id) = tileRegion(0, 0)
   tileAtlas(Tile.impassableGround.id) = tileRegion(1, 0)
-  tileAtlas(Tile.playerASoldierFactory.id) = tileRegion(3, 0)
-  tileAtlas(Tile.playerACaptainFactory.id) = tileRegion(4, 0)
-  tileAtlas(Tile.playerAAEFactory.id) = tileRegion(5, 0)
-  tileAtlas(Tile.playerADefenderFactory.id) = tileRegion(6, 0)
 
-  tileAtlas(Tile.playerBSoldierFactory.id) = tileRegion(3, 1)
-  tileAtlas(Tile.playerBCaptainFactory.id) = tileRegion(4, 1)
-  tileAtlas(Tile.playerBAEFactory.id) = tileRegion(5, 1)
-  tileAtlas(Tile.playerBDefenderFactory.id) = tileRegion(6, 1)
+  tileAtlas(Tile.soldierFactory.id) = tileRegion(2, 0)
+  tileAtlas(Tile.captainFactory.id) = tileRegion(3, 0)
+  tileAtlas(Tile.aeFactory.id) = tileRegion(4, 0)
+  tileAtlas(Tile.defenderFactory.id) = tileRegion(5, 0)
 
-  val playerA = tileRegion(2, 0)
-  val playerB = tileRegion(2, 1)
+  val ownedTileAtlas:Array[Array[TextureRegion]] = (1 to 2).map { n =>
+    (0 to 5).map { t =>
+      tileRegion(t, n)
+    }.toArray
+  }.toArray
+
+  // 2 players
+
+
+
+  val playerA = tileRegion(2, 1)
 
   val playerAGuys = Array(
-    new TextureRegion(tileTexture, 224, 0, 16, 16),
-    new TextureRegion(tileTexture, 224 + 16, 0, 16, 16),
-    new TextureRegion(tileTexture, 224, 16, 16, 16),
-    new TextureRegion(tileTexture, 224 + 16, 16, 16, 16)
+    new TextureRegion(tileTexture, 224, 32, 16, 16),
+    new TextureRegion(tileTexture, 240, 32, 16, 16),
+    new TextureRegion(tileTexture, 224, 48, 16, 16),
+    new TextureRegion(tileTexture, 240, 48, 16, 16)
   )
 
   // soldier, captain, ae, defender
+  val playerB = tileRegion(2, 2)
   val playerBGuys = Array(
-    new TextureRegion(tileTexture, 224, 32, 16, 16),
-    new TextureRegion(tileTexture, 224 + 16, 32, 16, 16),
-    new TextureRegion(tileTexture, 224, 32 + 16, 16, 16),
-    new TextureRegion(tileTexture, 224 + 16, 32 + 16, 16, 16)
+    new TextureRegion(tileTexture, 224, 64, 16, 16),
+    new TextureRegion(tileTexture, 240, 64, 16, 16),
+    new TextureRegion(tileTexture, 224, 80, 16, 16),
+    new TextureRegion(tileTexture, 240, 80, 16, 16)
   )
 
   def render(world : World, simulationAccu : Double) {
@@ -76,7 +82,13 @@ class Renderer {
       y <- 0 until world.height
     } {
       val tile = world.tileAt(x, y)
-      val textureRegion = tileAtlas(tile.id)
+      val owned = world.owned.get(x, y)
+      val textureRegion : TextureRegion = if(owned >= 0) {
+        ownedTileAtlas(owned)(tile.id)
+
+      } else {
+        tileAtlas(tile.id)
+      }
       mainBatch.draw(textureRegion, x * tileSizeScreen, y * tileSizeScreen, tileSizeScreen, tileSizeScreen)
     }
   }

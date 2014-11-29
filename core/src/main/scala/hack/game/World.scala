@@ -2,7 +2,7 @@ package hack.game
 
 // all state
 
-class MetaLayer(val width : Int, val height : Int) {
+class MetaLayer(val width : Int, val height : Int, val startingValue:Int) {
   def cells = width * height
 
   def gridLocation(v : Vec2i) : Int = gridLocation(v.x, v.y)
@@ -13,7 +13,7 @@ class MetaLayer(val width : Int, val height : Int) {
   }
 
   val meta = Array.fill[Int](cells) {
-    0
+    startingValue
   }
 
   def get(v : Vec2i) : Int = get(v.x, v.y)
@@ -32,8 +32,10 @@ class MetaLayer(val width : Int, val height : Int) {
 class World(val width : Int, val height : Int, val startingTile : Tile, val slotsPerTile : Int) {
   var tick = 0
 
-  val timer = new MetaLayer(width, height)
-  val health = new MetaLayer(width, height)
+  val timer = new MetaLayer(width, height, 0)
+  val health = new MetaLayer(width, height, 0)
+
+  val owned = new MetaLayer(width, height, -1) // since 0 is a player id
 
   def canPlaceTileAt(v : Vec2i, tile : Tile) : Boolean = canPlaceTileAt(v.x, v.y, tile)
 
@@ -45,21 +47,20 @@ class World(val width : Int, val height : Int, val startingTile : Tile, val slot
 
   def placeTileAt(v : Vec2i, tile : Tile) : Unit = placeTileAt(v.x, v.y, tile)
 
-  def placeTileAt(x : Int, y : Int, tile : Tile) : Unit = {
-    if (canPlaceTileAt(x, y, tile)) {
-      setTileAt(x, y, tile)
+  def placeTileAt(x : Int, y : Int, tile : Tile, ownedBy:Int = -1) : Unit = {
+    setTileAt(x, y, tile)
 
-      val startingHealth : Int = tile match {
-        case f : Factory => f.startingHealth
-        case _ => 0
-      }
-      health.set(x, y, startingHealth)
-      val startingTimer :Int = tile match {
-        case f:Factory => f.produceEveryNTicks
-        case _ => 0
-      }
-      timer.set(x, y, startingTimer)
+    val startingHealth : Int = tile match {
+      case f : Factory => f.startingHealth
+      case _ => 0
     }
+    health.set(x, y, startingHealth)
+    val startingTimer :Int = tile match {
+      case f:Factory => f.produceEveryNTicks
+      case _ => 0
+    }
+    timer.set(x, y, startingTimer)
+    owned.set(x, y, ownedBy)
   }
 
   def inBounds(v : Vec2i) : Boolean = inBounds(v.x, v.y)
