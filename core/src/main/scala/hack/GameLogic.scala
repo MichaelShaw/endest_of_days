@@ -131,6 +131,7 @@ case object Draw extends GameOutcome
           if(availableSummoners >= f.requiredSummoners) {
             val timer = world.timer.get(v)
             if(timer == 1) {
+//              println("spawning a " + f.produceArch + " at " + v + " for player " + world.owned.get(v))
               // spawn time
               spawnAt(world, v, world.owned.get(v), f.produceArch)
               world.timer.set(v, f.produceEveryNTicks)
@@ -263,6 +264,7 @@ case object Draw extends GameOutcome
     }
 
     def strikeBuilding(at: Vec2i): Unit = {
+      println(s"${living.arch.name} $living @ ${living.currentLocation} of player ${living.playerId} striking at $at tile " + world.tileAt(at) + s" owned by ${world.owned.get(at)}")
       val healthRemaining = world.health.get(at) - living.arch.attack
 
       if (healthRemaining <= 0 || living.arch.instakillBuildings) {

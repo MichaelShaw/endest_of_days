@@ -13,12 +13,16 @@ class GameScreen extends Screen {
   // static initialization hack
   val hck = (Tile.impassableGround, Arch.imp)
 
+  var simulationTickEvery = 1.0
+
   var world = generateWorld()
   val renderer = new Renderer()
   val audio = new AudioRenderer()
 
   val inputHandler = new InputHandler(world)
   inputHandler.setAsListener()
+
+
 
   def generateWorld() : World = {
     val top = 10
@@ -40,12 +44,12 @@ class GameScreen extends Screen {
 
     w.simulationTickEvery = simulationTickEvery
 
-    WorldGen.terraform(w, seed, spreadStepMin = 16 )
+    WorldGen.terraform(w, seed, spreadStepMin = 16)
 
     val halfHeight = w.height / 2
 
     placeHomeBaseBackage(Vec2i(0, halfHeight), 0)
-    placeHomeBaseBackage(Vec2i(w.width - 1, w.height / 2), 1)
+    placeHomeBaseBackage(Vec2i(w.width - 1, halfHeight), 1)
 
 //    w.placeTileAt(Vec2i(1, halfHeight), Tile.captainSpawner, 0)
 //    w.placeTileAt(Vec2i(w.width - 2, halfHeight), Tile.impSpawner, 1)
@@ -87,7 +91,7 @@ class GameScreen extends Screen {
 
   var seed = 0L
 
-  var simulationTickEvery = 1.0
+
 
   def resetGame() {
 //    simulationTickEvery *= 0.5
@@ -102,9 +106,9 @@ class GameScreen extends Screen {
 
   def render(delta : Float) {
     if(!running || inputHandler.resetWorld) {
-      resetGame()
-      inputHandler.resetWorld = false
-      running = true
+//      resetGame()
+//      inputHandler.resetWorld = false
+//      running = true
     }
 
 

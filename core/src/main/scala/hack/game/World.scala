@@ -121,6 +121,7 @@ class World(val width : Int, val height : Int, val startingTile : Tile, val slot
   }
 
   def placeTileAt(v : Vec2i, tile : Tile, ownedBy : Int) : Unit = {
+//    println(s"placed tile ${tile.name} at $v with own $ownedBy")
     setTileAt(v, tile)
 
     val startingHealth : Int = tile match {
