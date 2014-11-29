@@ -69,7 +69,7 @@ class GameScreen extends Screen {
 
   var t = 0.0
   var simulationAccu = 0.0
-  val simulationTickEvery = 0.15  // every 1 second
+  val simulationTickEvery = 1.0  // every 1 second
 
   var running = true
 
@@ -110,7 +110,7 @@ class GameScreen extends Screen {
 
     }
 
-    renderer.render(world, simulationAccu, simulationTickEvery)
+    renderer.render(world, simulationAccu, simulationTickEvery, delta)
   }
 
   def resize(width : Int, height : Int) {

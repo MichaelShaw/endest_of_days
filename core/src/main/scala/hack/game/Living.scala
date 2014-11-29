@@ -1,5 +1,7 @@
 package hack.game
 
+import hack.Renderer
+
 /**
  * Created by michael on 29/11/14.
  */
@@ -19,8 +21,12 @@ class Living(val id:Int,
   var actionStartedAtTick:Int = 0
   var actionFinishedAtTick:Int = 0
 
-  // DISPLAY FLAGS
+  // DISPLAY FLAGS (render state)
   var lastStruckAt:Int = -1
+  var velocity = Vec2f.zero
+  var smoothedPosition = (Vec2f.from(currentLocation) + Vec2f(0.5f, 0.5f)) * Renderer.pixelsPerTile
+
+//  println(s"${arch.id} is spawning at $currentLocation smoothedposition will be $smoothedPosition")
 
   def moving = lastLocation != currentLocation
 

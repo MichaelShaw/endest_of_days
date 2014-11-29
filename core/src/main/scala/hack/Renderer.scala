@@ -12,6 +12,10 @@ import com.badlogic.gdx.graphics.glutils.{ShaderProgram, FrameBuffer}
 import com.badlogic.gdx.math.Matrix4
 import hack.game._
 
+
+object Renderer {
+  val pixelsPerTile = 32
+}
 class Renderer {
   val camera = new OrthographicCamera(Gdx.graphics.getWidth, Gdx.graphics.getHeight)
 
@@ -89,7 +93,7 @@ class Renderer {
   archs(Arch.bigBeetle.id) = new TextureRegion(tileTexture,192, 96, 19, 17)
   archs(Arch.smallBeetle.id) = new TextureRegion(tileTexture,213, 98, 6, 6)
 
-  def render(world : World, simulationAccu : Double, simulationTickSize : Double) {
+  def render(world : World, simulationAccu : Double, simulationTickSize : Double, delta:Double) {
     camera.position.set(world.width / 2 * tileSizeScreen, world.height / 2 * tileSizeScreen, 0)
     camera.update()
 
@@ -105,7 +109,7 @@ class Renderer {
     mainBatch.setShader(toFrameBufferShader)
 
     renderTiles(world)
-    renderLivings(world, simulationAccu, simulationTickSize)
+    renderLivings(world, simulationAccu, simulationTickSize, delta)
     renderHands(world)
     renderCursors(world)
 
@@ -167,7 +171,7 @@ class Renderer {
   }
 
   // simulation accu for partial tick
-  def renderLivings(world : World, simulationAccu : Double, simulationTickSize : Double) {
+  def renderLivings(world : World, simulationAccu : Double, simulationTickSize : Double, delta:Double) {
     def flashing(d : Double) : Boolean = (simulationAccu / d).asInstanceOf[Int] % 2 == 1
     for {
       x <- 0 until world.width
@@ -187,13 +191,20 @@ class Renderer {
 
           val at = Vec2f.lerp(lastLocation, currentLocation, simulationAccu / simulationTickSize)
 
+          val smoothTime = 0.25
+
+          val (newSmoothedPosition, newVelocity) = Spring.smooth(e.smoothedPosition, at, e.velocity, smoothTime, delta)
+          e.smoothedPosition = newSmoothedPosition
+          e.velocity = newVelocity
+
+
           val draw = if (e.lastStruckAt == world.tick - 1 && simulationAccu < 0.4) {
             flashing(0.10)
           } else {
             true
           }
           if (draw) {
-            mainBatch.draw(tr, at.x, at.y, 16, 16)
+            mainBatch.draw(tr, e.smoothedPosition.x, e.smoothedPosition.y, tr.getRegionWidth, tr.getRegionHeight)
           }
 
         }
