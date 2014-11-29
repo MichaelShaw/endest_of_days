@@ -9,13 +9,12 @@ import com.badlogic.gdx.controllers.ControllerListener
 import com.badlogic.gdx.controllers.Controllers
 import com.badlogic.gdx.controllers.PovDirection
 import com.badlogic.gdx.math.Vector3
+import hack.game.Direction
 import hack.game.Player
 import hack.game.Vec2i
 import hack.game.World
 
 class InputHandler(world : World) extends InputProcessor with ControllerListener {
-  def movePlayer(player : Int, dx : Int, dy : Int) : Unit = movePlayer(player, Vec2i(dx, dy))
-
   def movePlayer(player : Int, deltaPosition : Vec2i) : Unit = {
     val p : Player = world.players(player)
     val cp = p.cursorPosition + deltaPosition
@@ -45,18 +44,18 @@ class InputHandler(world : World) extends InputProcessor with ControllerListener
 
   override def keyDown(i : Int) : Boolean = {
     i match {
-      case Keys.LEFT => movePlayer(0, -1, 0)
-      case Keys.RIGHT => movePlayer(0, 1, 0)
-      case Keys.DOWN => movePlayer(0, 0, -1)
-      case Keys.UP => movePlayer(0, 0, 1)
+      case Keys.LEFT => movePlayer(0, Direction.w)
+      case Keys.RIGHT => movePlayer(0, Direction.e)
+      case Keys.DOWN => movePlayer(0, Direction.s)
+      case Keys.UP => movePlayer(0, Direction.n)
       case Keys.LEFT_BRACKET => selectTile(0, -1)
       case Keys.RIGHT_BRACKET => selectTile(0, 1)
       case Keys.BACKSLASH => placeTile(0)
 
-      case Keys.A => movePlayer(1, -1, 0)
-      case Keys.D => movePlayer(1, 1, 0)
-      case Keys.S => movePlayer(1, 0, -1)
-      case Keys.W => movePlayer(1, 0, 1)
+      case Keys.A => movePlayer(1, Direction.w)
+      case Keys.D => movePlayer(1, Direction.e)
+      case Keys.S => movePlayer(1, Direction.s)
+      case Keys.W => movePlayer(1, Direction.n)
       case Keys.Z => selectTile(1, -1)
       case Keys.X => selectTile(1, 1)
       case Keys.C => placeTile(1)
@@ -115,10 +114,10 @@ class InputHandler(world : World) extends InputProcessor with ControllerListener
     val p : Int = if (controller == Controllers.getControllers.first()) 0 else 1
 
     i match {
-      case 2 => movePlayer(p, -1, 0)
-      case 3 => movePlayer(p, 1, 0)
-      case 1 => movePlayer(p, 0, -1)
-      case 0 => movePlayer(p, 0, 1)
+      case 0 => movePlayer(p, Direction.n)
+      case 1 => movePlayer(p, Direction.s)
+      case 2 => movePlayer(p, Direction.w)
+      case 3 => movePlayer(p, Direction.e)
       case 8 => selectTile(p, -1)
       case 9 => selectTile(p, 1)
       case 11 => placeTile(p)
