@@ -147,10 +147,14 @@ class Renderer {
   }
 
   def renderPlayerTiles(world : World) : Unit = {
+    for (i <- 0 until world.playerA.tiles.length) {
+      mainBatch.draw(tileAtlas(world.playerA.tiles(i).id), i * tileSizeScreen, -2 * tileSizeScreen, tileSizeScreen, tileSizeScreen)
+    }
 
-    world.playerA.tiles
-
-    mainBatch.draw(tileAtlas(player.tiles(player.tile).id), player.cursorPosition.x * tileSizeScreen, player.cursorPosition.y * tileSizeScreen, tileSizeScreen, tileSizeScreen)
+    for (i <- 0 until world.playerB.tiles.length) {
+      val x : Int = world.width - world.playerB.tiles.length
+      mainBatch.draw(tileAtlas(world.playerB.tiles(i).id), (i + x) * tileSizeScreen, -2 * tileSizeScreen, tileSizeScreen, tileSizeScreen)
+    }
   }
 
   def renderCursors(world : World) : Unit = {
