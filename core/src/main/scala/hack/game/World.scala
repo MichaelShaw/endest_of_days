@@ -1,5 +1,7 @@
 package hack.game
 
+import scala.util.Random
+
 // all state
 
 class MetaLayer(val width : Int, val height : Int, val startingValue : Int) {
@@ -24,6 +26,8 @@ class MetaLayer(val width : Int, val height : Int, val startingValue : Int) {
 }
 
 class World(val width : Int, val height : Int, val startingTile : Tile, val slotsPerTile : Int) {
+  val rand = new Random()
+
   var tick = 0
 
   val timer = new MetaLayer(width, height, 0)
@@ -118,13 +122,20 @@ class World(val width : Int, val height : Int, val startingTile : Tile, val slot
 
   def registerLivingAt(x : Int, y : Int, living : Living) : Int = {
     // will take first available slot, returning that value
+    val spacesFree = spaceAt(x, y)
+    var n = rand.nextInt(spacesFree) // n is a counter that counts down the nth free space
+
     assert(hasSpaceAt(x, y))
     val arr = livings(gridLocation(x, y))
     var sl = 0;
     while (sl < slotsPerTile) {
       if (arr(sl) == null) {
-        arr(sl) = living
-        return sl
+        if(n == 0) { //
+          arr(sl) = living
+          return sl
+        } else {
+          n -= 1
+        }
       }
       sl += 1
     }
