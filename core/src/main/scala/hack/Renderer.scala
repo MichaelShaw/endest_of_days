@@ -3,7 +3,7 @@ package hack
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.g2d.{TextureRegion, SpriteBatch}
 import com.badlogic.gdx.graphics.{Texture, GL20, OrthographicCamera}
-import hack.game.{Vec2i, Tile, World}
+import hack.game.{Vec2f, Vec2i, Tile, World}
 
 /**
  * Created by michael on 29/11/14.
@@ -65,6 +65,10 @@ class Renderer {
     y <- 0 to 2
   } yield Vec2i(4 + x * 8, 4 + y * 8)).toArray // need better logic here
 
+  def screenLocation(loc:Vec2i, slot:Int) : Vec2i = {
+    (loc * tileSizeScreen) + innerTileLocations(slot)
+  }
+
   // simulation accu for partial tick
   def renderLivings(world:World, simulationAccu:Double) {
     for {
@@ -75,12 +79,16 @@ class Renderer {
       var slot = 0; while(slot < world.slotsPerTile) {
         val e = entities(slot)
         if(e != null) {
-          val at = (Vec2i(x, y) * tileSizeScreen) + innerTileLocations(slot)
           val tr:TextureRegion = if(e.playerId == 0) {
             playerAGuy
           } else {
             playerBGuy
           }
+
+          val lastLocation = screenLocation(e.lastLocation, e.lastSlot)
+          val currentLocation = screenLocation(e.currentLocation, e.currentSlot)
+
+          val at = Vec2f.lerp(lastLocation, currentLocation, simulationAccu)
 
           mainBatch.draw(tr,at.x , at.y, 16, 16)
         }

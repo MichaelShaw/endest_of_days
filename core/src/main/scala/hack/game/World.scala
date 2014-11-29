@@ -18,9 +18,9 @@ class World(val width:Int, val height:Int, val startingTile:Tile, val slotsPerTi
   def cells = width * height
   val tiles = Array.fill[Tile](cells) { startingTile }
   def tileAt(v:Vec2i) : Tile = tileAt(v.x, v.y)
-  def tileAt(x:Int, y:Int) : Tile = tiles(tileLocation(x, y))
-  def setTileAt(x:Int, y:Int, tile:Tile) { tiles(tileLocation(x, y)) = tile }
-  def tileLocation(x:Int, y:Int) : Int = {
+  def tileAt(x:Int, y:Int) : Tile = tiles(gridLocation(x, y))
+  def setTileAt(x:Int, y:Int, tile:Tile) { tiles(gridLocation(x, y)) = tile }
+  def gridLocation(x:Int, y:Int) : Int = {
     assert(x < width && x >= 0 && y < height && y >= 0, "asked for out of bounds tile location")
     x * height + y
   }
@@ -39,15 +39,16 @@ class World(val width:Int, val height:Int, val startingTile:Tile, val slotsPerTi
 
   val livings = Array.fill[Array[Living]](cells) { new Array[Living](slotsPerTile) }
 
+  def validLivingsAt(v:Vec2i) = livingsAt(v).filter(_ != null)
   def livingsAt(v:Vec2i) : Array[Living] = livingsAt(v.x, v.y)
-  def livingsAt(x:Int, y:Int) : Array[Living] = livings(tileLocation(x, y))
+  def livingsAt(x:Int, y:Int) : Array[Living] = livings(gridLocation(x, y))
   def hasSpaceAt(v:Vec2i) : Boolean = hasSpaceAt(v.x, v.y)
   def hasSpaceAt(x:Int, y:Int) : Boolean = spaceAt(x, y) > 0
-  def spaceAt(x:Int, y:Int) = livings(tileLocation(x, y)).count(_ == null)
+  def spaceAt(x:Int, y:Int) = livings(gridLocation(x, y)).count(_ == null)
   def registerLivingAt(v:Vec2i, living:Living) : Int = registerLivingAt(v.x, v.y, living)
   def registerLivingAt(x:Int, y:Int, living:Living) : Int = { // will take first available slot, returning that value
     assert(hasSpaceAt(x, y))
-    val arr = livings(tileLocation(x, y))
+    val arr = livings(gridLocation(x, y))
     var sl = 0; while(sl < slotsPerTile) {
       if(arr(sl) == null) {
         arr(sl) = living
@@ -60,7 +61,7 @@ class World(val width:Int, val height:Int, val startingTile:Tile, val slotsPerTi
 
   def unregisterLivingAt(v:Vec2i, living:Living) { unregisterLivingAt(v.x, v.y, living) }
   def unregisterLivingAt(x:Int, y:Int, living:Living) {
-    val arr = livings(tileLocation(x, y))
+    val arr = livings(gridLocation(x, y))
     var sl = 0; while(sl < slotsPerTile) {
       if(arr(sl) == living) {
         arr(sl) = null
@@ -73,6 +74,9 @@ class World(val width:Int, val height:Int, val startingTile:Tile, val slotsPerTi
 
   val player = new Player(0)
   val playerB = new Player(1)
+
+  // floodfills
+  val aggressionFloodFills = new Array[FloodFill](2)
 }
 
 
