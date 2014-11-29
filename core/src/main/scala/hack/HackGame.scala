@@ -1,8 +1,7 @@
 package hack
 
 import com.badlogic.gdx.{Game, Screen}
-import hack.game.Vec2i
-import hack.game.{Arch, Tile, World}
+import hack.game._
 
 class HackGame extends Game {
   override def create() {
@@ -38,19 +37,11 @@ class GameScreen extends Screen {
       w.players(playerId).cursorPosition = v
     }
 
+    WorldGen.terraform(w, seed)
+
     placeHomeBaseBackage(Vec2i(0, w.height / 2), 0)
     placeHomeBaseBackage(Vec2i(w.width - 1, w.height / 2), 1)
 
-    for {
-      x <- 3 to 15
-    } {
-      w.placeTileAt(Vec2i(x, 7), Tile.impassableGround, -1)
-    }
-    for {
-      y <- 4 to top - 3
-    } {
-      w.placeTileAt(Vec2i(3, y), Tile.impassableGround, -1)
-    }
 
     w
   }
@@ -71,16 +62,21 @@ class GameScreen extends Screen {
 
   var running = true
 
+  var seed = 0L
+
   def resetGame() {
     t = 0.0
     simulationAccu = 0.0
+    seed += 1
     world = generateWorld()
     inputHandler.world = world
   }
 
+
   def render(delta : Float) {
-    if(!running) {
+    if(!running || inputHandler.resetWorld) {
       resetGame()
+      inputHandler.resetWorld = false
       running = true
     }
 

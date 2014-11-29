@@ -80,8 +80,8 @@ class Renderer {
     tileRegion(2, 2)
   )
   val gates = Array(
-    tileRegion(5, 1),
-    tileRegion(5, 2)
+    tileRegion(6, 1),
+    tileRegion(6, 2)
   )
 
   // 2 players

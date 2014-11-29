@@ -16,6 +16,8 @@ import hack.game.Vec2i
 import hack.game.World
 
 class InputHandler(var world : World) extends InputProcessor with ControllerListener {
+  var resetWorld:Boolean = false
+
   def movePlayer(player : Int, deltaPosition : Vec2i) : Unit = {
     val p : Player = world.players(player)
     val cp = p.cursorPosition + deltaPosition
@@ -70,6 +72,8 @@ class InputHandler(var world : World) extends InputProcessor with ControllerList
       case Keys.Z => selectTile(1, -1)
       case Keys.X => selectTile(1, 1)
       case Keys.C => placeTile(1)
+
+      case Keys.H => resetWorld = true
 
       case Keys.ESCAPE => app.exit()
 
