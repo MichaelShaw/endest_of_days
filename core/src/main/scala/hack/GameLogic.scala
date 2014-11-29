@@ -207,6 +207,12 @@ case object Draw extends GameOutcome
         enemy.health -= living.arch.attack
         enemy.lastStruckAt = world.tick
 
+        if(enemy.health <= 0 && living.arch.maxHealth >= 10) {
+          world.playMediumHurtSound = true
+        } else if(enemy.arch != Arch.cultist) {
+          world.playSmallHurtSound = true
+        }
+
         for(arch <- enemy.arch.onHitSpawns) {
 //          println("beetle was hit")
           if(world.hasSpaceAt(at)) {

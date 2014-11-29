@@ -15,6 +15,7 @@ class GameScreen extends Screen {
 
   var world = generateWorld()
   val renderer = new Renderer()
+  val audio = new AudioRenderer()
 
   val inputHandler = new InputHandler(world)
   inputHandler.setAsListener()
@@ -102,18 +103,43 @@ class GameScreen extends Screen {
       simulationAccu -= simulationTickEvery
     }
 
-    GameLogic.gameFinished(world) match {
+    val playFinishedSound = GameLogic.gameFinished(world) match {
       case Some(Draw) =>
         println("DRAW")
         running = false
+        false
       case Some(PlayerWon(playerId)) =>
         println(s"Player $playerId won")
         running = false
+        true
       case None =>
-
+        false
     }
 
     renderer.render(world, simulationAccu, simulationTickEvery, delta)
+
+    // SOUND
+    if(inputHandler.placeTileSound) {
+      audio.placeTile()
+      inputHandler.placeTileSound = false
+    }
+    if(inputHandler.triggerSound) {
+      audio.shoulderButton()
+      inputHandler.triggerSound = false
+    }
+    if(world.playMediumHurtSound) {
+      audio.mediumHurt()
+    } else if(world.playSmallHurtSound) {
+      audio.smallHurt()
+    }
+    world.playMediumHurtSound = false
+    world.playSmallHurtSound = false
+    if(playFinishedSound) {
+      audio.finalDestruction()
+    } else if(world.playBuildingDestroyed) {
+      audio.mediumDestruction()
+    }
+    world.playBuildingDestroyed = false
   }
 
   def resize(width : Int, height : Int) {

@@ -30,6 +30,10 @@ class World(val width : Int, val height : Int, val startingTile : Tile, val slot
 
   var tick = 0
 
+  var playSmallHurtSound = false
+  var playMediumHurtSound = false
+
+  var playBuildingDestroyed = false
 
   def ticksPerPlace = 5
   var placementTimer = ticksPerPlace

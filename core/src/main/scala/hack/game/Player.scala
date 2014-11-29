@@ -23,8 +23,8 @@ class Player(val id : Int, var cursorPosition : Vec2i, var tile : Int, val terra
     for {
       n <- 1 to 100
     } {
-      tileQueue += (terrainTiles ++ factoryTiles)
-//      pushStandard()
+//      tileQueue += (terrainTiles ++ factoryTiles)
+      pushStandard()
     }
   }
 
@@ -43,8 +43,10 @@ class Player(val id : Int, var cursorPosition : Vec2i, var tile : Int, val terra
   def availableTiles = tileQueue(placedTiles)
 
   def handlePlacement() {
-    tile = 0
     placedTiles += 1
+    if(tile > availableTiles.length) {
+      tile = availableTiles.length - 1 // clamp it in case the amount of tiles decreased
+    }
   }
 
   def currentTile = availableTiles(tile)

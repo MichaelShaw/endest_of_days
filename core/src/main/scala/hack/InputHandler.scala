@@ -18,6 +18,9 @@ import hack.game.World
 class InputHandler(var world : World) extends InputProcessor with ControllerListener {
   var resetWorld:Boolean = false
 
+  var placeTileSound:Boolean = false
+  var triggerSound:Boolean = false
+
   def movePlayer(player : Int, deltaPosition : Vec2i) : Unit = {
     val p : Player = world.players(player)
     val cp = p.cursorPosition + deltaPosition
@@ -32,6 +35,7 @@ class InputHandler(var world : World) extends InputProcessor with ControllerList
     val t = p.tile + dt
 
     if (t >= 0 && t < p.availableTiles.size) {
+      triggerSound = true
       p.tile = t
     }
   }
@@ -44,6 +48,7 @@ class InputHandler(var world : World) extends InputProcessor with ControllerList
       val t : Tile = p.currentTile
 
       if (world.canPlaceTileAt(p.cursorPosition, t, p.id)) {
+        placeTileSound = true
         p.handlePlacement()
         world.placeTileAt(p.cursorPosition, t, p.id)
       }
