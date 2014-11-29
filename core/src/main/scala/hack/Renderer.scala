@@ -27,9 +27,11 @@ class Renderer {
   val tileAtlas = new Array[TextureRegion](Tile.count)
   tileAtlas(Tile.standardGround.id) = tileRegion(0, 0)
   tileAtlas(Tile.impassableGround.id) = tileRegion(1, 0)
+  tileAtlas(Tile.playerAFactory.id) = tileRegion(2, 0)
+  tileAtlas(Tile.playerBFactory.id) = tileRegion(3, 0)
 
   def render(world:World) {
-    camera.position.set(world.width / 2 * tileSizeScreen, world.height/ 2 * tileSizeScreen, 0 )
+    camera.position.set(world.width / 2 * tileSizeScreen, world.height / 2 * tileSizeScreen, 0 )
     camera.update()
 
     Gdx.gl.glClearColor(0, 0, 0, 1)

@@ -22,11 +22,13 @@ class GameScreen extends Screen {
   val renderer = new Renderer()
 
   def generateWorld() : World = {
-    val w = new World(16, 16, Tile.standardGround)
+    val w = new World(16, 16, Tile.standardGround, 9)
 
+    w.setTileAt(0, 0, Tile.playerAFactory)
     w.setTileAt(1, 1, Tile.impassableGround)
 
     w.setTileAt(14, 14, Tile.impassableGround)
+    w.setTileAt(15, 15, Tile.playerBFactory)
 
     w
   }

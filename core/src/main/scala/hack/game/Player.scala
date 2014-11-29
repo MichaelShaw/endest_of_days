@@ -5,6 +5,6 @@ package hack.game
  */
 
 
-class Player(playerId:Int) { // player specific state
+class Player(val id:Int) { // player specific state
 
 }
