@@ -5,6 +5,7 @@ package hack
  */
 
 import com.badlogic.gdx.{Screen, Game}
+import hack.game.{Tile, World}
 
 class HackGame extends Game {
   override def create() {
@@ -13,8 +14,11 @@ class HackGame extends Game {
 }
 
 class GameScreen extends Screen {
+  // static initialization hack
+  val hck = (Tile.impassableGround)
+
   val inputHandler = new InputHandler()
-  val world = new World()
+  val world = new World(16, 16, Tile.standardGround)
   val renderer = new Renderer()
 
   def show() = {}
@@ -35,7 +39,8 @@ class GameScreen extends Screen {
 
     if(simulationAccu >= simulationTickEvery) {
       GameLogic.updateWorld(world)
-      t -= simulationTickEvery
+      world.tick += 1
+      simulationAccu -= simulationTickEvery
     }
 
     // handle input ... modifies world

@@ -1,5 +1,7 @@
 package hack
 
+import hack.game.World
+
 /**
  * Created by michael on 29/11/14.
  */
