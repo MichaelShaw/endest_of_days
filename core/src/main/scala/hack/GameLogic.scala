@@ -199,7 +199,7 @@ case object Draw extends GameOutcome
           enemy.health -= damage
           enemy.lastStruckAt = world.tick
 
-          val partId = if(enemy.playerId == 0) {
+          val partId = if(enemy.playerId == 0) { // blue
             Particle.blueStuff
           } else {
             Particle.redStuff

@@ -173,6 +173,7 @@ class Renderer {
   def renderParticles(world:World): Unit = {
     for(p <- world.particles) {
       val tr = particleRegions(p.partId)
+//      println("rendering part " + p.partId)
       mainBatch.draw(tr, p.at.x, p.at.y, tr.getRegionWidth * upScale, tr.getRegionHeight * upScale)
     }
   }
