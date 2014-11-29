@@ -42,6 +42,7 @@ case class Arch(id:Int, name:String, attack:Int, maxHealth:Int,
                 explodeOnAttack:Boolean = false, aeDamage:Int = 0,
                 canHelpSummon:Boolean = false,
                 ticksToMove:Int = 1,
+                instakillBuildings:Boolean = false,
                 onHitSpawns:Option[Arch] = None) {
 
 }
@@ -50,11 +51,11 @@ object Arch {
   val cultist = Arch(0, "cultist", 1, 2, canHelpSummon = true)
 
   val imp = Arch(1, "imp", attack = 1, maxHealth = 4)
-  val worm = Arch(2, "worm", attack = 5, maxHealth = 6, ticksToMove = 2)
+  val worm = Arch(2, "worm", attack = 5, maxHealth = 6, ticksToMove = 2, instakillBuildings = true)
   val fex = Arch(3, "fex", attack = 4, maxHealth = 14, aeDamage = 1)
 
   val captain = Arch(4, "captain", attack = 3, maxHealth = 10)
-  val eyeBall = Arch(5, "eye_ball", attack = 2, maxHealth = 4)
+  val eyeBall = Arch(5, "eye_ball", attack = 2, maxHealth = 6)
 
   val smallBeetle = Arch(6, "small_beetle", attack = 1, maxHealth = 2)
   val bigBeetle = Arch(7, "big_beetle", attack = 1, maxHealth = 12, onHitSpawns = Some(smallBeetle))

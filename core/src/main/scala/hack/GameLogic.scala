@@ -250,7 +250,7 @@ case object Draw extends GameOutcome
     def strikeBuilding(at: Vec2i): Unit = {
       val healthRemaining = world.health.get(at) - living.arch.attack
 
-      if (healthRemaining <= 0) {
+      if (healthRemaining <= 0 || living.arch.instakillBuildings) {
         world.placeTileAt(at, Tile.standardGround, -1)
       } else {
         world.health.set(at, healthRemaining)

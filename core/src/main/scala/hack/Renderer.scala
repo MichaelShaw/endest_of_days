@@ -126,7 +126,7 @@ class Renderer {
     mainBatch.begin()
     mainBatch.setShader(toFrameBufferShader)
 
-    mainBatch.enableBlending()
+    mainBatch.disableBlending()
 
 
     renderTiles(world)
@@ -230,7 +230,7 @@ class Renderer {
           e.velocity = newVelocity
 
 
-          val flash = if (e.lastStruckAt == world.tick - 1 && simulationAccu < 0.4) {
+          val flash = if (e.lastStruckAt == world.tick && simulationAccu < 0.4) {
             flashing(0.10)
           } else {
             false

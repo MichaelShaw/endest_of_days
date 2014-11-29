@@ -46,7 +46,7 @@ object Tile {
   val cultistSpawner = register(new Factory(nextId, "cultist_spawner", factoryHealth, produceEveryNTicks = 2, produceArch = Arch.cultist, requiredSummoners = 0))
 
   val impSpawner = register(new Factory(nextId, "imp_spawner", factoryHealth, produceEveryNTicks = 1, produceArch = Arch.imp, requiredSummoners = 5))
-  val wormSpawner = register(new Factory(nextId, "worm_spawner", factoryHealth, produceEveryNTicks = 4, produceArch = Arch.worm, requiredSummoners = 6))
+  val wormSpawner = register(new Factory(nextId, "worm_spawner", factoryHealth, produceEveryNTicks = 7, produceArch = Arch.worm, requiredSummoners = 6))
   val fexSpawner = register(new Factory(nextId, "fex_spawner", factoryHealth, produceEveryNTicks = 12, produceArch = Arch.fex, requiredSummoners = 7))
 
   val captainSpawner = register(new Factory(nextId, "captain_spawner", factoryHealth, produceEveryNTicks = 3, produceArch = Arch.captain, requiredSummoners = 5))
