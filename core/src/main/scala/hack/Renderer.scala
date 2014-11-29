@@ -26,7 +26,14 @@ class Renderer {
   tileAtlas(Tile.standardGround.id) = tileRegion(0, 0)
   tileAtlas(Tile.impassableGround.id) = tileRegion(1, 0)
   tileAtlas(Tile.playerASoldierFactory.id) = tileRegion(3, 0)
+  tileAtlas(Tile.playerACaptainFactory.id) = tileRegion(4, 0)
+  tileAtlas(Tile.playerAAEFactory.id) = tileRegion(5, 0)
+  tileAtlas(Tile.playerADefenderFactory.id) = tileRegion(6, 0)
+
   tileAtlas(Tile.playerBSoldierFactory.id) = tileRegion(3, 1)
+  tileAtlas(Tile.playerBCaptainFactory.id) = tileRegion(4, 1)
+  tileAtlas(Tile.playerBAEFactory.id) = tileRegion(5, 1)
+  tileAtlas(Tile.playerBDefenderFactory.id) = tileRegion(6, 1)
 
   val playerA = tileRegion(2, 0)
   val playerB = tileRegion(2, 1)

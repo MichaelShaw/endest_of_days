@@ -16,7 +16,9 @@ class MetaLayer(val width : Int, val height : Int) {
     0
   }
 
-  def get(v : Vec2i) : Int = meta(gridLocation(v))
+  def get(v : Vec2i) : Int = get(v.x, v.y)
+
+  def get(x:Int, y:Int) : Int = meta(gridLocation(x, y))
 
   def set(v : Vec2i, m : Int) {
     set(v.x, v.y, m)
@@ -30,7 +32,8 @@ class MetaLayer(val width : Int, val height : Int) {
 class World(val width : Int, val height : Int, val startingTile : Tile, val slotsPerTile : Int) {
   var tick = 0
 
-  val meta = new MetaLayer(width, height)
+  val timer = new MetaLayer(width, height)
+  val health = new MetaLayer(width, height)
 
   def canPlaceTileAt(v : Vec2i, tile : Tile) : Boolean = canPlaceTileAt(v.x, v.y, tile)
 
@@ -46,11 +49,16 @@ class World(val width : Int, val height : Int, val startingTile : Tile, val slot
     if (canPlaceTileAt(x, y, tile)) {
       setTileAt(x, y, tile)
 
-      val metaValue : Int = tile match {
+      val startingHealth : Int = tile match {
         case f : Factory => f.startingHealth
         case _ => 0
       }
-      meta.set(x, y, metaValue)
+      health.set(x, y, startingHealth)
+      val startingTimer :Int = tile match {
+        case f:Factory => f.produceEveryNTicks
+        case _ => 0
+      }
+      timer.set(x, y, startingTimer)
     }
   }
 

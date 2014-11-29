@@ -27,20 +27,14 @@ object GameLogic {
   }
 
   def calculateFloodFills(world:World) {
-    val playerAGoals = matchingTiles(world, tile => tile == Tile.playerBSoldierFactory)
-    val playerAFloodFill = FloodFill.produceFor(playerAGoals, world)
-    world.aggressionFloodFills(0) = playerAFloodFill
-
-
-//    playerAFloodFill.printDebug("player A aggression")
-
-
-    val playerBGoals = matchingTiles(world, tile => tile == Tile.playerASoldierFactory)
-    val playerBFloodfill = FloodFill.produceFor(playerBGoals, world)
-    world.aggressionFloodFills(1) = playerBFloodfill
-
-//    playerBFloodfill.printDebug("player B aggression")
-
+    for(player <- world.players) {
+      val goals = matchingTiles(world, {
+        case f:Factory => f.playerId != player.id // opponent factory
+        case _ => false
+      })
+      val floodFill = FloodFill.produceFor(goals, world)
+      world.aggressionFloodFills(player.id) = floodFill
+    }
   }
 
   def updateWorld(world:World) { // update worlds by a tick ... maybe accumulates events
@@ -56,8 +50,15 @@ object GameLogic {
     } {
       val tile = world.tileAt(x, y)
       tile match {
-        case Tile.playerASoldierFactory => spawnNear(world, x, y, world.playerA.id, Arch.soldier)
-        case Tile.playerBSoldierFactory => spawnNear(world, x, y, world.playerB.id, Arch.soldier)
+        case f:Factory =>
+          val timer = world.timer.get(x, y)
+          if(timer == 1) {
+            // spawn time
+            spawnNear(world, x, y, f.playerId, f.produceArch)
+            world.timer.set(x, y, f.produceEveryNTicks)
+          } else {
+            world.timer.set(x, y, timer - 1)
+          }
         case _ =>
       }
     }
@@ -124,12 +125,12 @@ object GameLogic {
       stampActionDuration(1)
     }
     def strikeBuilding(at:Vec2i): Unit = {
-      val healthRemaining = world.meta.get(at) - living.arch.attack
+      val healthRemaining = world.health.get(at) - living.arch.attack
 
       if(healthRemaining <= 0) {
         world.placeTileAt(at, Tile.standardGround)
       } else {
-        world.meta.set(at, healthRemaining)
+        world.health.set(at, healthRemaining)
       }
 
       stampActionDuration(1)
@@ -151,7 +152,7 @@ object GameLogic {
       val neighbour = living.currentLocation + dir
       if(ff.inBounds(neighbour)) {
         world.tileAt(neighbour) match {
-          case f:Factory => f.playerId != living.playerId && world.meta.get(neighbour) > 0 // meta is health channel for factory
+          case f:Factory => f.playerId != living.playerId && world.health.get(neighbour) > 0 // meta is health channel for factory
           case _ => false
         }
       } else {
