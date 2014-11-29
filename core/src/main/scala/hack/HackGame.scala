@@ -14,7 +14,7 @@ class GameScreen extends Screen {
   // static initialization hack
   val hck = (Tile.impassableGround, Arch.soldier)
 
-  val world = generateWorld()
+  var world = generateWorld()
   val renderer = new Renderer()
 
   val inputHandler = new InputHandler(world)
@@ -28,18 +28,22 @@ class GameScreen extends Screen {
 //    w.placeTileAt(10, 15, Tile.playerBAEFactory)
 //    w.placeTileAt(12, 15, Tile.playerBDefenderFactory)
 
-    w.placeTileAt(Vec2i(6, 15), Tile.captainFactory, 1)
+    w.placeTileAt(Vec2i(8, 15), Tile.captainFactory, 1)
+
+//    w.placeTileAt(Vec2i(8, 11), Tile.gate, 1)
 
     w.placeTileAt(Vec2i(7, 7), Tile.impassableGround, -1)
-    w.placeTileAt(Vec2i(8, 7), Tile.impassableGround, -1)
+//    w.placeTileAt(Vec2i(8, 7), Tile.impassableGround, -1)
     w.placeTileAt(Vec2i(9, 7), Tile.impassableGround, -1)
+
+//    w.placeTileAt(Vec2i(8, 3), Tile.gate, 0)
 
 //    w.placeTileAt(6, 0, Tile.playerASoldierFactory)
 //    w.placeTileAt(8, 0, Tile.playerACaptainFactory)
 //    w.placeTileAt(10, 0, Tile.playerAAEFactory)
 //    w.placeTileAt(12, 0, Tile.playerADefenderFactory)
 
-    w.placeTileAt(Vec2i(6, 0), Tile.soldierFactory, 0)
+    w.placeTileAt(Vec2i(8, 0), Tile.soldierFactory, 0)
 
     w
   }
@@ -56,11 +60,23 @@ class GameScreen extends Screen {
 
   var t = 0.0
   var simulationAccu = 0.0
-  val simulationTickEvery = 1.0 // every 1 second
+  val simulationTickEvery = 0.05 // every 1 second
 
   var running = true
 
+  def resetGame() {
+    t = 0.0
+    simulationAccu = 0.0
+    world = generateWorld()
+  }
+
   def render(delta : Float) {
+    if(!running) {
+      resetGame()
+      running = true
+    }
+
+
     t += delta
     if(running) {
       simulationAccu += delta
@@ -85,7 +101,7 @@ class GameScreen extends Screen {
 
     }
 
-    renderer.render(world, simulationAccu)
+    renderer.render(world, simulationAccu, simulationTickEvery)
   }
 
   def resize(width : Int, height : Int) {

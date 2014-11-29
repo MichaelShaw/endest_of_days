@@ -36,16 +36,18 @@ class Renderer {
   tileAtlas(Tile.aeFactory.id) = tileRegion(4, 0)
   tileAtlas(Tile.defenderFactory.id) = tileRegion(5, 0)
 
+  tileAtlas(Tile.gate.id) = tileRegion(6, 0)
+
   val ownedTileAtlas:Array[Array[TextureRegion]] = (1 to 2).map { n =>
-    (0 to 5).map { t =>
+    (0 to 6).map { t =>
       tileRegion(t, n)
     }.toArray
   }.toArray
 
   // 2 players
 
-  val playerACursor = tileRegion(6, 1)
-  val playerBCursor = tileRegion(6, 2)
+  val playerACursor = tileRegion(0, 3)
+  val playerBCursor = tileRegion(0, 4)
 
   // soldier, captain, ae, defender
 
@@ -63,7 +65,7 @@ class Renderer {
     new TextureRegion(tileTexture, 240, 80, 16, 16)
   )
 
-  def render(world : World, simulationAccu : Double) {
+  def render(world : World, simulationAccu : Double, simulationTickSize:Double) {
     camera.position.set(world.width / 2 * tileSizeScreen, world.height / 2 * tileSizeScreen, 0)
     camera.update()
 
@@ -74,7 +76,7 @@ class Renderer {
     mainBatch.begin()
 
     renderTiles(world)
-    renderLivings(world, simulationAccu)
+    renderLivings(world, simulationAccu, simulationTickSize)
     renderCursors(world)
 
     mainBatch.end()
@@ -108,7 +110,7 @@ class Renderer {
   }
 
   // simulation accu for partial tick
-  def renderLivings(world : World, simulationAccu : Double) {
+  def renderLivings(world : World, simulationAccu : Double, simulationTickSize:Double) {
     def flashing(d : Double) : Boolean = (simulationAccu / d).asInstanceOf[Int] % 2 == 1
     for {
       x <- 0 until world.width
@@ -126,7 +128,7 @@ class Renderer {
           val lastLocation = screenLocation(e.lastLocation, e.lastSlot)
           val currentLocation = screenLocation(e.currentLocation, e.currentSlot)
 
-          val at = Vec2f.lerp(lastLocation, currentLocation, simulationAccu)
+          val at = Vec2f.lerp(lastLocation, currentLocation, simulationAccu / simulationTickSize)
 
           val draw = if (e.lastStruckAt == world.tick - 1 && simulationAccu < 0.4) {
             flashing(0.10)

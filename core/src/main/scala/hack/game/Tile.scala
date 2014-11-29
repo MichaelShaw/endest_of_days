@@ -17,6 +17,8 @@ class Factory(id:Int,
               val produceEveryNTicks:Int = 1,
               val produceArch:Arch) extends Tile(id, name, canBeWalkedOn = false)
 
+class Gate(id:Int, name:String) extends Tile(id, name, canBeWalkedOn = true)
+
 object Tile {
   // fuck, do we even need ids if we're never going to serialize *anything*
   val tiles = new Array[Tile](256)
@@ -43,5 +45,7 @@ object Tile {
   val aeFactory = register(new Factory(nextId, "ae_factory", factoryHealth, produceEveryNTicks = 5, produceArch = Arch.ae))
   val defenderFactory = register(new Factory(nextId, "defender_factory", factoryHealth, produceEveryNTicks = 2, produceArch = Arch.defender))
   val factoryTiles = Array(soldierFactory, captainFactory, aeFactory, defenderFactory)
+
+  val gate = register(new Gate(nextId, "gate"))
 
 }

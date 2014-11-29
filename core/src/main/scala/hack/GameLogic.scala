@@ -7,7 +7,7 @@ import collection.mutable
  * Created by michael on 29/11/14.
  */
 
-trait GameOutcome
+sealed trait GameOutcome
 case class PlayerWon(playerId:Int) extends GameOutcome
 case object Draw extends GameOutcome
 
@@ -76,7 +76,7 @@ case object Draw extends GameOutcome
    */
 
   def updateWorld(world:World) { // update worlds by a tick ... maybe accumulates events
-    println(s"game update tick ${world.tick}")
+//    println(s"game update tick ${world.tick}")
 
     // calculate floodfillds
     calculateFloodFills(world)
@@ -89,6 +89,11 @@ case object Draw extends GameOutcome
       val v = Vec2i(x, y)
       val tile = world.tileAt(v)
       tile match {
+        case g:Gate =>
+          val time = world.timer.get(v)
+          if(time > 0) {
+            world.timer.set(v, time - 1) // countdown gate timer
+          }
         case f:Factory =>
           val v = Vec2i(x, y)
           val timer = world.timer.get(v)
@@ -226,8 +231,23 @@ case object Draw extends GameOutcome
       val neighbour = living.currentLocation + sample(directionsWithEnemyBuildings)
       strikeBuilding(neighbour)
     } else if(descendingDirections.nonEmpty) {
-      val neighbour = living.currentLocation + sample(descendingDirections)
-      moveTo(neighbour)
+      // if we're at an owned gate
+      if(world.tileAt(living.currentLocation) == Tile.gate && world.owned.get(living.currentLocation) == living.playerId) {
+        // if the tile has space and timer is down, don't progress
+        if(world.hasSpaceAt(living.currentLocation) && world.timer.get(living.currentLocation) == 0) { // we're full and timer is down
+          idle()
+        } else {
+          if(!world.hasSpaceAt(living.currentLocation)) { // if it was full ... and we moved, chalk up the timer so others can move
+            world.timer.set(living.currentLocation, 2) // set timer to 2 ticks
+          }
+
+          val neighbour = living.currentLocation + sample(descendingDirections)
+          moveTo(neighbour)
+        }
+      } else {
+        val neighbour = living.currentLocation + sample(descendingDirections)
+        moveTo(neighbour)
+      }
     } else {
       idle()
     }
