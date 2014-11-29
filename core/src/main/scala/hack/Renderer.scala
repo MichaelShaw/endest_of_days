@@ -115,7 +115,6 @@ class Renderer {
     camera.position.set(world.width / 2 * Renderer.tileSizeScreen, world.height / 2 * Renderer.tileSizeScreen, 0)
     camera.update()
 
-
     fbo.begin()
 
     Gdx.gl.glClearColor(0, 0, 0, 1)
