@@ -9,10 +9,13 @@ import com.badlogic.gdx.graphics.glutils.{ShaderProgram, FrameBuffer}
 import com.badlogic.gdx.math.Matrix4
 import hack.game._
 
-
 object Renderer {
-  val pixelsPerTile = 64
+  val tileSizeTexture = 32
+  val upScale = 1
+  val tileSizeScreen = tileSizeTexture * upScale
+  val pixelsPerTile = tileSizeScreen
 }
+
 class Renderer {
   val camera = new OrthographicCamera(Gdx.graphics.getWidth, Gdx.graphics.getHeight)
   val font = new BitmapFont() // Gdx.files.internal("data/arial-15.fnt"),false)
@@ -49,12 +52,8 @@ class Renderer {
   val mainBatch = new SpriteBatch
   val postBatch = new SpriteBatch
 
-  val tileSizeTexture = 32
-  val upScale = 2
-  val tileSizeScreen = tileSizeTexture * upScale // 2x upscale
-
   // from top left
-  def tileRegion(x : Int, y : Int) = new TextureRegion(tileTexture, x * tileSizeTexture, y * tileSizeTexture, tileSizeTexture, tileSizeTexture)
+  def tileRegion(x : Int, y : Int) = new TextureRegion(tileTexture, x * Renderer.tileSizeTexture, y * Renderer.tileSizeTexture, Renderer.tileSizeTexture, Renderer.tileSizeTexture)
 
   val terrainAtlas = Array.tabulate[Array[TextureRegion]](2) { n =>
     val arr = new Array[TextureRegion](Tile.count)
@@ -113,7 +112,7 @@ class Renderer {
   )
 
   def render(world : World, delta:Double) {
-    camera.position.set(world.width / 2 * tileSizeScreen, world.height / 2 * tileSizeScreen, 0)
+    camera.position.set(world.width / 2 * Renderer.tileSizeScreen, world.height / 2 * Renderer.tileSizeScreen, 0)
     camera.update()
 
 
@@ -174,7 +173,7 @@ class Renderer {
     for(p <- world.particles) {
       val tr = particleRegions(p.partId)
 //      println("rendering part " + p.partId)
-      mainBatch.draw(tr, p.at.x, p.at.y, tr.getRegionWidth * upScale, tr.getRegionHeight * upScale)
+      mainBatch.draw(tr, p.at.x, p.at.y, tr.getRegionWidth * Renderer.upScale, tr.getRegionHeight * Renderer.upScale)
     }
   }
 
@@ -185,7 +184,7 @@ class Renderer {
     } {
       val v = Vec2i(x, y)
       val textureRegion = trForTile(world.tileAt(v), world.owned.get(v))
-      mainBatch.draw(textureRegion, x * tileSizeScreen, y * tileSizeScreen, tileSizeScreen, tileSizeScreen)
+      mainBatch.draw(textureRegion, x * Renderer.tileSizeScreen, y * Renderer.tileSizeScreen, Renderer.tileSizeScreen, Renderer.tileSizeScreen)
     }
   }
 
@@ -251,11 +250,11 @@ class Renderer {
           mainBatch.setColor(colourToBind)
 
           if(e.velocity.x > 0.0) {
-            mainBatch.draw(tr, e.smoothedPosition.x, e.smoothedPosition.y, tr.getRegionWidth * upScale, tr.getRegionHeight * upScale)
+            mainBatch.draw(tr, e.smoothedPosition.x, e.smoothedPosition.y, tr.getRegionWidth * Renderer.upScale, tr.getRegionHeight * Renderer.upScale)
           } else {
             // public void draw(Texture texture, float x, float y, float width, float height, float u, float v, float u2, float v2) {
 //              mainBatch.draw(tr, e.smoothedPosition.x, e.smoothedPosition.y, tr.getRegionWidth * upScale, tr.getRegionHeight * upScale)
-            mainBatch.draw(tileTexture, e.smoothedPosition.x, e.smoothedPosition.y, tr.getRegionWidth * upScale, tr.getRegionHeight * upScale,
+            mainBatch.draw(tileTexture, e.smoothedPosition.x, e.smoothedPosition.y, tr.getRegionWidth * Renderer.upScale, tr.getRegionHeight * Renderer.upScale,
               tr.getU2, tr.getV2, tr.getU, tr.getV)
           }
         }
@@ -272,7 +271,7 @@ class Renderer {
           // player is up to date and it's the first simulation tick
           val progress = Bias.getBias(Bias.clamp(world.simulationAccu * 2 / world.simulationTickEvery), 0.75)
 //          println("progress -> " + progress)
-          ((1 - progress) * -tileSizeScreen).asInstanceOf[Int]
+          ((1 - progress) * -Renderer.tileSizeScreen).asInstanceOf[Int]
         } else {
           0
         }) - 15
@@ -283,16 +282,16 @@ class Renderer {
           val x : Int = t + xOffset
           val y =  -1
 
-          mainBatch.draw(trForTile(player.availableTiles(t), player.id), x * tileSizeScreen, y * tileSizeScreen + yOffset, tileSizeScreen, tileSizeScreen)
+          mainBatch.draw(trForTile(player.availableTiles(t), player.id), x * Renderer.tileSizeScreen, y * Renderer.tileSizeScreen + yOffset, Renderer.tileSizeScreen, Renderer.tileSizeScreen)
 
           if (t == player.tile) {
-            mainBatch.draw(cursorTextureRegion, x * tileSizeScreen, y * tileSizeScreen + yOffset, tileSizeScreen, tileSizeScreen)
+            mainBatch.draw(cursorTextureRegion, x * Renderer.tileSizeScreen, y * Renderer.tileSizeScreen + yOffset, Renderer.tileSizeScreen, Renderer.tileSizeScreen)
           }
         }
       }
     }
 
-    font.draw(mainBatch, world.placementTimer.toString, world.width * tileSizeScreen / 2, -50)
+    font.draw(mainBatch, world.placementTimer.toString, world.width * Renderer.tileSizeScreen / 2, -50)
 
     renderHand(world.playerA, playerACursor, 0)
     renderHand(world.playerB, playerBCursor, world.width - world.playerB.availableTiles.length)
@@ -301,9 +300,9 @@ class Renderer {
   def renderCursors(world : World) : Unit = {
     def renderCursor(player : Player, cursorTextureRegion : TextureRegion) : Unit = {
       if(player.canPlaceTiles(world)) {
-        mainBatch.draw(trForTile(player.currentTile, player.id), player.cursorPosition.x * tileSizeScreen, player.cursorPosition.y * tileSizeScreen, tileSizeScreen, tileSizeScreen)
+        mainBatch.draw(trForTile(player.currentTile, player.id), player.cursorPosition.x * Renderer.tileSizeScreen, player.cursorPosition.y * Renderer.tileSizeScreen, Renderer.tileSizeScreen, Renderer.tileSizeScreen)
       }
-      mainBatch.draw(cursorTextureRegion, player.cursorPosition.x * tileSizeScreen, player.cursorPosition.y * tileSizeScreen, tileSizeScreen, tileSizeScreen)
+      mainBatch.draw(cursorTextureRegion, player.cursorPosition.x * Renderer.tileSizeScreen, player.cursorPosition.y * Renderer.tileSizeScreen, Renderer.tileSizeScreen, Renderer.tileSizeScreen)
     }
 
     renderCursor(world.playerA, playerACursor)
