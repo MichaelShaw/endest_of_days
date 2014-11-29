@@ -30,7 +30,7 @@ object AI {
         player.availableTiles.sortBy {
           case f:Factory => -200 + rand.nextInt(25)
           case g:Gate => -100
-          case _ => 0
+          case _ => 0 + rand.nextInt(25)
         }.find { tile =>
           attemptToPlace(tile, player).isDefined
         }.foreach { tile =>
@@ -61,12 +61,24 @@ object AI {
 
   // THIS NEEDS TO BE FLOODFILL BASED, DESCEND THE FLOODFILL (OR ITS USELESS)
   def placeGate(world:World, player:Player) : Option[Vec2i] = {
+    val homeBase = GameLogic.matchingTiles(world, { (x, y) =>
+      val v = Vec2i(x, y)
+      world.tileAt(v) == Tile.cultistSpawner && world.owned.get(v) == player.id
+    })
+
     val canPlaceLegally = GameLogic.matchingTiles(world, { (x, y) =>
       val v = Vec2i(x, y)
       world.canPlaceTileAt(v, Tile.gate, player.id) && isNotAGateOrFactory(world.tileAt(v))
     })
 
-    GameLogic.sampleMaybe(canPlaceLegally.toArray)
+    homeBase.headOption.flatMap { homeBase =>
+      val path = world.aggressionFloodFills(player.id).descendFrom(homeBase)
+      println("full descent path to enemy factory " + path)
+      val optionsOnPath = path.drop(2).take(3)
+      optionsOnPath.find { v =>
+        canPlaceLegally.contains(v)
+      }
+    }
   }
 
   def placeMountain(world:World, player:Player ) : Option[Vec2i] = {

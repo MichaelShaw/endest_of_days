@@ -1,13 +1,42 @@
 package hack.game
 
+import hack.GameLogic
+
 import collection.mutable
+import scala.util.Random
 
 /**
  * Created by michael on 29/11/14.
  */
 class FloodFill(val width:Int, val height:Int) {
+  val rand = new Random()
   def cells = width * height
   val distance = Array.fill[Int](cells) { FloodFill.unreachable }
+  def descendFrom(v:Vec2i) : Seq[Vec2i] = {
+    val steps = new mutable.ArrayBuffer[Vec2i]()
+    steps += v
+
+
+    var at = v
+
+    while(get(at) > 0) {
+      val validDirections = Direction.directions.filter { dir =>
+        val neighbour = at + dir
+        inBounds(neighbour) && get(neighbour) < get(at)
+      }
+      GameLogic.sampleMaybe(validDirections) match {
+        case Some(dir) =>
+          val neighbour = at + dir
+          steps += neighbour
+          at = neighbour
+        case None =>
+          return steps
+      }
+    }
+
+    steps
+  }
+
   def gridLocation(v:Vec2i) : Int = gridLocation(v.x, v.y)
   def gridLocation(x:Int, y:Int) : Int = {
     assert(x < width && x >= 0 && y < height && y >= 0, "asked for out of bounds tile location")

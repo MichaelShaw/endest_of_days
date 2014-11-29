@@ -34,7 +34,7 @@ class AudioRenderer {
   }
 
   def mediumHurt() {
-    smallHurtSound.play(randomPitch(0.2f), randomPitch(0.2f), 0f)
+    smallHurtSound.play(0.2f, randomPitch(0.2f), 0f)
   }
 
   def mediumDestruction() {
