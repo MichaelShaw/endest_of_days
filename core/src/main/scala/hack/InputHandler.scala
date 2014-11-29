@@ -10,11 +10,8 @@ import com.badlogic.gdx.controllers.Controllers
 import com.badlogic.gdx.controllers.PovDirection
 import com.badlogic.gdx.math.Vector3
 import hack.game.Player
-import hack.game.Tile
 import hack.game.Vec2i
 import hack.game.World
-
-import scala.util.Random
 
 class InputHandler(world : World) extends InputProcessor with ControllerListener {
   def movePlayer(player : Int, dx : Int, dy : Int) : Unit = movePlayer(player, Vec2i(dx, dy))
@@ -34,10 +31,8 @@ class InputHandler(world : World) extends InputProcessor with ControllerListener
 
   def placeTile(player : Int) : Unit = {
     val p : Player = world.players(player)
-    val ts : Array[Tile] = Tile.groundTiles
-    val t : Tile = ts(Random.nextInt(ts.size))
 
-    world.placeTileAt(p.cursorPosition, t)
+    world.placeTileAt(p.cursorPosition, p.nextTile)
   }
 
   def setAsListener() : Unit = {

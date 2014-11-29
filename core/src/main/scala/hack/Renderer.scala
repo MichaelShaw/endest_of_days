@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
+import hack.game.Player
 import hack.game.Tile
 import hack.game.Vec2f
 import hack.game.Vec2i
@@ -43,9 +44,10 @@ class Renderer {
 
   // 2 players
 
+  val playerACursor = tileRegion(6, 1)
+  val playerBCursor = tileRegion(6, 2)
 
-
-  val playerA = tileRegion(6, 1)
+  // soldier, captain, ae, defender
 
   val playerAGuys = Array(
     new TextureRegion(tileTexture, 224, 32, 16, 16),
@@ -54,8 +56,6 @@ class Renderer {
     new TextureRegion(tileTexture, 240, 48, 16, 16)
   )
 
-  // soldier, captain, ae, defender
-  val playerB = tileRegion(6, 2)
   val playerBGuys = Array(
     new TextureRegion(tileTexture, 224, 64, 16, 16),
     new TextureRegion(tileTexture, 240, 64, 16, 16),
@@ -143,7 +143,12 @@ class Renderer {
   }
 
   def renderCursors(world : World) : Unit = {
-    mainBatch.draw(playerA, world.playerA.cursorPosition.x * tileSizeScreen, world.playerA.cursorPosition.y * tileSizeScreen, tileSizeScreen, tileSizeScreen)
-    mainBatch.draw(playerB, world.playerB.cursorPosition.x * tileSizeScreen, world.playerB.cursorPosition.y * tileSizeScreen, tileSizeScreen, tileSizeScreen)
+    val pa : Player = world.playerA
+    mainBatch.draw(tileAtlas(pa.nextTile.id), pa.cursorPosition.x * tileSizeScreen, pa.cursorPosition.y * tileSizeScreen, tileSizeScreen, tileSizeScreen)
+    mainBatch.draw(playerACursor, pa.cursorPosition.x * tileSizeScreen, pa.cursorPosition.y * tileSizeScreen, tileSizeScreen, tileSizeScreen)
+
+    val pb : Player = world.playerB
+    mainBatch.draw(tileAtlas(pb.nextTile.id), pb.cursorPosition.x * tileSizeScreen, pb.cursorPosition.y * tileSizeScreen, tileSizeScreen, tileSizeScreen)
+    mainBatch.draw(playerBCursor, pb.cursorPosition.x * tileSizeScreen, pb.cursorPosition.y * tileSizeScreen, tileSizeScreen, tileSizeScreen)
   }
 }
