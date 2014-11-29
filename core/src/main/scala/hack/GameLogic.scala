@@ -133,7 +133,7 @@ object GameLogic {
     val directionsWithEnemies = Direction.directions.filter { dir =>
       val neighbour = living.currentLocation + dir
       world.inBounds(neighbour) && world.validLivingsAt(neighbour).exists { l =>
-        l.playerId != living.playerId
+        l.playerId != living.playerId && l.health > 0
       }
     }
     val descendingDirections = Direction.directions.filter{ dir =>
