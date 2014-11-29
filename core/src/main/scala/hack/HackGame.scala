@@ -60,7 +60,7 @@ class GameScreen extends Screen {
 
   var t = 0.0
   var simulationAccu = 0.0
-  val simulationTickEvery = 0.05 // every 1 second
+  val simulationTickEvery = 1.0 // every 1 second
 
   var running = true
 

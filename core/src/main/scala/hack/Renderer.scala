@@ -77,6 +77,7 @@ class Renderer {
 
     renderTiles(world)
     renderLivings(world, simulationAccu, simulationTickSize)
+    renderPlayerTiles(world)
     renderCursors(world)
 
     mainBatch.end()
@@ -143,6 +144,13 @@ class Renderer {
         slot += 1
       }
     }
+  }
+
+  def renderPlayerTiles(world : World) : Unit = {
+
+    world.playerA.tiles
+
+    mainBatch.draw(tileAtlas(player.tiles(player.tile).id), player.cursorPosition.x * tileSizeScreen, player.cursorPosition.y * tileSizeScreen, tileSizeScreen, tileSizeScreen)
   }
 
   def renderCursors(world : World) : Unit = {
