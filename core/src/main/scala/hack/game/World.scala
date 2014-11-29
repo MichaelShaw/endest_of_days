@@ -32,9 +32,15 @@ class World(val width : Int, val height : Int, val startingTile : Tile, val slot
 
   val meta = new MetaLayer(width, height)
 
-  def placeTileAt(v : Vec2i, tile : Tile) {
-    placeTileAt(v.x, v.y, tile)
+  def canPlaceTileAt(v : Vec2i, tile : Tile) : Boolean = canPlaceTileAt(v.x, v.y, tile)
+
+  def canPlaceTileAt(x : Int, y : Int, tile : Tile) : Boolean = {
+    inBounds(x, y)
+    // TODO: disallow placing tile on factory
+    // TODO: disallow completely seal off factories from each other?
   }
+
+  def placeTileAt(v : Vec2i, tile : Tile) : Unit = placeTileAt(v.x, v.y, tile)
 
   def placeTileAt(x : Int, y : Int, tile : Tile) : Unit = {
     setTileAt(x, y, tile)
