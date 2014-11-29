@@ -38,8 +38,8 @@ class GameScreen extends Screen {
       w.players(playerId).cursorPosition = v
     }
 
-    placeHomeBaseBackage(Vec2i(0, w.height / 2), 1)
-    placeHomeBaseBackage(Vec2i(w.width - 1, w.height / 2), 0)
+    placeHomeBaseBackage(Vec2i(0, w.height / 2), 0)
+    placeHomeBaseBackage(Vec2i(w.width - 1, w.height / 2), 1)
 
     for {
       x <- 3 to 15
