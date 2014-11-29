@@ -38,7 +38,7 @@ class GameScreen extends Screen {
       w.players(playerId).cursorPosition = v
     }
 
-    WorldGen.terraform(w, seed)
+    WorldGen.terraform(w, seed, spreadStepMin = 16 )
 
     val halfHeight = w.height / 2
 
