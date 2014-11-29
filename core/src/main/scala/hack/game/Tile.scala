@@ -41,12 +41,12 @@ object Tile {
   val impassableGround = register(new Tile(nextId, "impassable", canBeWalkedOn = false))
   val groundTiles = Array(standardGround, impassableGround)
 
-  val workerFactory = register(new Factory(nextId, "worker_factory", factoryHealth, produceEveryNTicks = 2, produceArch = Arch.worker, requiredSummoners = 0))
-  val soldierFactory = register(new Factory(nextId, "soldier_factory", factoryHealth, produceEveryNTicks = 1, produceArch = Arch.soldier, requiredSummoners = 6))
-  val captainFactory = register(new Factory(nextId, "captain_factory", factoryHealth, produceEveryNTicks = 3, produceArch = Arch.captain, requiredSummoners = 6))
-  val aeFactory = register(new Factory(nextId, "ae_factory", factoryHealth, produceEveryNTicks = 5, produceArch = Arch.ae, requiredSummoners = 6))
+  val cultistSpawner = register(new Factory(nextId, "cultist_spawner", factoryHealth, produceEveryNTicks = 2, produceArch = Arch.cultist, requiredSummoners = 0))
+  val impSpawner = register(new Factory(nextId, "imp_spawner", factoryHealth, produceEveryNTicks = 1, produceArch = Arch.imp, requiredSummoners = 6))
+  val captainSpawner = register(new Factory(nextId, "captain_spawner", factoryHealth, produceEveryNTicks = 3, produceArch = Arch.captain, requiredSummoners = 6))
+//  val aeFactory = register(new Factory(nextId, "ae_factory", factoryHealth, produceEveryNTicks = 5, produceArch = Arch.ae, requiredSummoners = 6))
 //  val defenderFactory = register(new Factory(nextId, "defender_factory", factoryHealth, produceEveryNTicks = 2, produceArch = Arch.defender))
-  val factoryTiles = Array(workerFactory, soldierFactory, captainFactory, aeFactory)
+  val factoryTiles = Array(cultistSpawner, impSpawner, captainSpawner) // , aeFactory
 
   val gate = register(new Gate(nextId, "gate"))
 

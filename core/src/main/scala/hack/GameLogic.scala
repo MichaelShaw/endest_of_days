@@ -273,7 +273,7 @@ case object Draw extends GameOutcome
     }
 
 
-    println("arch " + living.arch.name)
+//    println("arch " + living.arch.name)
 //    println(s"can i help summon ${living.arch.canHelpSummon} am i not on a summoning tile ${!isOnSummoningTile} is my loc reachable ${world.summonerFloodFills(living.playerId).reachable(living.currentLocation)}")
 
     if (directionsWithEnemies.nonEmpty) {
@@ -303,7 +303,7 @@ case object Draw extends GameOutcome
     } else if(descendingDirections.nonEmpty) {
 //      println("descending normally")
       // if we're at an owned gate
-      if(world.tileAt(living.currentLocation) == Tile.gate && world.owned.get(living.currentLocation) == living.playerId) {
+      if(!living.arch.canHelpSummon && world.tileAt(living.currentLocation) == Tile.gate && world.owned.get(living.currentLocation) == living.playerId) {
         // if the tile has space and timer is down, don't progress
         if(world.hasSpaceAt(living.currentLocation) && world.timer.get(living.currentLocation) == 0) { // we're full and timer is down
           idle()

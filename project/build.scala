@@ -32,7 +32,7 @@ object Settings {
       "-Xlint",
       "-Ywarn-dead-code",
       "-Ywarn-value-discard",
-      "-Ywarn-numeric-widen",
+      // "-Ywarn-numeric-widen",
       "-Ywarn-unused",
       "-Ywarn-unused-import",
       "-unchecked",

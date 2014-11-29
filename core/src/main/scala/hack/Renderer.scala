@@ -10,11 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.graphics.glutils.{ShaderProgram, FrameBuffer}
 import com.badlogic.gdx.math.Matrix4
-import hack.game.Player
-import hack.game.Tile
-import hack.game.Vec2f
-import hack.game.Vec2i
-import hack.game.World
+import hack.game._
 
 class Renderer {
   val camera = new OrthographicCamera(Gdx.graphics.getWidth, Gdx.graphics.getHeight)
@@ -60,10 +56,10 @@ class Renderer {
   tileAtlas(Tile.standardGround.id) = tileRegion(0, 0)
   tileAtlas(Tile.impassableGround.id) = tileRegion(1, 0)
 
-  tileAtlas(Tile.workerFactory.id) = tileRegion(2, 0)
-  tileAtlas(Tile.soldierFactory.id) = tileRegion(3, 0)
-  tileAtlas(Tile.captainFactory.id) = tileRegion(4, 0)
-  tileAtlas(Tile.aeFactory.id) = tileRegion(5, 0)
+  tileAtlas(Tile.cultistSpawner.id) = tileRegion(2, 0)
+  tileAtlas(Tile.impSpawner.id) = tileRegion(3, 2)
+  tileAtlas(Tile.captainSpawner.id) = tileRegion(3, 1)
+//  tileAtlas(Tile.aeFactory.id) = tileRegion(5, 0)
 
 
   tileAtlas(Tile.gate.id) = tileRegion(6, 0)
@@ -81,19 +77,13 @@ class Renderer {
 
   // soldier, captain, ae, defender
 
-  val playerAGuys = Array(
+  val cultists = Array(
     new TextureRegion(tileTexture, 224, 32, 16, 16),
-    new TextureRegion(tileTexture, 240, 32, 16, 16),
-    new TextureRegion(tileTexture, 224, 48, 16, 16),
-    new TextureRegion(tileTexture, 240, 48, 16, 16)
+    new TextureRegion(tileTexture, 224, 64, 16, 16)
   )
-
-  val playerBGuys = Array(
-    new TextureRegion(tileTexture, 224, 64, 16, 16),
-    new TextureRegion(tileTexture, 240, 64, 16, 16),
-    new TextureRegion(tileTexture, 224, 80, 16, 16),
-    new TextureRegion(tileTexture, 240, 80, 16, 16)
-  )
+  val archs = new Array[TextureRegion](16)
+  archs(Arch.imp.id) = new TextureRegion(tileTexture, 240, 64, 16, 16)
+  archs(Arch.captain.id) = new TextureRegion(tileTexture, 240, 32, 16, 16)
 
   def render(world : World, simulationAccu : Double, simulationTickSize : Double) {
     camera.position.set(world.width / 2 * tileSizeScreen, world.height / 2 * tileSizeScreen, 0)
@@ -146,12 +136,20 @@ class Renderer {
       val v = Vec2i(x, y)
       val tile = world.tileAt(v)
       val owned = world.owned.get(v)
-      val textureRegion : TextureRegion = if (owned >= 0) {
-        ownedTileAtlas(owned)(tile.id)
-
-      } else {
-        tileAtlas(tile.id)
+      val textureRegion : TextureRegion = tile match {
+        case Tile.cultistSpawner =>
+          ownedTileAtlas(owned)(tile.id)
+        case f:Factory =>
+          tileAtlas(f.id)
+        case _ =>
+          if (owned >= 0) {
+            ownedTileAtlas(owned)(tile.id)
+          } else {
+            tileAtlas(tile.id)
+          }
       }
+
+
       mainBatch.draw(textureRegion, x * tileSizeScreen, y * tileSizeScreen, tileSizeScreen, tileSizeScreen)
     }
   }
@@ -176,10 +174,10 @@ class Renderer {
       var slot = 0; while (slot < world.slotsPerTile) {
         val e = entities(slot)
         if (e != null) {
-          val tr : TextureRegion = if(e.playerId == 0) {
-            playerAGuys(e.arch.id)
+          val tr : TextureRegion = if(e.arch == Arch.cultist) {
+            cultists(e.playerId)
           } else {
-            playerBGuys(e.arch.id)
+            archs(e.arch.id)
           }
           val lastLocation = screenLocation(e.lastLocation, e.lastSlot)
           val currentLocation = screenLocation(e.currentLocation, e.currentSlot)
