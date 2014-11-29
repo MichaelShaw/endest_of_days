@@ -264,7 +264,7 @@ case object Draw extends GameOutcome
     }
 
     def strikeBuilding(at: Vec2i): Unit = {
-      println(s"${living.arch.name} $living @ ${living.currentLocation} of player ${living.playerId} striking at $at tile " + world.tileAt(at) + s" owned by ${world.owned.get(at)}")
+//      println(s"${living.arch.name} $living @ ${living.currentLocation} of player ${living.playerId} striking at $at tile " + world.tileAt(at) + s" owned by ${world.owned.get(at)}")
       val healthRemaining = world.health.get(at) - living.arch.attack
 
       if (healthRemaining <= 0 || living.arch.instakillBuildings) {

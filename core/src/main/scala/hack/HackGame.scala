@@ -106,9 +106,9 @@ class GameScreen extends Screen {
 
   def render(delta : Float) {
     if(!running || inputHandler.resetWorld) {
-//      resetGame()
-//      inputHandler.resetWorld = false
-//      running = true
+      resetGame()
+      inputHandler.resetWorld = false
+      running = true
     }
 
 
