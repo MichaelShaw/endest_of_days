@@ -112,7 +112,7 @@ class Renderer {
     new Color(142f / 255f,42f / 255f, 39f / 255f,0f)
   )
 
-  def render(world : World, delta:Double) {
+  def render(world : World, delta:Double, wins:Array[Int]) {
     camera.position.set(world.width / 2 * tileSizeScreen, world.height / 2 * tileSizeScreen, 0)
     camera.update()
 
@@ -139,6 +139,10 @@ class Renderer {
     renderCursors(world)
     renderParticles(world)
 
+
+
+    font.draw(mainBatch, s"${wins(0)} wins" , 15, world.height * tileSizeScreen - 15)
+    font.draw(mainBatch, s"${wins(1)} wins", world.width * tileSizeScreen - 60, world.height * tileSizeScreen - 15)
 
     mainBatch.end()
 

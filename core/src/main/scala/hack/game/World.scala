@@ -34,7 +34,7 @@ class World(val width : Int, val height : Int, val startingTile : Tile, val slot
   var tick = 0
 
   var simulationAccu = 0.0
-  val simulationTickEvery = 0.5  // every 1 second
+  var simulationTickEvery = 0.5  // every 1 second
 
   var playSmallHurtSound = false
   var playMediumHurtSound = false

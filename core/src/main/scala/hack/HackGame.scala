@@ -85,13 +85,18 @@ class GameScreen extends Screen {
 
   var seed = 0L
 
+  var simulationTickEvery = 0.5
+
   def resetGame() {
+    simulationTickEvery *= 0.5
     t = 0.0
     seed += 1
     world = generateWorld()
+    world.simulationTickEvery = simulationTickEvery
     inputHandler.world = world
   }
 
+  val wins = Array.fill[Int](2){0}
 
   def render(delta : Float) {
     if(!running || inputHandler.resetWorld) {
@@ -137,12 +142,13 @@ class GameScreen extends Screen {
       case Some(PlayerWon(playerId)) =>
         println(s"Player $playerId won")
         running = false
+        wins(playerId) += 1
         true
       case None =>
         false
     }
 
-    renderer.render(world, delta)
+    renderer.render(world, delta, wins)
 
     // SOUND
     if(inputHandler.placeTileSound) {

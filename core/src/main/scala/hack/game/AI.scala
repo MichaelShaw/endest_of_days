@@ -37,8 +37,10 @@ object AI {
         }.foreach { tile =>
           player.tile = player.availableTiles.indexOf(tile)
           assert(player.tile >= 0)
-          player.cursorPosition = attemptToPlace(tile, player).get
-          inputHandler.placeTile(player.id)
+          attemptToPlace(tile, player).map { pos =>
+            player.cursorPosition = pos
+            inputHandler.placeTile(player.id)
+          }
         }
       }
     }
