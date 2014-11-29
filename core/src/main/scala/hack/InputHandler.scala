@@ -1,11 +1,17 @@
 package hack
 
-import com.badlogic.gdx.Gdx.{app, input}
+import com.badlogic.gdx.Gdx.app
+import com.badlogic.gdx.Gdx.input
 import com.badlogic.gdx.Input.Keys
 import com.badlogic.gdx.InputProcessor
-import com.badlogic.gdx.controllers.{Controller, ControllerListener, Controllers, PovDirection}
+import com.badlogic.gdx.controllers.Controller
+import com.badlogic.gdx.controllers.ControllerListener
+import com.badlogic.gdx.controllers.Controllers
+import com.badlogic.gdx.controllers.PovDirection
 import com.badlogic.gdx.math.Vector3
-import hack.game.{Player, World}
+import hack.game.Tile
+import hack.game.Player
+import hack.game.World
 
 class InputHandler(world : World) extends InputProcessor with ControllerListener {
   def movePlayer(player : Int, dx : Int, dy : Int) : Unit = {
@@ -24,7 +30,9 @@ class InputHandler(world : World) extends InputProcessor with ControllerListener
   }
 
   def placeTile(player : Int) : Unit = {
-    // TODO
+    val p : Player = world.players(player)
+    val t : Tile = Tile.impassableGround // TODO
+    world.setTileAt(p.x, p.y, t)
   }
 
   def setAsListener() : Unit = {
