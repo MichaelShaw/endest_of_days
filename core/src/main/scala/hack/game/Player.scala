@@ -44,7 +44,7 @@ class Player(val id : Int, var cursorPosition : Vec2i, var tile : Int, val terra
 
   def handlePlacement() {
     placedTiles += 1
-    if(tile > availableTiles.length) {
+    if(tile >= availableTiles.length) {
       tile = availableTiles.length - 1 // clamp it in case the amount of tiles decreased
     }
   }
