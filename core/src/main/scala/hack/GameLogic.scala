@@ -256,7 +256,7 @@ case object Draw extends GameOutcome
   def spawnNear(world:World, x:Int, y:Int, playerId:Int, arch:Arch){
     val availablePlacementSpots = Direction.directions.filter { dir =>
       val offset = dir.plus(x, y)
-      world.inBounds(offset) && world.hasSpaceAt(offset)
+      world.inBounds(offset) && world.hasSpaceAt(offset) && world.tileAt(offset).canBeWalkedOn
     }
 
     sampleMaybe(availablePlacementSpots) match {

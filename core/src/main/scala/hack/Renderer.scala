@@ -3,9 +3,13 @@ package hack
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.OrthographicCamera
+import com.badlogic.gdx.graphics.Pixmap.Format
 import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.Texture.TextureFilter
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
+import com.badlogic.gdx.graphics.glutils.{ShaderProgram, FrameBuffer}
+import com.badlogic.gdx.math.Matrix4
 import hack.game.Player
 import hack.game.Tile
 import hack.game.Vec2f
@@ -15,11 +19,36 @@ import hack.game.World
 class Renderer {
   val camera = new OrthographicCamera(Gdx.graphics.getWidth, Gdx.graphics.getHeight)
 
+  def fboWidth = Gdx.graphics.getWidth
+  def fboHeight = Gdx.graphics.getHeight
+
+  val fbo = new FrameBuffer(Format.RGBA8888, fboWidth, fboHeight, false)
+  fbo.getColorBufferTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest)
+
   def assetsPath = "../assets"
+
+  // TO 
+  def toFBOVertexShaderText = Gdx.files.internal(s"$assetsPath/toFbo.vert.glsl").readString()
+  def toFBOFragmentShaderText = Gdx.files.internal(s"$assetsPath/toFbo.frag.glsl").readString()
+  val toFrameBufferShader = new ShaderProgram(toFBOVertexShaderText,toFBOFragmentShaderText)
+  if(!toFrameBufferShader.isCompiled) {
+    throw new Exception("couldnt compile shader " + toFrameBufferShader.getLog)
+  }
+
+  def postVertexShaderText = Gdx.files.internal(s"$assetsPath/post.vert.glsl").readString()
+  def postFragmentShaderText = Gdx.files.internal(s"$assetsPath/post.frag.glsl").readString()
+  val postShader = new ShaderProgram(postVertexShaderText,postFragmentShaderText)
+  if(!postShader.isCompiled) {
+    throw new Exception("couldnt compile shader " + postShader.getLog)
+  }
+
+
+
 
   val tileTexture = new Texture(Gdx.files.internal(s"$assetsPath/tiles.png"))
 
   val mainBatch = new SpriteBatch
+  val postBatch = new SpriteBatch
 
   val tileSizeTexture = 32
   val tileSizeScreen = tileSizeTexture // 2x upscale
@@ -69,17 +98,42 @@ class Renderer {
     camera.position.set(world.width / 2 * tileSizeScreen, world.height / 2 * tileSizeScreen, 0)
     camera.update()
 
+
+
+    fbo.begin()
+
     Gdx.gl.glClearColor(0, 0, 0, 1)
     Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
     mainBatch.setProjectionMatrix(camera.combined)
     mainBatch.begin()
+    mainBatch.setShader(toFrameBufferShader)
 
     renderTiles(world)
     renderLivings(world, simulationAccu, simulationTickSize)
     renderCursors(world)
 
     mainBatch.end()
+
+    fbo.end()
+
+    // draw final
+
+    Gdx.gl.glClearColor(0, 0, 0, 1)
+    Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
+
+    val m = new Matrix4()
+    m.setToOrtho(0, fbo.getWidth, fbo.getHeight, 0, 0, 1)
+
+    postShader.begin()
+
+    postBatch.setShader(postShader)
+    postBatch.setProjectionMatrix(m)
+    postBatch.begin()
+    postBatch.draw(fbo.getColorBufferTexture, 0, 0)
+    postBatch.end()
+
+    postShader.end()
   }
 
   def renderTiles(world : World) {

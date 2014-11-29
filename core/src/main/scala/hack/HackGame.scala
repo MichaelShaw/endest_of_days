@@ -30,13 +30,20 @@ class GameScreen extends Screen {
 
     w.placeTileAt(Vec2i(8, 15), Tile.captainFactory, 1)
 
-    w.placeTileAt(Vec2i(8, 11), Tile.gate, 1)
+    w.placeTileAt(Vec2i(2, 13), Tile.gate, 1)
 
-    w.placeTileAt(Vec2i(7, 7), Tile.impassableGround, -1)
-//    w.placeTileAt(Vec2i(8, 7), Tile.impassableGround, -1)
-    w.placeTileAt(Vec2i(9, 7), Tile.impassableGround, -1)
+    for {
+      x <- 3 to 15
+    } {
+      w.placeTileAt(Vec2i(x, 7), Tile.impassableGround, -1)
+    }
+    for {
+      y <- 4 to 12
+    } {
+      w.placeTileAt(Vec2i(3, y), Tile.impassableGround, -1)
+    }
 
-    w.placeTileAt(Vec2i(8, 3), Tile.gate, 0)
+    w.placeTileAt(Vec2i(2, 3), Tile.gate, 0)
 
 //    w.placeTileAt(6, 0, Tile.playerASoldierFactory)
 //    w.placeTileAt(8, 0, Tile.playerACaptainFactory)
