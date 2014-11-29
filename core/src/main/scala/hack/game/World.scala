@@ -33,7 +33,7 @@ class World(val width : Int, val height : Int, val startingTile : Tile, val slot
 
   def ticksPerPlace = 10
   var placementTimer = ticksPerPlace
-
+  var placementStage = 0
 
 
   val timer = new MetaLayer(width, height, 0)
@@ -165,11 +165,9 @@ class World(val width : Int, val height : Int, val startingTile : Tile, val slot
     throw new Exception("couldnt find living to unregister")
   }
 
-  val defaultPlayerTiles : Array[Tile] = Tile.groundTiles ++ Tile.factoryTiles
-
   // TODO: derive from initial tiles
-  val playerA = new Player(0, Vec2i(8, 1), 0, defaultPlayerTiles)
-  val playerB = new Player(1, Vec2i(8, 14), 0, defaultPlayerTiles)
+  val playerA = new Player(0, Vec2i(8, 1), 0, Tile.groundTiles, Tile.playerAFactories)
+  val playerB = new Player(1, Vec2i(8, 14), 0, Tile.groundTiles, Tile.playerBFactories)
   val players = Array(playerA, playerB)
 
   // floodfills

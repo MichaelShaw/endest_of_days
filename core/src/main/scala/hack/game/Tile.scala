@@ -48,9 +48,12 @@ object Tile {
   val captainSpawner = register(new Factory(nextId, "captain_spawner", factoryHealth, produceEveryNTicks = 3, produceArch = Arch.captain, requiredSummoners = 6))
   val bigBeetleSpawner = register(new Factory(nextId, "bigBeetle_spawner", factoryHealth, produceEveryNTicks = 5, produceArch = Arch.bigBeetle, requiredSummoners = 6))
 
+  val playerAFactories = Array(captainSpawner, bigBeetleSpawner)
+  val playerBFactories = Array(impSpawner)
+
 //  val aeFactory = register(new Factory(nextId, "ae_factory", factoryHealth, produceEveryNTicks = 5, produceArch = Arch.ae, requiredSummoners = 6))
 //  val defenderFactory = register(new Factory(nextId, "defender_factory", factoryHealth, produceEveryNTicks = 2, produceArch = Arch.defender))
-  val factoryTiles = Array(cultistSpawner, impSpawner, captainSpawner) // , aeFactory
+//  val factoryTiles = Array(cultistSpawner, impSpawner, captainSpawner) // , aeFactory
 
 
 

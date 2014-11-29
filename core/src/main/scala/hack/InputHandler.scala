@@ -29,7 +29,7 @@ class InputHandler(var world : World) extends InputProcessor with ControllerList
     val p : Player = world.players(player)
     val t = p.tile + dt
 
-    if (t >= 0 && t < p.tiles.size) {
+    if (t >= 0 && t < p.availableTiles.size) {
       p.tile = t
     }
   }
@@ -38,10 +38,13 @@ class InputHandler(var world : World) extends InputProcessor with ControllerList
     val p : Player = world.players(player)
     assert(p.id == player)
 
-    val t : Tile = p.tiles(p.tile)
+    if(p.canPlaceTiles(world)) {
+      val t : Tile = p.currentTile
 
-    if (world.canPlaceTileAt(p.cursorPosition, t, p.id)) {
-      world.placeTileAt(p.cursorPosition, t, p.id)
+      if (world.canPlaceTileAt(p.cursorPosition, t, p.id)) {
+        p.handlePlacement()
+        world.placeTileAt(p.cursorPosition, t, p.id)
+      }
     }
   }
 

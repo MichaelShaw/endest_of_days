@@ -55,6 +55,13 @@ class Renderer {
   // from top left
   def tileRegion(x : Int, y : Int) = new TextureRegion(tileTexture, x * tileSizeTexture, y * tileSizeTexture, tileSizeTexture, tileSizeTexture)
 
+  val terrainAtlas = Array.tabulate[Array[TextureRegion]](2) { n =>
+    val arr = new Array[TextureRegion](Tile.count)
+    arr(Tile.standardGround.id) = tileRegion(0, n + 1)
+    arr(Tile.impassableGround.id) = tileRegion(1, n + 1)
+    arr
+  }
+
   val tileAtlas = new Array[TextureRegion](Tile.count)
   tileAtlas(Tile.standardGround.id) = tileRegion(0, 0)
   tileAtlas(Tile.impassableGround.id) = tileRegion(1, 0)
@@ -141,22 +148,25 @@ class Renderer {
       y <- 0 until world.height
     } {
       val v = Vec2i(x, y)
-      val tile = world.tileAt(v)
-      val owned = world.owned.get(v)
-      val textureRegion : TextureRegion = tile match {
-        case Tile.gate =>
-          gates(owned)
-        case Tile.cultistSpawner =>
-          cultistSpawners(owned)
-        case f:Factory =>
-          tileAtlas(f.id)
-        case _ =>
-          tileAtlas(tile.id)
-
-      }
-
-
+      val textureRegion = trForTile(world.tileAt(v), world.owned.get(v))
       mainBatch.draw(textureRegion, x * tileSizeScreen, y * tileSizeScreen, tileSizeScreen, tileSizeScreen)
+    }
+  }
+
+  def trForTile(tile:Tile, owned:Int) : TextureRegion = {
+    tile match {
+      case Tile.gate =>
+        gates(owned)
+      case Tile.cultistSpawner =>
+        cultistSpawners(owned)
+      case f:Factory =>
+        tileAtlas(f.id)
+      case _ =>
+        if(owned >= 0) {
+          terrainAtlas(owned)(tile.id)
+        } else {
+          tileAtlas(tile.id)
+        }
     }
   }
 
@@ -214,14 +224,16 @@ class Renderer {
 
   def renderHands(world : World) : Unit = {
     def renderHand(player : Player, cursorTextureRegion : TextureRegion, xOffset : Int) : Unit = {
-      for (t <- 0 until player.tiles.length) {
-        val x : Int = t + xOffset
-        val y : Int = -2
+      if(player.canPlaceTiles(world)) {
+        for (t <- 0 until player.availableTiles.length) {
+          val x : Int = t + xOffset
+          val y : Int = -2
 
-        mainBatch.draw(tileAtlas(player.tiles(t).id), x * tileSizeScreen, y * tileSizeScreen, tileSizeScreen, tileSizeScreen)
+          mainBatch.draw(trForTile(player.availableTiles(t), player.id), x * tileSizeScreen, y * tileSizeScreen, tileSizeScreen, tileSizeScreen)
 
-        if (t == player.tile) {
-          mainBatch.draw(cursorTextureRegion, x * tileSizeScreen, y * tileSizeScreen, tileSizeScreen, tileSizeScreen)
+          if (t == player.tile) {
+            mainBatch.draw(cursorTextureRegion, x * tileSizeScreen, y * tileSizeScreen, tileSizeScreen, tileSizeScreen)
+          }
         }
       }
     }
@@ -229,12 +241,14 @@ class Renderer {
     font.draw(mainBatch, world.placementTimer.toString, world.width * tileSizeScreen / 2, -50)
 
     renderHand(world.playerA, playerACursor, 0)
-    renderHand(world.playerB, playerBCursor, world.width - world.playerB.tiles.length)
+    renderHand(world.playerB, playerBCursor, world.width - world.playerB.availableTiles.length)
   }
 
   def renderCursors(world : World) : Unit = {
     def renderCursor(player : Player, cursorTextureRegion : TextureRegion) : Unit = {
-      mainBatch.draw(tileAtlas(player.tiles(player.tile).id), player.cursorPosition.x * tileSizeScreen, player.cursorPosition.y * tileSizeScreen, tileSizeScreen, tileSizeScreen)
+      if(player.canPlaceTiles(world)) {
+        mainBatch.draw(trForTile(player.currentTile, player.id), player.cursorPosition.x * tileSizeScreen, player.cursorPosition.y * tileSizeScreen, tileSizeScreen, tileSizeScreen)
+      }
       mainBatch.draw(cursorTextureRegion, player.cursorPosition.x * tileSizeScreen, player.cursorPosition.y * tileSizeScreen, tileSizeScreen, tileSizeScreen)
     }
 

@@ -23,12 +23,27 @@ class GameScreen extends Screen {
   def generateWorld() : World = {
     val w = new World(16, 16, Tile.standardGround, 9)
 
+    def placeHomeBaseBackage(v:Vec2i, playerId:Int) {
+      for {
+        x <- v.x - 1 to v.x + 1
+        y <- v.y - 1 to v.y + 1
+      } {
+        val at = Vec2i(x, y)
+        if(w.inBounds(at)) {
+          w.placeTileAt(at, Tile.standardGround, playerId)
+        }
+      }
+      w.placeTileAt(v, Tile.cultistSpawner, playerId)
+    }
+
+
+
 //    w.placeTileAt(6, 15, Tile.playerBSoldierFactory)
 //    w.placeTileAt(8, 15, Tile.playerBCaptainFactory)
 //    w.placeTileAt(10, 15, Tile.playerBAEFactory)
 //    w.placeTileAt(12, 15, Tile.playerBDefenderFactory)
 
-    w.placeTileAt(Vec2i(8, 15), Tile.cultistSpawner, 1)
+    placeHomeBaseBackage(Vec2i(8, 15), 1)
     w.placeTileAt(Vec2i(12, 15), Tile.impSpawner, 1)
 
 //    w.placeTileAt(Vec2i(2, 13), Tile.gate, 1)
@@ -51,7 +66,7 @@ class GameScreen extends Screen {
 //    w.placeTileAt(10, 0, Tile.playerAAEFactory)
 //    w.placeTileAt(12, 0, Tile.playerADefenderFactory)
 
-    w.placeTileAt(Vec2i(8, 0), Tile.cultistSpawner, 0)
+    placeHomeBaseBackage(Vec2i(8, 0), 0)
     w.placeTileAt(Vec2i(12, 0), Tile.bigBeetleSpawner, 0)
 
     w
@@ -96,6 +111,15 @@ class GameScreen extends Screen {
     if (simulationAccu >= simulationTickEvery) {
       GameLogic.updateWorld(world)
       world.tick += 1
+
+      if(world.placementTimer == 0) {
+        world.placementStage += 1
+        world.placementTimer = world.ticksPerPlace
+      } else {
+        world.placementTimer -= 1
+      }
+
+
       simulationAccu -= simulationTickEvery
     }
 
