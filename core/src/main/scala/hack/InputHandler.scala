@@ -9,11 +9,7 @@ import com.badlogic.gdx.controllers.ControllerListener
 import com.badlogic.gdx.controllers.Controllers
 import com.badlogic.gdx.controllers.PovDirection
 import com.badlogic.gdx.math.Vector3
-import hack.game.Direction
-import hack.game.Player
-import hack.game.Tile
-import hack.game.Vec2i
-import hack.game.World
+import hack.game._
 
 class InputHandler(var world : World) extends InputProcessor with ControllerListener {
   var resetWorld:Boolean = false
@@ -53,6 +49,7 @@ class InputHandler(var world : World) extends InputProcessor with ControllerList
         placeTileSound = true
         p.handlePlacement()
         world.placeTileAt(p.cursorPosition, t, p.id)
+        world.spawnAtTile(p.cursorPosition, Particle.smoke)
       }
     }
   }

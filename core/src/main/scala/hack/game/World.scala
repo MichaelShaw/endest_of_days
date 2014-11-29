@@ -1,6 +1,9 @@
 package hack.game
 
+import hack.Renderer
+
 import scala.util.Random
+import collection.mutable
 
 // all state
 
@@ -30,6 +33,9 @@ class World(val width : Int, val height : Int, val startingTile : Tile, val slot
 
   var tick = 0
 
+  var simulationAccu = 0.0
+  val simulationTickEvery = 0.5  // every 1 second
+
   var playSmallHurtSound = false
   var playMediumHurtSound = false
 
@@ -39,6 +45,55 @@ class World(val width : Int, val height : Int, val startingTile : Tile, val slot
   var placementTimer = ticksPerPlace
   var placementStage = 1 // so you can place 2 tiles immediately
 
+  val particles = new mutable.HashSet[Particle]()
+
+  val innerTileLocations = (for {
+    x <- 0 to 2
+    y <- 0 to 2
+  } yield Vec2i(4 + x * 8, 4 + y * 8)).toArray // need better logic here
+
+  def screenLocation(loc : Vec2i, slot : Int) : Vec2i = {
+    (loc * Renderer.pixelsPerTile) + innerTileLocations(slot)
+  }
+
+  def exactLocationOf(e:Living) : Vec2f = {
+    val lastLocation = screenLocation(e.lastLocation, e.lastSlot)
+    val currentLocation = screenLocation(e.currentLocation, e.currentSlot)
+
+    val actionDuration = e.actionFinishedAtTick - e.actionStartedAtTick
+    val progressAbs = tick - e.actionStartedAtTick + simulationAccu / simulationTickEvery
+    val progressAlpha = progressAbs / actionDuration
+
+    Vec2f.lerp(lastLocation, currentLocation, progressAlpha) // simulationAccu / simulationTickSize
+  }
+
+  def spawnAtTile(v:Vec2i, partId:Int, count:Int = 8) {
+    for(n <- 1 to count) {
+      val at = Vec2f(v.x + rand.nextFloat(), v.y + rand.nextFloat()) * Renderer.pixelsPerTile
+      val velocity = Vec2f(rand.nextFloat() * 2.0f - 1.0f, rand.nextFloat() * 2.0f - 1.0f) * Renderer.pixelsPerTile
+
+      particles += new Particle(at, velocity, 0.5f + rand.nextFloat(), partId)
+    }
+  }
+  
+  def spawnNear(v:Vec2f, partId:Int, count:Int = 8): Unit = {
+    for(n <- 1 to count) {
+      val at = v + Vec2f(rand.nextFloat() * 0.5f, rand.nextFloat() * 0.5f) * Renderer.pixelsPerTile
+      val velocity = Vec2f(rand.nextFloat() - 0.5f, rand.nextFloat() - 0.5f) * Renderer.pixelsPerTile
+      particles += new Particle(at, velocity, 0.5f + rand.nextFloat(), partId)
+    }
+  }
+
+  def simulateParticles(delta:Float) {
+    particles.retain { part =>
+      part.aliveFor -= delta
+
+      part.at += part.velocity * delta // move by velocity
+      part.velocity *= (1 - delta) // dampen velocity
+
+      part.aliveFor > 0
+    }
+  }
 
   val timer = new MetaLayer(width, height, 0)
   val health = new MetaLayer(width, height, 0)

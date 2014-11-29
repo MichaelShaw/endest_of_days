@@ -199,6 +199,14 @@ case object Draw extends GameOutcome
           enemy.health -= damage
           enemy.lastStruckAt = world.tick
 
+          val partId = if(enemy.playerId == 0) {
+            Particle.blueStuff
+          } else {
+            Particle.redStuff
+          }
+
+          world.spawnNear(world.exactLocationOf(enemy), partId)
+
           if(enemy.health <= 0 && living.arch.maxHealth >= 10) {
             world.playMediumHurtSound = true
           } else if(enemy.arch != Arch.cultist) {

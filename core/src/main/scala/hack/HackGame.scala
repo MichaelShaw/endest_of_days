@@ -63,7 +63,7 @@ class GameScreen extends Screen {
     w
   }
 
-  val simulationTickEvery = 0.5  // every 1 second
+
 
   def show() = {}
 
@@ -76,7 +76,7 @@ class GameScreen extends Screen {
   def dispose() = {}
 
   var t = 0.0
-  var simulationAccu = 0.0
+
 
 
 
@@ -87,7 +87,6 @@ class GameScreen extends Screen {
 
   def resetGame() {
     t = 0.0
-    simulationAccu = 0.0
     seed += 1
     world = generateWorld()
     inputHandler.world = world
@@ -105,12 +104,12 @@ class GameScreen extends Screen {
 
     t += delta
     if(running) {
-      simulationAccu += delta
+      world.simulationAccu += delta
     }
 
     // determine game ticks here
 
-    if (simulationAccu >= simulationTickEvery) {
+    if (world.simulationAccu >= world.simulationTickEvery) {
       AI.evaluate(world, inputHandler)
 
       world.tick += 1
@@ -125,8 +124,10 @@ class GameScreen extends Screen {
       }
 
 
-      simulationAccu -= simulationTickEvery
+      world.simulationAccu -= world.simulationTickEvery
     }
+
+    world.simulateParticles(delta)
 
     val playFinishedSound = GameLogic.gameFinished(world) match {
       case Some(Draw) =>
@@ -141,7 +142,7 @@ class GameScreen extends Screen {
         false
     }
 
-    renderer.render(world, simulationAccu, simulationTickEvery, delta)
+    renderer.render(world, delta)
 
     // SOUND
     if(inputHandler.placeTileSound) {

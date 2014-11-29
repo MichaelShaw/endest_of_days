@@ -112,7 +112,7 @@ class Renderer {
     new Color(142f / 255f,42f / 255f, 39f / 255f,0f)
   )
 
-  def render(world : World, simulationAccu : Double, simulationTickSize : Double, delta:Double) {
+  def render(world : World, delta:Double) {
     camera.position.set(world.width / 2 * tileSizeScreen, world.height / 2 * tileSizeScreen, 0)
     camera.update()
 
@@ -126,17 +126,18 @@ class Renderer {
     mainBatch.begin()
     mainBatch.setShader(toFrameBufferShader)
 
-    mainBatch.disableBlending()
+    mainBatch.enableBlending()
 
 
     renderTiles(world)
 
-    renderLivings(world, simulationAccu, simulationTickSize, delta)
+    renderLivings(world, delta)
 
     mainBatch.setColor(black)
-    renderHands(world, simulationAccu, simulationTickSize)
+    renderHands(world)
     mainBatch.setColor(black)
     renderCursors(world)
+    renderParticles(world)
 
 
     mainBatch.end()
@@ -160,6 +161,20 @@ class Renderer {
     postBatch.end()
 
     postShader.end()
+  }
+
+  val particleRegions = Array[TextureRegion](
+    new TextureRegion(tileTexture, 33, 96, 16, 16), // smoke
+    new TextureRegion(tileTexture, 32, 112, 16, 16), // blue stuff
+    new TextureRegion(tileTexture, 48, 96, 16, 16), // red stuff
+    new TextureRegion(tileTexture, 48, 112, 16, 16)  // magic
+  )
+
+  def renderParticles(world:World): Unit = {
+    for(p <- world.particles) {
+      val tr = particleRegions(p.partId)
+      mainBatch.draw(tr, p.at.x, p.at.y, tr.getRegionWidth * upScale, tr.getRegionHeight * upScale)
+    }
   }
 
   def renderTiles(world : World) {
@@ -190,18 +205,9 @@ class Renderer {
     }
   }
 
-  val innerTileLocations = (for {
-    x <- 0 to 2
-    y <- 0 to 2
-  } yield Vec2i(4 + x * 8, 4 + y * 8)).toArray // need better logic here
-
-  def screenLocation(loc : Vec2i, slot : Int) : Vec2i = {
-    (loc * tileSizeScreen) + innerTileLocations(slot)
-  }
-
   // simulation accu for partial tick
-  def renderLivings(world : World, simulationAccu : Double, simulationTickSize : Double, delta:Double) {
-    def flashing(d : Double) : Boolean = (simulationAccu / d).asInstanceOf[Int] % 2 == 1
+  def renderLivings(world : World,delta:Double) {
+    def flashing(d : Double) : Boolean = (world.simulationAccu / d).asInstanceOf[Int] % 2 == 1
     for {
       x <- 0 until world.width
       y <- 0 until world.height
@@ -215,14 +221,8 @@ class Renderer {
           } else {
             archs(e.arch.id)
           }
-          val lastLocation = screenLocation(e.lastLocation, e.lastSlot)
-          val currentLocation = screenLocation(e.currentLocation, e.currentSlot)
 
-          val actionDuration = e.actionFinishedAtTick - e.actionStartedAtTick
-          val progressAbs = world.tick - e.actionStartedAtTick + simulationAccu / simulationTickSize
-          val progressAlpha = progressAbs / actionDuration
-
-          val at = Vec2f.lerp(lastLocation, currentLocation, progressAlpha) // simulationAccu / simulationTickSize
+          val at = world.exactLocationOf(e)
 
           val smoothTime = 0.25
 
@@ -231,7 +231,7 @@ class Renderer {
           e.velocity = newVelocity
 
 
-          val flash = if (e.lastStruckAt == world.tick && simulationAccu < 0.4) {
+          val flash = if (e.lastStruckAt == world.tick && world.simulationAccu < 0.4) {
             flashing(0.10)
           } else {
             false
@@ -263,13 +263,13 @@ class Renderer {
     }
   }
 
-  def renderHands(world : World, simulationAccu:Double, simulationTick:Double) : Unit = {
+  def renderHands(world : World) : Unit = {
     def renderHand(player : Player, cursorTextureRegion : TextureRegion, xOffset : Int) : Unit = {
       if(player.canPlaceTiles(world)) {
 
         val yOffset = (if(player.placedTiles == world.placementStage && world.placementTimer == world.ticksPerPlace) {
           // player is up to date and it's the first simulation tick
-          val progress = Bias.getBias(Bias.clamp(simulationAccu * 2 / simulationTick), 0.75)
+          val progress = Bias.getBias(Bias.clamp(world.simulationAccu * 2 / world.simulationTickEvery), 0.75)
 //          println("progress -> " + progress)
           ((1 - progress) * -tileSizeScreen).asInstanceOf[Int]
         } else {
