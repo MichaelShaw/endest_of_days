@@ -31,8 +31,20 @@ class Renderer {
   val playerA = tileRegion(2, 0)
   val playerB = tileRegion(2, 1)
 
-  val playerAGuy = new TextureRegion(tileTexture, 128, 0, 16, 16)
-  val playerBGuy = new TextureRegion(tileTexture, 128, 32, 16, 16)
+  val playerAGuys = Array(
+    new TextureRegion(tileTexture, 224, 0, 16, 16),
+    new TextureRegion(tileTexture, 224 + 16, 0, 16, 16),
+    new TextureRegion(tileTexture, 224, 16, 16, 16),
+    new TextureRegion(tileTexture, 224 + 16, 16, 16, 16)
+  )
+
+  // soldier, captain, ae, defender
+  val playerBGuys = Array(
+    new TextureRegion(tileTexture, 224, 32, 16, 16),
+    new TextureRegion(tileTexture, 224 + 16, 32, 16, 16),
+    new TextureRegion(tileTexture, 224, 32 + 16, 16, 16),
+    new TextureRegion(tileTexture, 224 + 16, 32 + 16, 16, 16)
+  )
 
   def render(world : World, simulationAccu : Double) {
     camera.position.set(world.width / 2 * tileSizeScreen, world.height / 2 * tileSizeScreen, 0)
@@ -83,9 +95,9 @@ class Renderer {
         val e = entities(slot)
         if (e != null) {
           val tr : TextureRegion = if (e.playerId == 0) {
-            playerAGuy
+            playerAGuys(e.arch.id)
           } else {
-            playerBGuy
+            playerBGuys(e.arch.id)
           }
           val lastLocation = screenLocation(e.lastLocation, e.lastSlot)
           val currentLocation = screenLocation(e.currentLocation, e.currentSlot)
