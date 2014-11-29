@@ -12,6 +12,7 @@ class World(val width:Int, val height:Int, val startingTile:Tile) {
   def cells = width * height
   val tiles = Array.fill[Tile](cells) { startingTile }
   def tileAt(x:Int, y:Int) : Tile = tiles(tileLocation(x, y))
+  def setTileAt(x:Int, y:Int, tile:Tile) { tiles(tileLocation(x, y)) = tile }
   def tileLocation(x:Int, y:Int) : Int = {
     assert(x < width && x >= 0 && y < height && y >= 0, "asked for out of bounds tile location")
     x * height + y

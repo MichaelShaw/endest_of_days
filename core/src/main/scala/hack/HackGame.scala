@@ -18,8 +18,18 @@ class GameScreen extends Screen {
   val hck = (Tile.impassableGround)
 
   val inputHandler = new InputHandler()
-  val world = new World(16, 16, Tile.standardGround)
+  val world = generateWorld()
   val renderer = new Renderer()
+
+  def generateWorld() : World = {
+    val w = new World(16, 16, Tile.standardGround)
+
+    w.setTileAt(1, 1, Tile.impassableGround)
+
+    w.setTileAt(14, 14, Tile.impassableGround)
+
+    w
+  }
 
   def show() = {}
   def hide() = {}

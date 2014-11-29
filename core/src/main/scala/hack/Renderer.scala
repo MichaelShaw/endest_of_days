@@ -10,7 +10,7 @@ import hack.game.{Tile, World}
  */
 class Renderer {
   val camera = new OrthographicCamera(Gdx.graphics.getWidth, Gdx.graphics.getHeight)
-  camera.update()
+
 
   def assetsPath = "../assets"
 
@@ -19,14 +19,20 @@ class Renderer {
   val mainBatch = new SpriteBatch
   
   val tileSizeTexture = 32
-  val tileSizeScreen = tileSizeTexture * 2 // 2x upscale
+  val tileSizeScreen = tileSizeTexture // 2x upscale
 
+
+  // from top left
+  def tileRegion(x:Int, y:Int) = new TextureRegion(tileTexture, x * tileSizeTexture, y * tileSizeTexture, tileSizeTexture, tileSizeTexture)
   val tileAtlas = new Array[TextureRegion](Tile.count)
-  tileAtlas(Tile.standardGround.id) = new TextureRegion(tileTexture, 0, 0, tileSizeTexture, tileSizeTexture)
-  tileAtlas(Tile.impassableGround.id) = new TextureRegion(tileTexture, 16, 0, tileSizeTexture, tileSizeTexture)
+  tileAtlas(Tile.standardGround.id) = tileRegion(0, 0)
+  tileAtlas(Tile.impassableGround.id) = tileRegion(1, 0)
 
   def render(world:World) {
-    Gdx.gl.glClearColor(1, 1, 0, 1)
+    camera.position.set(world.width / 2 * tileSizeScreen, world.height/ 2 * tileSizeScreen, 0 )
+    camera.update()
+
+    Gdx.gl.glClearColor(0, 0, 0, 1)
     Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
     mainBatch.setProjectionMatrix(camera.combined)
@@ -42,8 +48,6 @@ class Renderer {
     }
 
     mainBatch.end()
-
-
   }
 
   def renderTiles(world:World) {
