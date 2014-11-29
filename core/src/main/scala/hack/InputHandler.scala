@@ -1,50 +1,74 @@
 package hack
 
-import com.badlogic.gdx.Gdx.{app, input}
+import com.badlogic.gdx.Gdx.app
 import com.badlogic.gdx.Input.Keys
+import com.badlogic.gdx.InputProcessor
 import hack.game.World
 
-class InputHandler {
-  def handleGlobalInput(): Unit = {
-    if (input.isKeyJustPressed(Keys.ESCAPE))
-      app.exit()
+class InputHandler(world : World) extends InputProcessor {
+  def movePlayer(player : Int, dx : Int, dy : Int) : Unit = {
+    // TODO
   }
 
-  def keyboardInput(keys: PlayerKeys): PlayerInput = {
-    var x = 0: Int
-    var y = 0: Int
-    var t = 0: Int
-    var a = false: Boolean
-
-    if (input.isKeyJustPressed(keys.left))
-      x -= 1
-
-    if (input.isKeyJustPressed(keys.right))
-      x += 1
-
-    if (input.isKeyJustPressed(keys.down))
-      y -= 1
-
-    if (input.isKeyJustPressed(keys.up))
-      y += 1
-
-    if (input.isKeyJustPressed(keys.previous))
-      t -= 1
-
-    if (input.isKeyJustPressed(keys.next))
-      t += 1
-
-    if (input.isKeyJustPressed(keys.action))
-      a = true
-
-    PlayerInput(x, y, t, a)
+  def selectTile(player : Int, dt : Int) : Unit = {
+    // TODO
   }
 
-  def handleFor(world: World) {
-    handleGlobalInput()
-    val input1: PlayerInput = keyboardInput(PlayerKeys.Player1)
-    val input2: PlayerInput = keyboardInput(PlayerKeys.Player2)
+  def placeTile(player : Int) : Unit = {
+    // TODO
+  }
 
-    // TODO: apply to world
+  override def keyDown(i : Int) : Boolean = {
+    i match {
+      case Keys.LEFT => movePlayer(0, -1, 0)
+      case Keys.RIGHT => movePlayer(0, 1, 0)
+      case Keys.DOWN => movePlayer(0, 0, -1)
+      case Keys.UP => movePlayer(0, 0, 1)
+      case Keys.LEFT_BRACKET => selectTile(0, -1)
+      case Keys.RIGHT_BRACKET => selectTile(0, 1)
+      case Keys.BACKSLASH => placeTile(0)
+
+      case Keys.A => movePlayer(1, -1, 0)
+      case Keys.D => movePlayer(1, 1, 0)
+      case Keys.S => movePlayer(1, 0, -1)
+      case Keys.W => movePlayer(1, 0, 1)
+      case Keys.Z => selectTile(1, -1)
+      case Keys.X => selectTile(1, 1)
+      case Keys.C => placeTile(1)
+
+      case Keys.ESCAPE => app.exit()
+
+      case _ =>
+    }
+
+    true
+  }
+
+  override def keyTyped(c : Char) : Boolean = {
+    false
+  }
+
+  override def mouseMoved(i : Int, i1 : Int) : Boolean = {
+    false
+  }
+
+  override def touchDown(i : Int, i1 : Int, i2 : Int, i3 : Int) : Boolean = {
+    false
+  }
+
+  override def keyUp(i : Int) : Boolean = {
+    false
+  }
+
+  override def scrolled(i : Int) : Boolean = {
+    false
+  }
+
+  override def touchUp(i : Int, i1 : Int, i2 : Int, i3 : Int) : Boolean = {
+    false
+  }
+
+  override def touchDragged(i : Int, i1 : Int, i2 : Int) : Boolean = {
+    false
   }
 }

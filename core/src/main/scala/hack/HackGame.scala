@@ -1,5 +1,6 @@
 package hack
 
+import com.badlogic.gdx.Gdx.input
 import com.badlogic.gdx.{Game, Screen}
 import hack.game.{Arch, Tile, World}
 
@@ -13,9 +14,11 @@ class GameScreen extends Screen {
   // static initialization hack
   val hck = (Tile.impassableGround, Arch.soldier)
 
-  val inputHandler = new InputHandler()
   val world = generateWorld()
   val renderer = new Renderer()
+
+  val inputHandler = new InputHandler(world)
+  input.setInputProcessor(inputHandler)
 
   def generateWorld() : World = {
     val w = new World(16, 16, Tile.standardGround, 9)
@@ -43,11 +46,10 @@ class GameScreen extends Screen {
   var simulationAccu = 0.0
   val simulationTickEvery = 1.0 // every 1 second
 
-  def render(delta: Float) {
+  def render(delta : Float) {
     t += delta
     simulationAccu += delta
     // determine game ticks here
-    inputHandler.handleFor(world)
 
     if (simulationAccu >= simulationTickEvery) {
       GameLogic.updateWorld(world)
@@ -58,6 +60,6 @@ class GameScreen extends Screen {
     renderer.render(world, simulationAccu)
   }
 
-  def resize(width: Int, height: Int) {
+  def resize(width : Int, height : Int) {
   }
 }
