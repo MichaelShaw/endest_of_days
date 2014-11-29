@@ -166,8 +166,8 @@ class World(val width : Int, val height : Int, val startingTile : Tile, val slot
   }
 
   // TODO: derive from initial tiles
-  val playerA = new Player(0, Vec2i(8, 1), 0, Tile.groundTiles, Tile.playerAFactories)
-  val playerB = new Player(1, Vec2i(8, 14), 0, Tile.groundTiles, Tile.playerBFactories)
+  val playerA = new Player(0, Vec2i(1, height/2), 0, Tile.groundTiles, Tile.playerAFactories)
+  val playerB = new Player(1, Vec2i(width - 2, height/2), 0, Tile.groundTiles, Tile.playerBFactories)
   val players = Array(playerA, playerB)
 
   // floodfills

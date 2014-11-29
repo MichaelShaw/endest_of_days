@@ -21,7 +21,8 @@ class GameScreen extends Screen {
   inputHandler.setAsListener()
 
   def generateWorld() : World = {
-    val w = new World(16, 16, Tile.standardGround, 9)
+    val top = 10
+    val w = new World(18, 11, Tile.standardGround, 9)
 
     def placeHomeBaseBackage(v:Vec2i, playerId:Int) {
       for {
@@ -34,10 +35,11 @@ class GameScreen extends Screen {
         }
       }
       w.placeTileAt(v, Tile.cultistSpawner, playerId)
+      w.players(playerId).cursorPosition = v
     }
 
-    placeHomeBaseBackage(Vec2i(8, 15), 1)
-    placeHomeBaseBackage(Vec2i(8, 0), 0)
+    placeHomeBaseBackage(Vec2i(0, w.height / 2), 1)
+    placeHomeBaseBackage(Vec2i(w.width - 1, w.height / 2), 0)
 
     for {
       x <- 3 to 15
@@ -45,7 +47,7 @@ class GameScreen extends Screen {
       w.placeTileAt(Vec2i(x, 7), Tile.impassableGround, -1)
     }
     for {
-      y <- 4 to 12
+      y <- 4 to top - 3
     } {
       w.placeTileAt(Vec2i(3, y), Tile.impassableGround, -1)
     }

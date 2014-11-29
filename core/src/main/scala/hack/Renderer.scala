@@ -50,7 +50,8 @@ class Renderer {
   val postBatch = new SpriteBatch
 
   val tileSizeTexture = 32
-  val tileSizeScreen = tileSizeTexture // 2x upscale
+  val upScale = 2
+  val tileSizeScreen = tileSizeTexture * upScale // 2x upscale
 
   // from top left
   def tileRegion(x : Int, y : Int) = new TextureRegion(tileTexture, x * tileSizeTexture, y * tileSizeTexture, tileSizeTexture, tileSizeTexture)
@@ -232,18 +233,18 @@ class Renderer {
           ((1 - progress) * -32).asInstanceOf[Int]
         } else {
           0
-        }
+        } - 15
 
 
 
         for (t <- 0 until player.availableTiles.length) {
           val x : Int = t + xOffset
-          val y : Int = -2
+          val y =  -1
 
           mainBatch.draw(trForTile(player.availableTiles(t), player.id), x * tileSizeScreen, y * tileSizeScreen + yOffset, tileSizeScreen, tileSizeScreen)
 
           if (t == player.tile) {
-            mainBatch.draw(cursorTextureRegion, x * tileSizeScreen, y * tileSizeScreen, tileSizeScreen, tileSizeScreen)
+            mainBatch.draw(cursorTextureRegion, x * tileSizeScreen, y * tileSizeScreen + yOffset, tileSizeScreen, tileSizeScreen)
           }
         }
       }
