@@ -78,8 +78,8 @@ class World(val width : Int, val height : Int, val startingTile : Tile, val slot
   
   def spawnNear(v:Vec2f, partId:Int, count:Int = 8): Unit = {
     for(n <- 1 to count) {
-      val at = v + Vec2f(rand.nextFloat() * 0.5f, rand.nextFloat() * 0.5f) * Renderer.pixelsPerTile
-      val velocity = Vec2f(rand.nextFloat() - 0.5f, rand.nextFloat() - 0.5f) * Renderer.pixelsPerTile
+      val at = v + Vec2f(rand.nextFloat() * 0.5f, rand.nextFloat() * 0.5f) * Renderer.pixelsPerTile + Vec2f(15, 15)
+      val velocity = Vec2f(rand.nextFloat() - 0.5f, -rand.nextFloat() ) * Renderer.pixelsPerTile
       particles += new Particle(at, velocity, 0.5f + rand.nextFloat(), partId)
     }
   }
@@ -89,7 +89,7 @@ class World(val width : Int, val height : Int, val startingTile : Tile, val slot
       part.aliveFor -= delta
 
       part.at += part.velocity * delta // move by velocity
-      part.velocity *= (1 - delta) // dampen velocity
+      part.velocity *= (1 - delta * 3f) // dampen velocity
 
       part.aliveFor > 0
     }
