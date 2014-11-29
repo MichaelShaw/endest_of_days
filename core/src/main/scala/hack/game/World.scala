@@ -30,6 +30,12 @@ class World(val width : Int, val height : Int, val startingTile : Tile, val slot
 
   var tick = 0
 
+
+  def ticksPerPlace = 10
+  var placementTimer = ticksPerPlace
+
+
+
   val timer = new MetaLayer(width, height, 0)
   val health = new MetaLayer(width, height, 0)
 

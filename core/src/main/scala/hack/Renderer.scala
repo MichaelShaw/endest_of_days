@@ -1,13 +1,10 @@
 package hack
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.GL20
-import com.badlogic.gdx.graphics.OrthographicCamera
+import com.badlogic.gdx.graphics.{Color, GL20, OrthographicCamera, Texture}
 import com.badlogic.gdx.graphics.Pixmap.Format
-import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.Texture.TextureFilter
-import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import com.badlogic.gdx.graphics.g2d.TextureRegion
+import com.badlogic.gdx.graphics.g2d.{BitmapFont, SpriteBatch, TextureRegion}
 import com.badlogic.gdx.graphics.glutils.{ShaderProgram, FrameBuffer}
 import com.badlogic.gdx.math.Matrix4
 import hack.game._
@@ -18,6 +15,8 @@ object Renderer {
 }
 class Renderer {
   val camera = new OrthographicCamera(Gdx.graphics.getWidth, Gdx.graphics.getHeight)
+  val font = new BitmapFont() // Gdx.files.internal("data/arial-15.fnt"),false)
+  font.setColor(Color.WHITE)
 
   def fboWidth = Gdx.graphics.getWidth
   def fboHeight = Gdx.graphics.getHeight
@@ -226,6 +225,8 @@ class Renderer {
         }
       }
     }
+
+    font.draw(mainBatch, world.placementTimer.toString, world.width * tileSizeScreen / 2, -50)
 
     renderHand(world.playerA, playerACursor, 0)
     renderHand(world.playerB, playerBCursor, world.width - world.playerB.tiles.length)
