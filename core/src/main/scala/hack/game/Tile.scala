@@ -50,7 +50,4 @@ object Tile {
   val playerBCaptainFactory = register(new Factory(nextId, 1, factoryHealth, produceEveryNTicks = 3, produceArch = Arch.captain))
   val playerBAEFactory = register(new Factory(nextId, 1, factoryHealth, produceEveryNTicks = 5, produceArch = Arch.ae))
   val playerBDefenderFactory = register(new Factory(nextId, 1, factoryHealth, produceEveryNTicks = 2, produceArch = Arch.defender))
-
-  val playerA = register(new Tile(nextId, "playerA"))
-  val playerB = register(new Tile(nextId, "playerB"))
 }
