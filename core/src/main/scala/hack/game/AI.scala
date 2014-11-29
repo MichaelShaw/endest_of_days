@@ -30,7 +30,8 @@ object AI {
         player.availableTiles.sortBy {
           case f:Factory => -200 + rand.nextInt(25)
           case g:Gate => -100
-          case _ => 0 + rand.nextInt(25)
+//          case t:Tile if t == Tile.impassableGround => -50 // attempt mountains first
+          case _ => -15
         }.find { tile =>
           attemptToPlace(tile, player).isDefined
         }.foreach { tile =>
@@ -73,7 +74,7 @@ object AI {
 
     homeBase.headOption.flatMap { homeBase =>
       val path = world.aggressionFloodFills(player.id).descendFrom(homeBase)
-      println("full descent path to enemy factory " + path)
+//      println("full descent path to enemy factory " + path)
       val optionsOnPath = path.drop(2).take(3)
       optionsOnPath.find { v =>
         canPlaceLegally.contains(v)
@@ -81,11 +82,18 @@ object AI {
     }
   }
 
+
+
   def placeMountain(world:World, player:Player ) : Option[Vec2i] = {
     val canPlaceLegally = GameLogic.matchingTiles(world, { (x, y) =>
       val v = Vec2i(x, y)
       world.canPlaceTileAt(v, Tile.gate, player.id) && isNotAGateOrFactory(world.tileAt(v))
     })
+//    canPlaceLegally.find { v =>
+//
+//    }
+
+
     GameLogic.sampleMaybe(canPlaceLegally.toArray)
   }
 
@@ -94,6 +102,10 @@ object AI {
       val v = Vec2i(x, y)
       world.canPlaceTileAt(v, Tile.gate, player.id) && isNotAGateOrFactory(world.tileAt(v))
     })
-    GameLogic.sampleMaybe(canPlaceLegally.toArray)
+    val andWeDontOwn = canPlaceLegally.filter { v =>
+      world.owned.get(v) != player.id
+
+    }
+    GameLogic.sampleMaybe(andWeDontOwn.toArray).orElse(GameLogic.sampleMaybe(canPlaceLegally.toArray))
   }
 }

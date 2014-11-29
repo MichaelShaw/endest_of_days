@@ -63,7 +63,7 @@ class GameScreen extends Screen {
     w
   }
 
-  val simulationTickEvery = 1.0  // every 1 second
+  val simulationTickEvery = 0.5  // every 1 second
 
   def show() = {}
 
