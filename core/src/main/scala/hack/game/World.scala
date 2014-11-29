@@ -43,13 +43,15 @@ class World(val width : Int, val height : Int, val startingTile : Tile, val slot
   def placeTileAt(v : Vec2i, tile : Tile) : Unit = placeTileAt(v.x, v.y, tile)
 
   def placeTileAt(x : Int, y : Int, tile : Tile) : Unit = {
-    setTileAt(x, y, tile)
+    if (canPlaceTileAt(x, y, tile)) {
+      setTileAt(x, y, tile)
 
-    val metaValue : Int = tile match {
-      case f : Factory => f.startingHealth
-      case _ => 0
+      val metaValue : Int = tile match {
+        case f : Factory => f.startingHealth
+        case _ => 0
+      }
+      meta.set(x, y, metaValue)
     }
-    meta.set(x, y, metaValue)
   }
 
   def inBounds(v : Vec2i) : Boolean = inBounds(v.x, v.y)
