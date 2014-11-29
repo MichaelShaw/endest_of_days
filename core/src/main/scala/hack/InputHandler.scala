@@ -1,11 +1,13 @@
 package hack
 
-import com.badlogic.gdx.Gdx.app
+import com.badlogic.gdx.Gdx.{app, input}
 import com.badlogic.gdx.Input.Keys
 import com.badlogic.gdx.InputProcessor
+import com.badlogic.gdx.controllers.{Controller, ControllerListener, Controllers, PovDirection}
+import com.badlogic.gdx.math.Vector3
 import hack.game.World
 
-class InputHandler(world : World) extends InputProcessor {
+class InputHandler(world : World) extends InputProcessor with ControllerListener {
   def movePlayer(player : Int, dx : Int, dy : Int) : Unit = {
     // TODO
   }
@@ -16,6 +18,11 @@ class InputHandler(world : World) extends InputProcessor {
 
   def placeTile(player : Int) : Unit = {
     // TODO
+  }
+
+  def setAsListener() : Unit = {
+    input.setInputProcessor(this)
+    Controllers.addListener(this)
   }
 
   override def keyDown(i : Int) : Boolean = {
@@ -69,6 +76,54 @@ class InputHandler(world : World) extends InputProcessor {
   }
 
   override def touchDragged(i : Int, i1 : Int, i2 : Int) : Boolean = {
+    false
+  }
+
+  override def connected(controller : Controller) : Unit = {
+  }
+
+  override def disconnected(controller : Controller) : Unit = {
+  }
+
+  override def xSliderMoved(controller : Controller, i : Int, b : Boolean) : Boolean = {
+    false
+  }
+
+  override def povMoved(controller : Controller, i : Int, povDirection : PovDirection) : Boolean = {
+    false
+  }
+
+  override def buttonDown(controller : Controller, i : Int) : Boolean = {
+    val p : Int = if (controller == Controllers.getControllers.first()) 0 else 1
+
+    i match {
+      case 2 => movePlayer(p, -1, 0)
+      case 3 => movePlayer(p, 1, 0)
+      case 1 => movePlayer(p, 0, -1)
+      case 0 => movePlayer(p, 0, 1)
+      case 8 => selectTile(p, -1)
+      case 9 => selectTile(p, 1)
+      case 11 => placeTile(p)
+
+      case _ =>
+    }
+
+    true
+  }
+
+  override def buttonUp(controller : Controller, i : Int) : Boolean = {
+    false
+  }
+
+  override def accelerometerMoved(controller : Controller, i : Int, vector3 : Vector3) : Boolean = {
+    false
+  }
+
+  override def ySliderMoved(controller : Controller, i : Int, b : Boolean) : Boolean = {
+    false
+  }
+
+  override def axisMoved(controller : Controller, i : Int, v : Float) : Boolean = {
     false
   }
 }

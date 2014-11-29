@@ -1,6 +1,5 @@
 package hack
 
-import com.badlogic.gdx.Gdx.input
 import com.badlogic.gdx.{Game, Screen}
 import hack.game.{Arch, Tile, World}
 
@@ -18,7 +17,7 @@ class GameScreen extends Screen {
   val renderer = new Renderer()
 
   val inputHandler = new InputHandler(world)
-  input.setInputProcessor(inputHandler)
+  inputHandler.setAsListener()
 
   def generateWorld() : World = {
     val w = new World(16, 16, Tile.standardGround, 9)
