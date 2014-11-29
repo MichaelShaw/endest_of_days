@@ -37,7 +37,7 @@ case class Arch(id:Int, name:String, attack:Int, maxHealth:Int, explodeOnAttack:
 }
 
 object Arch {
-  val worker = Arch(1, "worker", 1, 2, canHelpSummon = true)
+  val worker = Arch(0, "worker", 1, 2, canHelpSummon = true)
   val soldier = Arch(1, "soldier", 1, 4)
   val captain = Arch(2, "captain", 2, 5)
   val ae = Arch(3, "ae", 3, 4, explodeOnAttack = true, aeAttack = true)

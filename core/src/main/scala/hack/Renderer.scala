@@ -175,7 +175,7 @@ class Renderer {
       var slot = 0; while (slot < world.slotsPerTile) {
         val e = entities(slot)
         if (e != null) {
-          val tr : TextureRegion = if (e.playerId == 0) {
+          val tr : TextureRegion = if(e.playerId == 0) {
             playerAGuys(e.arch.id)
           } else {
             playerBGuys(e.arch.id)

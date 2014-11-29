@@ -67,7 +67,7 @@ object GameLogic {
       val summonerFloodFill = FloodFill.produceFor(factoriesThatRequireSummoners, world)
 
       if(player.id == 0) {
-        summonerFloodFill.printDebug("player 0 summoner")
+//        summonerFloodFill.printDebug("player 0 summoner")
       }
 
 
@@ -131,7 +131,7 @@ case object Draw extends GameOutcome
             val timer = world.timer.get(v)
             if(timer == 1) {
               // spawn time
-              spawnNear(world, x, y, world.owned.get(v), f.produceArch)
+              spawnAt(world, v, world.owned.get(v), f.produceArch)
               world.timer.set(v, f.produceEveryNTicks)
             } else {
               world.timer.set(v, timer - 1)
@@ -325,21 +325,13 @@ case object Draw extends GameOutcome
     }
   }
 
-  def spawnNear(world:World, x:Int, y:Int, playerId:Int, arch:Arch){
-    val availablePlacementSpots = Direction.directions.filter { dir =>
-      val offset = dir.plus(x, y)
-      world.inBounds(offset) && world.hasSpaceAt(offset) && world.tileAt(offset).canBeWalkedOn
-    }
-
-    sampleMaybe(availablePlacementSpots) match {
-      case Some(dir) =>
-        val spawnAt = dir.plus(x, y)
-        val living = new Living(world.generateLivingId(), playerId, arch, spawnAt)
-        living.actionStartedAtTick = world.tick
-        living.actionFinishedAtTick = world.tick + 1 // basically (idle for 1 turn)
-        living.currentSlot = world.registerLivingAt(spawnAt, living)
-        living.lastSlot = living.currentSlot
-      case None =>
+  def spawnAt(world:World, v:Vec2i, playerId:Int, arch:Arch){
+    if(world.inBounds(v) && world.hasSpaceAt(v) && world.tileAt(v).canBeWalkedOn) {
+      val living = new Living(world.generateLivingId(), playerId, arch, v)
+      living.actionStartedAtTick = world.tick
+      living.actionFinishedAtTick = world.tick + 1 // basically (idle for 1 turn)
+      living.currentSlot = world.registerLivingAt(v, living)
+      living.lastSlot = living.currentSlot
     }
   }
 }
