@@ -114,13 +114,24 @@ object GameLogic {
       stampActionDuration(1)
     }
     def strike(at:Vec2i) {
-      val enemies = world.validLivingsAt(at).filter{ e =>
+      def validEnemies = world.validLivingsAt(at).filter{ e =>
         e.playerId != living.playerId && e.health > 0 // only strike enemies with health
       }
-      assert(enemies.nonEmpty)
-      val enemy = sample(enemies)
-      enemy.health -= living.arch.attack
-      enemy.lastStruckAt = world.tick
+      val toAttack:Seq[Living] = if(living.arch.aeAttack) {
+        validEnemies
+      } else {
+        Seq(sample(validEnemies))
+      }
+
+      for(enemy <- toAttack) {
+        println(s"${living.arch} striking ${enemy.arch} for ${living.arch.attack}")
+        enemy.health -= living.arch.attack
+        enemy.lastStruckAt = world.tick
+      }
+
+      if(living.arch.explodeOnAttack) {
+        living.health = 0
+      }
 
       stampActionDuration(1)
     }
