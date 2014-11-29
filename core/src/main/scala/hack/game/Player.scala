@@ -1,4 +1,4 @@
 package hack.game
 
-class Player(val id : Int, var x : Int, var y : Int) {
+class Player(val id : Int, var cursorPosition : Vec2i) {
 }

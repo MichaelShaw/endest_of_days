@@ -11,19 +11,20 @@ import com.badlogic.gdx.controllers.PovDirection
 import com.badlogic.gdx.math.Vector3
 import hack.game.Player
 import hack.game.Tile
+import hack.game.Vec2i
 import hack.game.World
 
 import scala.util.Random
 
 class InputHandler(world : World) extends InputProcessor with ControllerListener {
-  def movePlayer(player : Int, dx : Int, dy : Int) : Unit = {
-    val p : Player = world.players(player)
-    val x = p.x + dx
-    val y = p.y + dy
+  def movePlayer(player : Int, dx : Int, dy : Int) : Unit = movePlayer(player, Vec2i(dx, dy))
 
-    if (world.inBounds(x, y)) {
-      p.x = x
-      p.y = y
+  def movePlayer(player : Int, deltaPosition : Vec2i) : Unit = {
+    val p : Player = world.players(player)
+    val cp = p.cursorPosition + deltaPosition
+
+    if (world.inBounds(cp)) {
+      p.cursorPosition = cp
     }
   }
 
@@ -36,7 +37,7 @@ class InputHandler(world : World) extends InputProcessor with ControllerListener
     val ts : Array[Tile] = Tile.groundTiles
     val t : Tile = ts(Random.nextInt(ts.size))
 
-    world.placeTileAt(p.x, p.y, t)
+    world.placeTileAt(p.cursorPosition, t)
   }
 
   def setAsListener() : Unit = {

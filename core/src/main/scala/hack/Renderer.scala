@@ -1,13 +1,18 @@
 package hack
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.g2d.{SpriteBatch, TextureRegion}
-import com.badlogic.gdx.graphics.{GL20, OrthographicCamera, Texture}
-import hack.game.{Tile, Vec2i, World, Vec2f}
+import com.badlogic.gdx.graphics.GL20
+import com.badlogic.gdx.graphics.OrthographicCamera
+import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.graphics.g2d.TextureRegion
+import hack.game.Tile
+import hack.game.Vec2f
+import hack.game.Vec2i
+import hack.game.World
 
 class Renderer {
   val camera = new OrthographicCamera(Gdx.graphics.getWidth, Gdx.graphics.getHeight)
-
 
   def assetsPath = "../assets"
 
@@ -17,7 +22,6 @@ class Renderer {
 
   val tileSizeTexture = 32
   val tileSizeScreen = tileSizeTexture // 2x upscale
-
 
   // from top left
   def tileRegion(x : Int, y : Int) = new TextureRegion(tileTexture, x * tileSizeTexture, y * tileSizeTexture, tileSizeTexture, tileSizeTexture)
@@ -71,7 +75,7 @@ class Renderer {
 
     renderTiles(world)
     renderLivings(world, simulationAccu)
-    renderPlayers(world)
+    renderCursors(world)
 
     mainBatch.end()
   }
@@ -98,13 +102,13 @@ class Renderer {
     y <- 0 to 2
   } yield Vec2i(4 + x * 8, 4 + y * 8)).toArray // need better logic here
 
-  def screenLocation(loc:Vec2i, slot:Int) : Vec2i = {
+  def screenLocation(loc : Vec2i, slot : Int) : Vec2i = {
     (loc * tileSizeScreen) + innerTileLocations(slot)
   }
 
   // simulation accu for partial tick
   def renderLivings(world : World, simulationAccu : Double) {
-    def flashing(d:Double) : Boolean = (simulationAccu / d).asInstanceOf[Int] % 2 == 1
+    def flashing(d : Double) : Boolean = (simulationAccu / d).asInstanceOf[Int] % 2 == 1
     for {
       x <- 0 until world.width
       y <- 0 until world.height
@@ -123,13 +127,13 @@ class Renderer {
 
           val at = Vec2f.lerp(lastLocation, currentLocation, simulationAccu)
 
-          val draw = if(e.lastStruckAt == world.tick - 1 && simulationAccu < 0.4) {
+          val draw = if (e.lastStruckAt == world.tick - 1 && simulationAccu < 0.4) {
             flashing(0.10)
           } else {
             true
           }
-          if(draw) {
-            mainBatch.draw(tr, at.x , at.y, 16, 16)
+          if (draw) {
+            mainBatch.draw(tr, at.x, at.y, 16, 16)
           }
 
         }
@@ -138,8 +142,8 @@ class Renderer {
     }
   }
 
-  def renderPlayers(world : World) : Unit = {
-    mainBatch.draw(playerA, world.playerA.x * tileSizeScreen, world.playerA.y * tileSizeScreen, tileSizeScreen, tileSizeScreen)
-    mainBatch.draw(playerB, world.playerB.x * tileSizeScreen, world.playerB.y * tileSizeScreen, tileSizeScreen, tileSizeScreen)
+  def renderCursors(world : World) : Unit = {
+    mainBatch.draw(playerA, world.playerA.cursorPosition.x * tileSizeScreen, world.playerA.cursorPosition.y * tileSizeScreen, tileSizeScreen, tileSizeScreen)
+    mainBatch.draw(playerB, world.playerB.cursorPosition.x * tileSizeScreen, world.playerB.cursorPosition.y * tileSizeScreen, tileSizeScreen, tileSizeScreen)
   }
 }
