@@ -67,7 +67,7 @@ class Renderer {
 
   tileAtlas(Tile.gate.id) = tileRegion(6, 0)
 
-  val ownedTileAtlas:Array[Array[TextureRegion]] = (1 to 2).map { n =>
+  val ownedTileAtlas : Array[Array[TextureRegion]] = (1 to 2).map { n =>
     (0 to 6).map { t =>
       tileRegion(t, n)
     }.toArray
@@ -94,7 +94,7 @@ class Renderer {
     new TextureRegion(tileTexture, 240, 80, 16, 16)
   )
 
-  def render(world : World, simulationAccu : Double, simulationTickSize:Double) {
+  def render(world : World, simulationAccu : Double, simulationTickSize : Double) {
     camera.position.set(world.width / 2 * tileSizeScreen, world.height / 2 * tileSizeScreen, 0)
     camera.update()
 
@@ -144,7 +144,7 @@ class Renderer {
       val v = Vec2i(x, y)
       val tile = world.tileAt(v)
       val owned = world.owned.get(v)
-      val textureRegion : TextureRegion = if(owned >= 0) {
+      val textureRegion : TextureRegion = if (owned >= 0) {
         ownedTileAtlas(owned)(tile.id)
 
       } else {
@@ -164,7 +164,7 @@ class Renderer {
   }
 
   // simulation accu for partial tick
-  def renderLivings(world : World, simulationAccu : Double, simulationTickSize:Double) {
+  def renderLivings(world : World, simulationAccu : Double, simulationTickSize : Double) {
     def flashing(d : Double) : Boolean = (simulationAccu / d).asInstanceOf[Int] % 2 == 1
     for {
       x <- 0 until world.width
@@ -200,12 +200,12 @@ class Renderer {
   }
 
   def renderCursors(world : World) : Unit = {
-    val pa : Player = world.playerA
-    mainBatch.draw(tileAtlas(pa.nextTile.id), pa.cursorPosition.x * tileSizeScreen, pa.cursorPosition.y * tileSizeScreen, tileSizeScreen, tileSizeScreen)
-    mainBatch.draw(playerACursor, pa.cursorPosition.x * tileSizeScreen, pa.cursorPosition.y * tileSizeScreen, tileSizeScreen, tileSizeScreen)
+    def renderCursor(player : Player, cursorTextureRegion : TextureRegion) : Unit = {
+      mainBatch.draw(tileAtlas(player.tiles(player.tile).id), player.cursorPosition.x * tileSizeScreen, player.cursorPosition.y * tileSizeScreen, tileSizeScreen, tileSizeScreen)
+      mainBatch.draw(cursorTextureRegion, player.cursorPosition.x * tileSizeScreen, player.cursorPosition.y * tileSizeScreen, tileSizeScreen, tileSizeScreen)
+    }
 
-    val pb : Player = world.playerB
-    mainBatch.draw(tileAtlas(pb.nextTile.id), pb.cursorPosition.x * tileSizeScreen, pb.cursorPosition.y * tileSizeScreen, tileSizeScreen, tileSizeScreen)
-    mainBatch.draw(playerBCursor, pb.cursorPosition.x * tileSizeScreen, pb.cursorPosition.y * tileSizeScreen, tileSizeScreen, tileSizeScreen)
+    renderCursor(world.playerA, playerACursor)
+    renderCursor(world.playerB, playerBCursor)
   }
 }
