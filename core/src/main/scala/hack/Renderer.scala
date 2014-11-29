@@ -112,6 +112,7 @@ class Renderer {
 
     renderTiles(world)
     renderLivings(world, simulationAccu, simulationTickSize)
+    renderHands(world)
     renderCursors(world)
 
     mainBatch.end()
@@ -198,6 +199,24 @@ class Renderer {
         slot += 1
       }
     }
+  }
+
+  def renderHands(world : World) : Unit = {
+    def renderHand(player : Player, cursorTextureRegion : TextureRegion, xOffset : Int) : Unit = {
+      for (t <- 0 until player.tiles.length) {
+        val x : Int = t + xOffset
+        val y : Int = -2
+
+        mainBatch.draw(tileAtlas(player.tiles(t).id), x * tileSizeScreen, y * tileSizeScreen, tileSizeScreen, tileSizeScreen)
+
+        if (t == player.tile) {
+          mainBatch.draw(cursorTextureRegion, x * tileSizeScreen, y * tileSizeScreen, tileSizeScreen, tileSizeScreen)
+        }
+      }
+    }
+
+    renderHand(world.playerA, playerACursor, 0)
+    renderHand(world.playerB, playerBCursor, world.width - world.playerB.tiles.length)
   }
 
   def renderCursors(world : World) : Unit = {
