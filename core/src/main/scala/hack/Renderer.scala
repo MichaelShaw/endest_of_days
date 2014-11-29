@@ -126,12 +126,17 @@ class Renderer {
     mainBatch.begin()
     mainBatch.setShader(toFrameBufferShader)
 
+    mainBatch.enableBlending()
+
 
     renderTiles(world)
+
     renderLivings(world, simulationAccu, simulationTickSize, delta)
+
     mainBatch.setColor(black)
     renderHands(world, simulationAccu, simulationTickSize)
     renderCursors(world)
+
 
     mainBatch.end()
 
@@ -212,7 +217,11 @@ class Renderer {
           val lastLocation = screenLocation(e.lastLocation, e.lastSlot)
           val currentLocation = screenLocation(e.currentLocation, e.currentSlot)
 
-          val at = Vec2f.lerp(lastLocation, currentLocation, simulationAccu / simulationTickSize)
+          val actionDuration = e.actionFinishedAtTick - e.actionStartedAtTick
+          val progressAbs = world.tick - e.actionStartedAtTick + simulationAccu / simulationTickSize
+          val progressAlpha = progressAbs / actionDuration
+
+          val at = Vec2f.lerp(lastLocation, currentLocation, progressAlpha) // simulationAccu / simulationTickSize
 
           val smoothTime = 0.25
 

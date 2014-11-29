@@ -41,6 +41,7 @@ class Living(val id:Int,
 case class Arch(id:Int, name:String, attack:Int, maxHealth:Int,
                 explodeOnAttack:Boolean = false, aeDamage:Int = 0,
                 canHelpSummon:Boolean = false,
+                ticksToMove:Int = 1,
                 onHitSpawns:Option[Arch] = None) {
 
 }
@@ -49,7 +50,7 @@ object Arch {
   val cultist = Arch(0, "cultist", 1, 2, canHelpSummon = true)
 
   val imp = Arch(1, "imp", attack = 1, maxHealth = 4)
-  val worm = Arch(2, "worm", attack = 5, maxHealth = 6)
+  val worm = Arch(2, "worm", attack = 5, maxHealth = 6, ticksToMove = 2)
   val fex = Arch(3, "fex", attack = 4, maxHealth = 14, aeDamage = 1)
 
   val captain = Arch(4, "captain", attack = 3, maxHealth = 10)

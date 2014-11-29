@@ -187,7 +187,7 @@ case object Draw extends GameOutcome
       living.currentLocation = v
       living.currentSlot = world.registerLivingAt(v, living)
 
-      stampActionDuration(1)
+      stampActionDuration(living.arch.ticksToMove)
     }
     def idle() {
       stampActionDuration(1)

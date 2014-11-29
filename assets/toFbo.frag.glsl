@@ -14,5 +14,5 @@ void main() {
      discard;
    }
 
-   gl_FragColor = vec4(color.rgb, 1.0);
+   gl_FragColor = vec4(color.rgba);
 }
