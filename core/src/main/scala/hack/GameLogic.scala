@@ -56,7 +56,7 @@ object GameLogic {
     } {
       val tile = world.tileAt(x, y)
       tile match {
-        case Tile.playerAFactory => spawnNear(world, x, y, world.player.id, Arch.soldier)
+        case Tile.playerAFactory => spawnNear(world, x, y, world.playerA.id, Arch.soldier)
         case Tile.playerBFactory => spawnNear(world, x, y, world.playerB.id, Arch.soldier)
         case _ =>
       }
