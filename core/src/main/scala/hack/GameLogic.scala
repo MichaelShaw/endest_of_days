@@ -34,6 +34,7 @@ object GameLogic {
 
   def calculateFloodFills(world:World) {
     for(player <- world.players) {
+      // aggression
       val goals = matchingTiles(world, { (x, y) =>
         val v = Vec2i(x, y)
         val tile = world.tileAt(v)
@@ -44,6 +45,33 @@ object GameLogic {
       })
       val floodFill = FloodFill.produceFor(goals, world)
       world.aggressionFloodFills(player.id) = floodFill
+
+      val factoriesThatRequireSummoners = matchingTiles(world, {(x, y) =>
+        val v = Vec2i(x, y)
+        val tile = world.tileAt(v)
+        val ownedBy = world.owned.get(v)
+        if(ownedBy == player.id) {
+          tile match {
+            case f:Factory =>
+              val summonerCount = world.validLivingsAt(v).count { l =>
+                l.playerId == ownedBy && l.arch.canHelpSummon
+              }
+              summonerCount < f.requiredSummoners
+            case _ => false
+          }
+        } else {
+          false
+        }
+      })
+
+      val summonerFloodFill = FloodFill.produceFor(factoriesThatRequireSummoners, world)
+
+      if(player.id == 0) {
+        summonerFloodFill.printDebug("player 0 summoner")
+      }
+
+
+      world.summonerFloodFills(player.id) = summonerFloodFill
     }
   }
 
@@ -88,6 +116,7 @@ case object Draw extends GameOutcome
     } {
       val v = Vec2i(x, y)
       val tile = world.tileAt(v)
+      val ownedBy = world.owned.get(v)
       tile match {
         case g:Gate =>
           val time = world.timer.get(v)
@@ -95,14 +124,18 @@ case object Draw extends GameOutcome
             world.timer.set(v, time - 1) // countdown gate timer
           }
         case f:Factory =>
-          val v = Vec2i(x, y)
-          val timer = world.timer.get(v)
-          if(timer == 1) {
-            // spawn time
-            spawnNear(world, x, y, world.owned.get(v), f.produceArch)
-            world.timer.set(v, f.produceEveryNTicks)
-          } else {
-            world.timer.set(v, timer - 1)
+          val availableSummoners = world.validLivingsAt(v).count { l =>
+            l.playerId == ownedBy && l.arch.canHelpSummon
+          }
+          if(availableSummoners >= f.requiredSummoners) {
+            val timer = world.timer.get(v)
+            if(timer == 1) {
+              // spawn time
+              spawnNear(world, x, y, world.owned.get(v), f.produceArch)
+              world.timer.set(v, f.produceEveryNTicks)
+            } else {
+              world.timer.set(v, timer - 1)
+            }
           }
         case _ =>
       }
@@ -142,12 +175,12 @@ case object Draw extends GameOutcome
   }
 
   def updateLiving(world:World, living:Living) {
-    def stampActionDuration(n:Int) {
+    def stampActionDuration(n: Int) {
       living.actionStartedAtTick = world.tick
       living.actionFinishedAtTick = world.tick + n
     }
     living.saveLastLocation()
-    def moveTo(v:Vec2i) {
+    def moveTo(v: Vec2i) {
       world.unregisterLivingAt(living.currentLocation, living)
 
       living.currentLocation = v
@@ -158,33 +191,33 @@ case object Draw extends GameOutcome
     def idle() {
       stampActionDuration(1)
     }
-    def strike(at:Vec2i) {
-      def validEnemies = world.validLivingsAt(at).filter{ e =>
+    def strike(at: Vec2i) {
+      def validEnemies = world.validLivingsAt(at).filter { e =>
         e.playerId != living.playerId && e.health > 0 // only strike enemies with health
       }
-      val toAttack:Seq[Living] = if(living.arch.aeAttack) {
+      val toAttack: Seq[Living] = if (living.arch.aeAttack) {
         validEnemies
       } else {
         Seq(sample(validEnemies))
       }
 
-      for(enemy <- toAttack) {
-//        println(s"${living.arch} striking ${enemy.arch} for ${living.arch.attack}")
+      for (enemy <- toAttack) {
+        //        println(s"${living.arch} striking ${enemy.arch} for ${living.arch.attack}")
         enemy.health -= living.arch.attack
         enemy.lastStruckAt = world.tick
       }
 
-      if(living.arch.explodeOnAttack) {
+      if (living.arch.explodeOnAttack) {
         living.health = 0
       }
 
       stampActionDuration(1)
     }
 
-    def strikeBuilding(at:Vec2i): Unit = {
+    def strikeBuilding(at: Vec2i): Unit = {
       val healthRemaining = world.health.get(at) - living.arch.attack
 
-      if(healthRemaining <= 0) {
+      if (healthRemaining <= 0) {
         world.placeTileAt(at, Tile.standardGround, -1)
       } else {
         world.health.set(at, healthRemaining)
@@ -195,7 +228,9 @@ case object Draw extends GameOutcome
 
 
     val ff = world.aggressionFloodFills(living.playerId)
+    val sff = world.summonerFloodFills(living.playerId)
     val currentHeight = ff.get(living.currentLocation)
+    val currentSummonerHeight = sff.get(living.currentLocation)
 
     // check for person threats
 
@@ -207,9 +242,9 @@ case object Draw extends GameOutcome
     }
     val directionsWithEnemyBuildings = Direction.directions.filter { dir =>
       val neighbour = living.currentLocation + dir
-      if(ff.inBounds(neighbour)) {
+      if (ff.inBounds(neighbour)) {
         world.tileAt(neighbour) match {
-          case f:Factory => world.owned.get(neighbour) != living.playerId && world.health.get(neighbour) > 0 // meta is health channel for factory
+          case f: Factory => world.owned.get(neighbour) != living.playerId && world.health.get(neighbour) > 0 // meta is health channel for factory
           case _ => false
         }
       } else {
@@ -224,13 +259,49 @@ case object Draw extends GameOutcome
         world.hasSpaceAt(neighbour)
     }
 
-    if(directionsWithEnemies.nonEmpty) {
+    def descrendingSummonDirections = Direction.directions.filter { dir =>
+      val neighbour = living.currentLocation + dir
+        sff.inBounds(neighbour) &&
+        sff.get(neighbour) < currentSummonerHeight &&
+          world.tileAt(neighbour).canBeWalkedOn &&
+          world.hasSpaceAt(neighbour)
+    }
+
+    def isOnSummoningTile = world.tileAt(living.currentLocation) match {
+      case f:Factory => f.requiredSummoners > 0 && world.owned.get(living.currentLocation) == living.playerId
+      case _ => false
+    }
+
+
+    println("arch " + living.arch.name)
+//    println(s"can i help summon ${living.arch.canHelpSummon} am i not on a summoning tile ${!isOnSummoningTile} is my loc reachable ${world.summonerFloodFills(living.playerId).reachable(living.currentLocation)}")
+
+    if (directionsWithEnemies.nonEmpty) {
       val neighbour = living.currentLocation + sample(directionsWithEnemies)
       strike(neighbour)
-    } else if(directionsWithEnemyBuildings.nonEmpty) {
+    } else if (directionsWithEnemyBuildings.nonEmpty) {
       val neighbour = living.currentLocation + sample(directionsWithEnemyBuildings)
       strikeBuilding(neighbour)
+    } else if(world.hasSpaceAt(living.currentLocation) && living.arch.canHelpSummon && (isOnSummoningTile || world.summonerFloodFills(living.playerId).reachable(living.currentLocation))) {
+//      println("summoner")
+      if(isOnSummoningTile) {
+//        println("i'm on a summoning tile")
+        idle()
+      } else {
+        // i can summon
+//        println("perform your summoning duty")
+        sampleMaybe(descrendingSummonDirections) match {
+          case Some(dir) =>
+//            println("i've found the direction to descend")
+            val neighbour = living.currentLocation + dir
+            moveTo(neighbour)
+          case None =>
+//            println("can't descend")
+            idle()
+        }
+      }
     } else if(descendingDirections.nonEmpty) {
+//      println("descending normally")
       // if we're at an owned gate
       if(world.tileAt(living.currentLocation) == Tile.gate && world.owned.get(living.currentLocation) == living.playerId) {
         // if the tile has space and timer is down, don't progress
@@ -249,6 +320,7 @@ case object Draw extends GameOutcome
         moveTo(neighbour)
       }
     } else {
+//      println("idle catchall")
       idle()
     }
   }

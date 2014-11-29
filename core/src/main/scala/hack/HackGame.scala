@@ -28,7 +28,8 @@ class GameScreen extends Screen {
 //    w.placeTileAt(10, 15, Tile.playerBAEFactory)
 //    w.placeTileAt(12, 15, Tile.playerBDefenderFactory)
 
-    w.placeTileAt(Vec2i(8, 15), Tile.captainFactory, 1)
+    w.placeTileAt(Vec2i(8, 15), Tile.workerFactory, 1)
+    w.placeTileAt(Vec2i(12, 15), Tile.soldierFactory, 1)
 
     w.placeTileAt(Vec2i(2, 13), Tile.gate, 1)
 
@@ -50,7 +51,8 @@ class GameScreen extends Screen {
 //    w.placeTileAt(10, 0, Tile.playerAAEFactory)
 //    w.placeTileAt(12, 0, Tile.playerADefenderFactory)
 
-    w.placeTileAt(Vec2i(8, 0), Tile.soldierFactory, 0)
+    w.placeTileAt(Vec2i(8, 0), Tile.workerFactory, 0)
+    w.placeTileAt(Vec2i(12, 0), Tile.soldierFactory, 0)
 
     w
   }
@@ -67,7 +69,7 @@ class GameScreen extends Screen {
 
   var t = 0.0
   var simulationAccu = 0.0
-  val simulationTickEvery = 0.05 // every 1 second
+  val simulationTickEvery = 1.0  // every 1 second
 
   var running = true
 

@@ -157,4 +157,5 @@ class World(val width : Int, val height : Int, val startingTile : Tile, val slot
 
   // floodfills
   val aggressionFloodFills = new Array[FloodFill](2)
+  val summonerFloodFills = new Array[FloodFill](2)
 }

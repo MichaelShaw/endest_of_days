@@ -13,5 +13,5 @@ void main() {
 
    vec3 grayscale = vec3((color.r + color.g + color.b)/ 3.0);
 
-   gl_FragColor = vec4(grayscale, 1.0);
+   gl_FragColor = vec4(color.xyz, 1.0);
 }

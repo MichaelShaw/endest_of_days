@@ -32,15 +32,16 @@ class Living(val id:Int,
 
 
 // describes a unit type
-case class Arch(id:Int, name:String, attack:Int, maxHealth:Int, explodeOnAttack:Boolean = false, aeAttack:Boolean = false) {
+case class Arch(id:Int, name:String, attack:Int, maxHealth:Int, explodeOnAttack:Boolean = false, aeAttack:Boolean = false, canHelpSummon:Boolean = false) {
 
 }
 
 object Arch {
-  val soldier = Arch(0, "soldier", 1, 4)
-  val captain = Arch(1, "captain", 2, 5)
-  val ae = Arch(2, "ae", 3, 4, explodeOnAttack = true, aeAttack = true)
-  val defender = Arch(3, "defender", 1, 8)
+  val worker = Arch(1, "worker", 1, 2, canHelpSummon = true)
+  val soldier = Arch(1, "soldier", 1, 4)
+  val captain = Arch(2, "captain", 2, 5)
+  val ae = Arch(3, "ae", 3, 4, explodeOnAttack = true, aeAttack = true)
+//  val defender = Arch(3, "defender", 1, 8)
 
   val count = 4
 }

@@ -15,7 +15,8 @@ class Factory(id:Int,
               name:String,
               val startingHealth:Int,
               val produceEveryNTicks:Int = 1,
-              val produceArch:Arch) extends Tile(id, name, canBeWalkedOn = false)
+              val produceArch:Arch,
+              val requiredSummoners:Int) extends Tile(id, name, canBeWalkedOn = true)
 
 class Gate(id:Int, name:String) extends Tile(id, name, canBeWalkedOn = true)
 
@@ -40,11 +41,12 @@ object Tile {
   val impassableGround = register(new Tile(nextId, "impassable", canBeWalkedOn = false))
   val groundTiles = Array(standardGround, impassableGround)
 
-  val soldierFactory = register(new Factory(nextId, "soldier_factory", factoryHealth, produceEveryNTicks = 1, produceArch = Arch.soldier))
-  val captainFactory = register(new Factory(nextId, "captain_factory", factoryHealth, produceEveryNTicks = 3, produceArch = Arch.captain))
-  val aeFactory = register(new Factory(nextId, "ae_factory", factoryHealth, produceEveryNTicks = 5, produceArch = Arch.ae))
-  val defenderFactory = register(new Factory(nextId, "defender_factory", factoryHealth, produceEveryNTicks = 2, produceArch = Arch.defender))
-  val factoryTiles = Array(soldierFactory, captainFactory, aeFactory, defenderFactory)
+  val workerFactory = register(new Factory(nextId, "worker_factory", factoryHealth, produceEveryNTicks = 2, produceArch = Arch.worker, requiredSummoners = 0))
+  val soldierFactory = register(new Factory(nextId, "soldier_factory", factoryHealth, produceEveryNTicks = 1, produceArch = Arch.soldier, requiredSummoners = 6))
+  val captainFactory = register(new Factory(nextId, "captain_factory", factoryHealth, produceEveryNTicks = 3, produceArch = Arch.captain, requiredSummoners = 6))
+  val aeFactory = register(new Factory(nextId, "ae_factory", factoryHealth, produceEveryNTicks = 5, produceArch = Arch.ae, requiredSummoners = 6))
+//  val defenderFactory = register(new Factory(nextId, "defender_factory", factoryHealth, produceEveryNTicks = 2, produceArch = Arch.defender))
+  val factoryTiles = Array(workerFactory, soldierFactory, captainFactory, aeFactory)
 
   val gate = register(new Gate(nextId, "gate"))
 

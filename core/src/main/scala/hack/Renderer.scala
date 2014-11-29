@@ -23,7 +23,7 @@ class Renderer {
   def fboHeight = Gdx.graphics.getHeight
 
   val fbo = new FrameBuffer(Format.RGBA8888, fboWidth, fboHeight, false)
-  fbo.getColorBufferTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest)
+  fbo.getColorBufferTexture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest)
 
   def assetsPath = "../assets"
 
@@ -60,10 +60,11 @@ class Renderer {
   tileAtlas(Tile.standardGround.id) = tileRegion(0, 0)
   tileAtlas(Tile.impassableGround.id) = tileRegion(1, 0)
 
-  tileAtlas(Tile.soldierFactory.id) = tileRegion(2, 0)
-  tileAtlas(Tile.captainFactory.id) = tileRegion(3, 0)
-  tileAtlas(Tile.aeFactory.id) = tileRegion(4, 0)
-  tileAtlas(Tile.defenderFactory.id) = tileRegion(5, 0)
+  tileAtlas(Tile.workerFactory.id) = tileRegion(2, 0)
+  tileAtlas(Tile.soldierFactory.id) = tileRegion(3, 0)
+  tileAtlas(Tile.captainFactory.id) = tileRegion(4, 0)
+  tileAtlas(Tile.aeFactory.id) = tileRegion(5, 0)
+
 
   tileAtlas(Tile.gate.id) = tileRegion(6, 0)
 
