@@ -11,7 +11,7 @@ import hack.game._
 
 
 object Renderer {
-  val pixelsPerTile = 32
+  val pixelsPerTile = 64
 }
 class Renderer {
   val camera = new OrthographicCamera(Gdx.graphics.getWidth, Gdx.graphics.getHeight)
@@ -214,7 +214,7 @@ class Renderer {
             true
           }
           if (draw) {
-            mainBatch.draw(tr, e.smoothedPosition.x, e.smoothedPosition.y, tr.getRegionWidth, tr.getRegionHeight)
+            mainBatch.draw(tr, e.smoothedPosition.x, e.smoothedPosition.y, tr.getRegionWidth * upScale, tr.getRegionHeight * upScale)
           }
 
         }
