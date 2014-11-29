@@ -68,6 +68,7 @@ class GameScreen extends Screen {
     t = 0.0
     simulationAccu = 0.0
     world = generateWorld()
+    inputHandler.world = world
   }
 
   def render(delta : Float) {

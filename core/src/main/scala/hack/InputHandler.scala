@@ -14,7 +14,7 @@ import hack.game.Player
 import hack.game.Vec2i
 import hack.game.World
 
-class InputHandler(world : World) extends InputProcessor with ControllerListener {
+class InputHandler(var world : World) extends InputProcessor with ControllerListener {
   def movePlayer(player : Int, deltaPosition : Vec2i) : Unit = {
     val p : Player = world.players(player)
     val cp = p.cursorPosition + deltaPosition
