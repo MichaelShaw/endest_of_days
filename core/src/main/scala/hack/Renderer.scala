@@ -140,8 +140,8 @@ class Renderer {
 
 
 
-    font.draw(mainBatch, s"${wins(0)} wins" , 15, world.height * Renderer.tileSizeScreen - 15)
-    font.draw(mainBatch, s"${wins(1)} wins", world.width * Renderer.tileSizeScreen - 60, world.height * Renderer.tileSizeScreen - 15)
+//    font.draw(mainBatch, s"${wins(0)} wins" , 15, world.height * Renderer.tileSizeScreen - 15)
+//    font.draw(mainBatch, s"${wins(1)} wins", world.width * Renderer.tileSizeScreen - 60, world.height * Renderer.tileSizeScreen - 15)
 
     mainBatch.end()
 
