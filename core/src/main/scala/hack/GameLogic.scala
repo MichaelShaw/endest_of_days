@@ -127,7 +127,7 @@ object GameLogic {
       val healthRemaining = world.meta.get(at) - living.arch.attack
 
       if(healthRemaining <= 0) {
-        world.placeTileAt(at, Tile.standardGround)
+        world.placeTileAt(at, Tile.neutralStandardGround)
       } else {
         world.meta.set(at, healthRemaining)
       }

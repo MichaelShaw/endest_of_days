@@ -23,27 +23,30 @@ class Renderer {
   def tileRegion(x : Int, y : Int) = new TextureRegion(tileTexture, x * tileSizeTexture, y * tileSizeTexture, tileSizeTexture, tileSizeTexture)
 
   val tileAtlas = new Array[TextureRegion](Tile.count)
-  tileAtlas(Tile.standardGround.id) = tileRegion(0, 0)
-  tileAtlas(Tile.impassableGround.id) = tileRegion(1, 0)
-  tileAtlas(Tile.playerASoldierFactory.id) = tileRegion(3, 0)
-  tileAtlas(Tile.playerBSoldierFactory.id) = tileRegion(3, 1)
+  tileAtlas(Tile.neutralStandardGround.id) = tileRegion(0, 0)
+  tileAtlas(Tile.neutralImpassableGround.id) = tileRegion(1, 0)
 
-  val playerA = tileRegion(2, 0)
-  val playerB = tileRegion(2, 1)
-
+  tileAtlas(Tile.playerAStandardGround.id) = tileRegion(0, 1)
+  tileAtlas(Tile.playerAImpassableGround.id) = tileRegion(1, 1)
+  val playerA = tileRegion(2, 1)
+  tileAtlas(Tile.playerASoldierFactory.id) = tileRegion(3, 1)
   val playerAGuys = Array(
-    new TextureRegion(tileTexture, 224, 0, 16, 16),
-    new TextureRegion(tileTexture, 224 + 16, 0, 16, 16),
-    new TextureRegion(tileTexture, 224, 16, 16, 16),
-    new TextureRegion(tileTexture, 224 + 16, 16, 16, 16)
+    new TextureRegion(tileTexture, 224, 32, 16, 16),
+    new TextureRegion(tileTexture, 240, 32, 16, 16),
+    new TextureRegion(tileTexture, 224, 48, 16, 16),
+    new TextureRegion(tileTexture, 240, 48, 16, 16)
   )
 
   // soldier, captain, ae, defender
+  tileAtlas(Tile.playerBStandardGround.id) = tileRegion(0, 2)
+  tileAtlas(Tile.playerBImpassableGround.id) = tileRegion(1, 2)
+  val playerB = tileRegion(2, 2)
+  tileAtlas(Tile.playerBSoldierFactory.id) = tileRegion(3, 2)
   val playerBGuys = Array(
-    new TextureRegion(tileTexture, 224, 32, 16, 16),
-    new TextureRegion(tileTexture, 224 + 16, 32, 16, 16),
-    new TextureRegion(tileTexture, 224, 32 + 16, 16, 16),
-    new TextureRegion(tileTexture, 224 + 16, 32 + 16, 16, 16)
+    new TextureRegion(tileTexture, 224, 64, 16, 16),
+    new TextureRegion(tileTexture, 240, 64, 16, 16),
+    new TextureRegion(tileTexture, 224, 80, 16, 16),
+    new TextureRegion(tileTexture, 240, 80, 16, 16)
   )
 
   def render(world : World, simulationAccu : Double) {

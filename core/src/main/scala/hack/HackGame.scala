@@ -11,7 +11,7 @@ class HackGame extends Game {
 
 class GameScreen extends Screen {
   // static initialization hack
-  val hck = (Tile.impassableGround, Arch.soldier)
+  val hck = (Tile.neutralImpassableGround, Arch.soldier)
 
   val world = generateWorld()
   val renderer = new Renderer()
@@ -20,13 +20,13 @@ class GameScreen extends Screen {
   inputHandler.setAsListener()
 
   def generateWorld() : World = {
-    val w = new World(16, 16, Tile.standardGround, 9)
+    val w = new World(16, 16, Tile.neutralStandardGround, 9)
 
     w.placeTileAt(8, 0, Tile.playerASoldierFactory)
 
-    w.placeTileAt(7, 7, Tile.impassableGround)
-    w.placeTileAt(8, 7, Tile.impassableGround)
-    w.placeTileAt(9, 7, Tile.impassableGround)
+    w.placeTileAt(7, 7, Tile.neutralImpassableGround)
+    w.placeTileAt(8, 7, Tile.neutralImpassableGround)
+    w.placeTileAt(9, 7, Tile.neutralImpassableGround)
 
     w.placeTileAt(8, 15, Tile.playerBSoldierFactory)
 

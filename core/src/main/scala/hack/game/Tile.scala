@@ -34,14 +34,18 @@ object Tile {
 
   val factoryHealth = 24
 
-  val standardGround = register(new Tile(nextId, "ground"))
-  val impassableGround = register(new Tile(nextId, "impassable", canBeWalkedOn = false))
+  val neutralStandardGround = register(new Tile(nextId, "ground"))
+  val neutralImpassableGround = register(new Tile(nextId, "impassable", canBeWalkedOn = false))
 
+  val playerAStandardGround = register(new Tile(nextId, "ground"))
+  val playerAImpassableGround = register(new Tile(nextId, "impassable", canBeWalkedOn = false))
   val playerASoldierFactory = register(new Factory(nextId, 0, factoryHealth, produceEveryNTicks = 1, produceArch = Arch.soldier))
   val playerACaptainFactory = register(new Factory(nextId, 0, factoryHealth, produceEveryNTicks = 3, produceArch = Arch.captain))
   val playerAAEFactory = register(new Factory(nextId, 0, factoryHealth, produceEveryNTicks = 5, produceArch = Arch.ae))
   val playerADefenderFactory = register(new Factory(nextId, 0, factoryHealth, produceEveryNTicks = 2, produceArch = Arch.defender))
 
+  val playerBStandardGround = register(new Tile(nextId, "ground"))
+  val playerBImpassableGround = register(new Tile(nextId, "impassable", canBeWalkedOn = false))
   val playerBSoldierFactory = register(new Factory(nextId, 1, factoryHealth, produceEveryNTicks = 1, produceArch = Arch.soldier))
   val playerBCaptainFactory = register(new Factory(nextId, 1, factoryHealth, produceEveryNTicks = 3, produceArch = Arch.captain))
   val playerBAEFactory = register(new Factory(nextId, 1, factoryHealth, produceEveryNTicks = 5, produceArch = Arch.ae))
