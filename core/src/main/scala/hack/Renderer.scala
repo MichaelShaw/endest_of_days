@@ -73,6 +73,7 @@ class Renderer {
 
   // simulation accu for partial tick
   def renderLivings(world : World, simulationAccu : Double) {
+    def flashing(d:Double) : Boolean = (simulationAccu / d).asInstanceOf[Int] % 2 == 1
     for {
       x <- 0 until world.width
       y <- 0 until world.height
@@ -91,7 +92,15 @@ class Renderer {
 
           val at = Vec2f.lerp(lastLocation, currentLocation, simulationAccu)
 
-          mainBatch.draw(tr, at.x , at.y, 16, 16)
+          val draw = if(e.lastStruckAt == world.tick - 1 && simulationAccu < 0.4) {
+            flashing(0.10)
+          } else {
+            true
+          }
+          if(draw) {
+            mainBatch.draw(tr, at.x , at.y, 16, 16)
+          }
+
         }
         slot += 1
       }

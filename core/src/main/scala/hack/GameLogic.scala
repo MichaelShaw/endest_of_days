@@ -123,6 +123,17 @@ object GameLogic {
 
       stampActionDuration(1)
     }
+    def strikeBuilding(at:Vec2i): Unit = {
+      val healthRemaining = world.metaAt(at) - living.arch.attack
+
+      if(healthRemaining <= 0) {
+        world.placeTileAt(at, Tile.standardGround)
+      } else {
+        world.setMetaAt(at, healthRemaining)
+      }
+
+      stampActionDuration(1)
+    }
 
 
     val ff = world.aggressionFloodFills(living.playerId)
@@ -136,7 +147,18 @@ object GameLogic {
         l.playerId != living.playerId && l.health > 0
       }
     }
-    val descendingDirections = Direction.directions.filter{ dir =>
+    val directionsWithEnemyBuildings = Direction.directions.filter { dir =>
+      val neighbour = living.currentLocation + dir
+      if(ff.inBounds(neighbour)) {
+        world.tileAt(neighbour) match {
+          case f:Factory => f.playerId != living.playerId && world.metaAt(neighbour) > 0 // meta is health channel for factory
+          case _ => false
+        }
+      } else {
+        false
+      }
+    }
+    val descendingDirections = Direction.directions.filter { dir =>
       val neighbour = living.currentLocation + dir
       ff.inBounds(neighbour) &&
         ff.get(neighbour) < currentHeight &&
@@ -147,6 +169,9 @@ object GameLogic {
     if(directionsWithEnemies.nonEmpty) {
       val neighbour = living.currentLocation + sample(directionsWithEnemies)
       strike(neighbour)
+    } else if(directionsWithEnemyBuildings.nonEmpty) {
+      val neighbour = living.currentLocation + sample(directionsWithEnemyBuildings)
+      strikeBuilding(neighbour)
     } else if(descendingDirections.nonEmpty) {
       val neighbour = living.currentLocation + sample(descendingDirections)
       moveTo(neighbour)

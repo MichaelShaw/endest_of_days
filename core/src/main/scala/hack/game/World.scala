@@ -8,6 +8,17 @@ package hack.game
 class World(val width:Int, val height:Int, val startingTile:Tile, val slotsPerTile:Int) {
   var tick = 0
 
+  def placeTileAt(v:Vec2i, tile:Tile) { placeTileAt(v.x, v.y, tile) }
+  def placeTileAt(x:Int, y:Int, tile:Tile): Unit = {
+    setTileAt(x, y, tile)
+
+    val meta:Int = tile match {
+      case f:Factory => f.startingHealth
+      case _ => 0
+    }
+    setMetaAt(x, y, meta)
+
+  }
 
   def inBounds(v:Vec2i) : Boolean = inBounds(v.x, v.y)
   def inBounds(x:Int, y:Int) : Boolean = {
@@ -20,15 +31,18 @@ class World(val width:Int, val height:Int, val startingTile:Tile, val slotsPerTi
   def tileAt(v:Vec2i) : Tile = tileAt(v.x, v.y)
   def tileAt(x:Int, y:Int) : Tile = tiles(gridLocation(x, y))
   def setTileAt(x:Int, y:Int, tile:Tile) { tiles(gridLocation(x, y)) = tile }
+  def gridLocation(v:Vec2i) : Int = gridLocation(v.x, v.y)
   def gridLocation(x:Int, y:Int) : Int = {
     assert(x < width && x >= 0 && y < height && y >= 0, "asked for out of bounds tile location")
     x * height + y
   }
 
-  // meta data ... mainly factory counters
+  // meta data ... currently used for factory health
+  val meta = Array.fill[Int](cells) { 0 }
+  def metaAt(v:Vec2i) : Int = meta(gridLocation(v))
 
-
-
+  def setMetaAt(v:Vec2i, m:Int) { setMetaAt(v.x, v.y, m) }
+  def setMetaAt(x:Int, y:Int, m:Int) { meta(gridLocation(x,y)) = m }
   // LIVING LOGIC (entities that live on the tiles)
   private var _nextLivingId = 0
   def generateLivingId() : Int = {

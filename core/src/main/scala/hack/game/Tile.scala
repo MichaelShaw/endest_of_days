@@ -11,6 +11,8 @@ class Tile(val id:Int,
 
 }
 
+class Factory(id:Int, val playerId:Int, val startingHealth:Int) extends Tile(id, s"factory_$playerId", canBeWalkedOn = false)
+
 object Tile {
   // fuck, do we even need ids if we're never going to serialize *anything*
   val tiles = new Array[Tile](256)
@@ -26,10 +28,12 @@ object Tile {
     t
   }
 
+  val factoryHealth = 24
+
   val standardGround = register(new Tile(nextId, "ground"))
   val impassableGround = register(new Tile(nextId, "impassable", canBeWalkedOn = false))
-  val playerAFactory = register(new Tile(nextId, "playerA_factory", canBeWalkedOn = false))
-  val playerBFactory = register(new Tile(nextId, "playerB_factory", canBeWalkedOn = false))
+  val playerAFactory = register(new Factory(nextId, 0, factoryHealth))
+  val playerBFactory = register(new Factory(nextId, 1, factoryHealth))
   val playerA = register(new Tile(nextId, "playerA"))
   val playerB = register(new Tile(nextId, "playerB"))
 }
