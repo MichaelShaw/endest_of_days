@@ -74,7 +74,7 @@ class World(val width:Int, val height:Int, val startingTile:Tile, val slotsPerTi
 
   // TODO: derive from initial tiles
   val playerA = new Player(0, 8, 1)
-  val playerB = new Player(1, 8, 5)
+  val playerB = new Player(1, 8, 14)
 
   // floodfills
   val aggressionFloodFills = new Array[FloodFill](2)
