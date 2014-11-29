@@ -25,14 +25,14 @@ class Renderer {
   val tileAtlas = new Array[TextureRegion](Tile.count)
   tileAtlas(Tile.standardGround.id) = tileRegion(0, 0)
   tileAtlas(Tile.impassableGround.id) = tileRegion(1, 0)
-  tileAtlas(Tile.playerAFactory.id) = tileRegion(2, 0)
-  tileAtlas(Tile.playerBFactory.id) = tileRegion(3, 0)
+  tileAtlas(Tile.playerASoldierFactory.id) = tileRegion(3, 0)
+  tileAtlas(Tile.playerBSoldierFactory.id) = tileRegion(3, 1)
 
-  val playerA = tileRegion(0, 1)
-  val playerB = tileRegion(1, 1)
+  val playerA = tileRegion(2, 0)
+  val playerB = tileRegion(2, 1)
 
   val playerAGuy = new TextureRegion(tileTexture, 128, 0, 16, 16)
-  val playerBGuy = new TextureRegion(tileTexture, 144, 0, 16, 16)
+  val playerBGuy = new TextureRegion(tileTexture, 128, 32, 16, 16)
 
   def render(world : World, simulationAccu : Double) {
     camera.position.set(world.width / 2 * tileSizeScreen, world.height / 2 * tileSizeScreen, 0)

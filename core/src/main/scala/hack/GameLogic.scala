@@ -27,7 +27,7 @@ object GameLogic {
   }
 
   def calculateFloodFills(world:World) {
-    val playerAGoals = matchingTiles(world, tile => tile == Tile.playerBFactory)
+    val playerAGoals = matchingTiles(world, tile => tile == Tile.playerBSoldierFactory)
     val playerAFloodFill = FloodFill.produceFor(playerAGoals, world)
     world.aggressionFloodFills(0) = playerAFloodFill
 
@@ -35,7 +35,7 @@ object GameLogic {
 //    playerAFloodFill.printDebug("player A aggression")
 
 
-    val playerBGoals = matchingTiles(world, tile => tile == Tile.playerAFactory)
+    val playerBGoals = matchingTiles(world, tile => tile == Tile.playerASoldierFactory)
     val playerBFloodfill = FloodFill.produceFor(playerBGoals, world)
     world.aggressionFloodFills(1) = playerBFloodfill
 
@@ -56,8 +56,8 @@ object GameLogic {
     } {
       val tile = world.tileAt(x, y)
       tile match {
-        case Tile.playerAFactory => spawnNear(world, x, y, world.playerA.id, Arch.soldier)
-        case Tile.playerBFactory => spawnNear(world, x, y, world.playerB.id, Arch.soldier)
+        case Tile.playerASoldierFactory => spawnNear(world, x, y, world.playerA.id, Arch.soldier)
+        case Tile.playerBSoldierFactory => spawnNear(world, x, y, world.playerB.id, Arch.soldier)
         case _ =>
       }
     }
@@ -124,12 +124,12 @@ object GameLogic {
       stampActionDuration(1)
     }
     def strikeBuilding(at:Vec2i): Unit = {
-      val healthRemaining = world.metaAt(at) - living.arch.attack
+      val healthRemaining = world.meta.get(at) - living.arch.attack
 
       if(healthRemaining <= 0) {
         world.placeTileAt(at, Tile.standardGround)
       } else {
-        world.setMetaAt(at, healthRemaining)
+        world.meta.set(at, healthRemaining)
       }
 
       stampActionDuration(1)
@@ -151,7 +151,7 @@ object GameLogic {
       val neighbour = living.currentLocation + dir
       if(ff.inBounds(neighbour)) {
         world.tileAt(neighbour) match {
-          case f:Factory => f.playerId != living.playerId && world.metaAt(neighbour) > 0 // meta is health channel for factory
+          case f:Factory => f.playerId != living.playerId && world.meta.get(neighbour) > 0 // meta is health channel for factory
           case _ => false
         }
       } else {
