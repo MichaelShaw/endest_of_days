@@ -11,7 +11,7 @@ import hack.game._
 
 object Renderer {
   val tileSizeTexture = 32
-  val upScale = 1
+  val upScale = 2
   val tileSizeScreen = tileSizeTexture * upScale
   val pixelsPerTile = tileSizeScreen
 }

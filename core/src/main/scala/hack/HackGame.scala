@@ -154,7 +154,7 @@ class GameScreen extends Screen {
         false
     }
 
-    renderer.render(world, delta, wins)
+    renderer.render(world, delta, wins) // t
 
     // SOUND
     if(inputHandler.placeTileSound) {
