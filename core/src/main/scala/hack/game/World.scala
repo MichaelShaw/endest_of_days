@@ -114,7 +114,11 @@ class World(val width : Int, val height : Int, val startingTile : Tile, val slot
       ownedByPlayer(d + v)
     }
 
-    notOwnedByOtherPlayer && anyNeighborOwnedByPlayer
+    def notCultistSpawner : Boolean = {
+      tileAt(v) != Tile.cultistSpawner
+    }
+
+    notOwnedByOtherPlayer && anyNeighborOwnedByPlayer && notCultistSpawner
 
     // TODO: disallow placing tile on factory
     // TODO: disallow completely seal off factories from each other?
