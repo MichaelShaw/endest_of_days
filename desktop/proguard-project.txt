@@ -19,6 +19,7 @@
 -keep class net.java.games.input.ControllerListener { *; }
 -keep class net.java.games.input.ControllerEvent { *; }
 -keep class net.java.games.input.Component$Identifier$Key { *; }
+-keep class com.badlogic.gdx.controllers.desktop.** { *; }
 
 # used by LWJGL to open web browser, by libgdx to detect when it runs in javaws
 # in both cases it is guarded and will be provided by java library
