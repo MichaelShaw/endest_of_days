@@ -1,6 +1,7 @@
 package hack
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.graphics.{Color, GL20, OrthographicCamera, Texture}
 import com.badlogic.gdx.graphics.Pixmap.Format
 import com.badlogic.gdx.graphics.Texture.TextureFilter
@@ -16,7 +17,12 @@ object Renderer {
   val pixelsPerTile = tileSizeScreen
 }
 
-class Renderer {
+trait AssetLoader {
+  def assetsPath = "assets"
+  def assetFile(path:String) : FileHandle = Gdx.files.classpath(s"$assetsPath/$path")
+}
+
+class Renderer extends AssetLoader {
   val camera = new OrthographicCamera(Gdx.graphics.getWidth, Gdx.graphics.getHeight)
   val font = new BitmapFont() // Gdx.files.internal("data/arial-15.fnt"),false)
   font.setColor(Color.WHITE)
@@ -27,27 +33,27 @@ class Renderer {
   val fbo = new FrameBuffer(Format.RGBA8888, fboWidth, fboHeight, false)
   fbo.getColorBufferTexture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest)
 
-  def assetsPath = "../assets"
+//  def assetsPath = "../assets"
+
+
 
   // TO 
-  def toFBOVertexShaderText = Gdx.files.internal(s"$assetsPath/toFbo.vert.glsl").readString()
-  def toFBOFragmentShaderText = Gdx.files.internal(s"$assetsPath/toFbo.frag.glsl").readString()
+  def toFBOVertexShaderText = assetFile(s"toFbo.vert.glsl").readString()
+  def toFBOFragmentShaderText = assetFile(s"toFbo.frag.glsl").readString()
   val toFrameBufferShader = new ShaderProgram(toFBOVertexShaderText,toFBOFragmentShaderText)
   if(!toFrameBufferShader.isCompiled) {
     throw new Exception("couldnt compile shader " + toFrameBufferShader.getLog)
   }
 
-  def postVertexShaderText = Gdx.files.internal(s"$assetsPath/post.vert.glsl").readString()
-  def postFragmentShaderText = Gdx.files.internal(s"$assetsPath/post.frag.glsl").readString()
+  def postVertexShaderText = assetFile(s"post.vert.glsl").readString()
+  def postFragmentShaderText = assetFile(s"post.frag.glsl").readString()
   val postShader = new ShaderProgram(postVertexShaderText,postFragmentShaderText)
   if(!postShader.isCompiled) {
     throw new Exception("couldnt compile shader " + postShader.getLog)
   }
 
 
-
-
-  val tileTexture = new Texture(Gdx.files.internal(s"$assetsPath/tiles.png"))
+  val tileTexture = new Texture(assetFile(s"tiles.png"))
 
   val mainBatch = new SpriteBatch
   val postBatch = new SpriteBatch
@@ -111,6 +117,13 @@ class Renderer {
     new Color(142f / 255f,42f / 255f, 39f / 255f,0f)
   )
 
+  val particleRegions = Array[TextureRegion](
+    new TextureRegion(tileTexture, 33, 96, 16, 16), // smoke
+    new TextureRegion(tileTexture, 32, 112, 16, 16), // blue stuff
+    new TextureRegion(tileTexture, 48, 96, 16, 16), // red stuff
+    new TextureRegion(tileTexture, 48, 112, 16, 16)  // magic
+  )
+
   def render(world : World, delta:Double, wins:Array[Int]) {
     camera.position.set(world.width / 2 * Renderer.tileSizeScreen, world.height / 2 * Renderer.tileSizeScreen, 0)
     camera.update()
@@ -139,8 +152,8 @@ class Renderer {
 
 
 
-//    font.draw(mainBatch, s"${wins(0)} wins" , 15, world.height * Renderer.tileSizeScreen - 15)
-//    font.draw(mainBatch, s"${wins(1)} wins", world.width * Renderer.tileSizeScreen - 60, world.height * Renderer.tileSizeScreen - 15)
+    font.draw(mainBatch, s"${wins(0)} wins" , 15, world.height * Renderer.tileSizeScreen - 15)
+    font.draw(mainBatch, s"${wins(1)} wins", world.width * Renderer.tileSizeScreen - 60, world.height * Renderer.tileSizeScreen - 15)
 
     mainBatch.end()
 
@@ -164,13 +177,6 @@ class Renderer {
 
     postShader.end()
   }
-
-  val particleRegions = Array[TextureRegion](
-    new TextureRegion(tileTexture, 33, 96, 16, 16), // smoke
-    new TextureRegion(tileTexture, 32, 112, 16, 16), // blue stuff
-    new TextureRegion(tileTexture, 48, 96, 16, 16), // red stuff
-    new TextureRegion(tileTexture, 48, 112, 16, 16)  // magic
-  )
 
   def renderParticles(world:World): Unit = {
     for(p <- world.particles) {

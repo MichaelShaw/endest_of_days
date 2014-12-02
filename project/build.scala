@@ -56,43 +56,44 @@ object Settings {
     fork in Compile := true,
     unmanagedResourceDirectories in Compile += file("android/assets"),
     desktopJarName := "hack",
+    cancelable := true,
     Tasks.assembly
   )
 
-  lazy val android = core ++ Tasks.natives ++ androidBuild ++ Seq(
-    libraryDependencies ++= Seq(
-      "com.badlogicgames.gdx" % "gdx-backend-android" % libgdxVersion.value,
-      "com.badlogicgames.gdx" % "gdx-platform" % libgdxVersion.value % "natives" classifier "natives-armeabi",
-      "com.badlogicgames.gdx" % "gdx-platform" % libgdxVersion.value % "natives" classifier "natives-armeabi-v7a",
-      "com.badlogicgames.gdx" % "gdx-platform" % libgdxVersion.value % "natives" classifier "natives-x86"
-    ),
-    nativeExtractions <<= (baseDirectory) { base => Seq(
-      ("natives-armeabi.jar", new ExactFilter("libgdx.so"), base / "libs" / "armeabi"),
-      ("natives-armeabi-v7a.jar", new ExactFilter("libgdx.so"), base / "libs" / "armeabi-v7a"),
-      ("natives-x86.jar", new ExactFilter("libgdx.so"), base / "libs" / "x86")
-    )},
-    platformTarget in Android := "android-21",
-    proguardOptions in Android ++= scala.io.Source.fromFile(file("core/proguard-project.txt")).getLines.toList ++
-                                   scala.io.Source.fromFile(file("android/proguard-project.txt")).getLines.toList
-  )
+  // lazy val android = core ++ Tasks.natives ++ androidBuild ++ Seq(
+  //   libraryDependencies ++= Seq(
+  //     "com.badlogicgames.gdx" % "gdx-backend-android" % libgdxVersion.value,
+  //     "com.badlogicgames.gdx" % "gdx-platform" % libgdxVersion.value % "natives" classifier "natives-armeabi",
+  //     "com.badlogicgames.gdx" % "gdx-platform" % libgdxVersion.value % "natives" classifier "natives-armeabi-v7a",
+  //     "com.badlogicgames.gdx" % "gdx-platform" % libgdxVersion.value % "natives" classifier "natives-x86"
+  //   ),
+  //   nativeExtractions <<= (baseDirectory) { base => Seq(
+  //     ("natives-armeabi.jar", new ExactFilter("libgdx.so"), base / "libs" / "armeabi"),
+  //     ("natives-armeabi-v7a.jar", new ExactFilter("libgdx.so"), base / "libs" / "armeabi-v7a"),
+  //     ("natives-x86.jar", new ExactFilter("libgdx.so"), base / "libs" / "x86")
+  //   )},
+  //   platformTarget in Android := "android-21",
+  //   proguardOptions in Android ++= scala.io.Source.fromFile(file("core/proguard-project.txt")).getLines.toList ++
+  //                                  scala.io.Source.fromFile(file("android/proguard-project.txt")).getLines.toList
+  // )
 
-  lazy val ios = core ++ Tasks.natives ++ Seq(
-    unmanagedResources in Compile <++= (baseDirectory) map { _ =>
-      (file("android/assets") ** "*").get
-    },
-    forceLinkClasses := Seq("com.badlogic.gdx.scenes.scene2d.ui.*"),
-    skipPngCrush := true,
-    iosInfoPlist <<= (sourceDirectory in Compile){ sd => Some(sd / "Info.plist") },
-    frameworks := Seq("UIKit", "OpenGLES", "QuartzCore", "CoreGraphics", "OpenAL", "AudioToolbox", "AVFoundation"),
-    nativePath <<= (baseDirectory){ bd => Seq(bd / "lib") },
-    libraryDependencies ++= Seq(
-      "com.badlogicgames.gdx" % "gdx-backend-robovm" % libgdxVersion.value,
-      "com.badlogicgames.gdx" % "gdx-platform" % libgdxVersion.value % "natives" classifier "natives-ios"
-    ),
-    nativeExtractions <<= (baseDirectory) { base => Seq(
-      ("natives-ios.jar", new ExactFilter("libgdx.a") | new ExactFilter("libObjectAL.a"), base / "lib")
-    )}
-  )
+  // lazy val ios = core ++ Tasks.natives ++ Seq(
+  //   unmanagedResources in Compile <++= (baseDirectory) map { _ =>
+  //     (file("android/assets") ** "*").get
+  //   },
+  //   forceLinkClasses := Seq("com.badlogic.gdx.scenes.scene2d.ui.*"),
+  //   skipPngCrush := true,
+  //   iosInfoPlist <<= (sourceDirectory in Compile){ sd => Some(sd / "Info.plist") },
+  //   frameworks := Seq("UIKit", "OpenGLES", "QuartzCore", "CoreGraphics", "OpenAL", "AudioToolbox", "AVFoundation"),
+  //   nativePath <<= (baseDirectory){ bd => Seq(bd / "lib") },
+  //   libraryDependencies ++= Seq(
+  //     "com.badlogicgames.gdx" % "gdx-backend-robovm" % libgdxVersion.value,
+  //     "com.badlogicgames.gdx" % "gdx-platform" % libgdxVersion.value % "natives" classifier "natives-ios"
+  //   ),
+  //   nativeExtractions <<= (baseDirectory) { base => Seq(
+  //     ("natives-ios.jar", new ExactFilter("libgdx.a") | new ExactFilter("libObjectAL.a"), base / "lib")
+  //   )}
+  // )
 }
 
 object Tasks {

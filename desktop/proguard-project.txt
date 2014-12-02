@@ -30,7 +30,11 @@
 # same goes for libgdx OpenAL audio, that dynamically uses proper decoder for
 # music files.
 -dontwarn org.lwjgl.**
+-dontnote org.lwjgl.*
 -dontnote com.badlogic.gdx.backends.lwjgl.audio.OpenALAudio
+-dontwarn com.badlogic.gdx.jnigen.**
+# -dontwarn com.badlogic.**
+# -dontnote com.badlogic.**
 
 # Settings mirrored from sbt-android
 -dontoptimize

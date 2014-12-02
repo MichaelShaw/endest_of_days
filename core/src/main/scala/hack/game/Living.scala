@@ -48,17 +48,19 @@ case class Arch(id:Int, name:String, attack:Int, maxHealth:Int,
 }
 
 object Arch {
-  val cultist = Arch(0, "cultist", 1, 2, canHelpSummon = true)
+  val cultist = Arch(0, "cultist", attack = 1, maxHealth = 2, canHelpSummon = true)
 
-  val imp = Arch(1, "imp", attack = 1, maxHealth = 4)
-  val worm = Arch(2, "worm", attack = 5, maxHealth = 6, ticksToMove = 2, instakillBuildings = true)
-  val fex = Arch(3, "fex", attack = 4, maxHealth = 14, aeDamage = 1)
+  val imp = Arch(1, "imp", attack = 1, maxHealth = 3)
+  val worm = Arch(2, "worm", attack = 6, maxHealth = 18, ticksToMove = 2, instakillBuildings = true)
+  // due to 2 ticks to move it sits vulnerable for a long time ... so it underperforms relative to it's combat stats
+  // this slowness means after winning a standoff, and their friendlies surge forward, they fall behind, weakending the momentum of the wave
+  val fex = Arch(3, "fex", attack = 4, maxHealth = 16, aeDamage = 1)
 
-  val captain = Arch(4, "captain", attack = 3, maxHealth = 10)
-  val eyeBall = Arch(5, "eye_ball", attack = 2, maxHealth = 6)
+  val captain = Arch(4, "captain", attack = 3, maxHealth = 9)
+  val eyeBall = Arch(5, "eye_ball", attack = 3, maxHealth = 7)
 
   val smallBeetle = Arch(6, "small_beetle", attack = 1, maxHealth = 2)
-  val bigBeetle = Arch(7, "big_beetle", attack = 1, maxHealth = 12, onHitSpawns = Some(smallBeetle))
+  val bigBeetle = Arch(7, "big_beetle", attack = 1, maxHealth = 13, onHitSpawns = Some(smallBeetle))
 
   val count = 8
 }

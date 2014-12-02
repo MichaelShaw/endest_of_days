@@ -1,21 +1,21 @@
 package hack.game
 
 import com.badlogic.gdx.Gdx
+import hack.AssetLoader
 
 import scala.util.Random
 
 /**
  * Created by michael on 30/11/14.
  */
-class AudioRenderer {
-  def assetsPath = "../assets/sound"
+class AudioRenderer extends AssetLoader {
 
-  val shoulderButtonSound = Gdx.audio.newSound(Gdx.files.internal(s"$assetsPath/select.wav"))
-  val placeTileSound = Gdx.audio.newSound(Gdx.files.internal(s"$assetsPath/place_tile.wav"))
-  val smallHurtSound = Gdx.audio.newSound(Gdx.files.internal(s"$assetsPath/small_hurt.wav"))
-  val mediumHurtSound = Gdx.audio.newSound(Gdx.files.internal(s"$assetsPath/medium_hurt.wav"))
-  val mediumDestructionSound = Gdx.audio.newSound(Gdx.files.internal(s"$assetsPath/medium_destruction.wav"))
-  val finalDestructionSound = Gdx.audio.newSound(Gdx.files.internal(s"$assetsPath/final_destruction.wav"))
+  val shoulderButtonSound = Gdx.audio.newSound(assetFile(s"sound/select.wav"))
+  val placeTileSound = Gdx.audio.newSound(assetFile(s"sound/place_tile.wav"))
+  val smallHurtSound = Gdx.audio.newSound(assetFile(s"sound/small_hurt.wav"))
+  val mediumHurtSound = Gdx.audio.newSound(assetFile(s"sound/medium_hurt.wav"))
+  val mediumDestructionSound = Gdx.audio.newSound(assetFile(s"sound/medium_destruction.wav"))
+  val finalDestructionSound = Gdx.audio.newSound(assetFile(s"sound/final_destruction.wav"))
 
   val rand = new Random()
 

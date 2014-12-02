@@ -13,7 +13,7 @@ class GameScreen extends Screen {
   // static initialization hack
   val hck = (Tile.impassableGround, Arch.imp)
 
-  var simulationTickEvery = 1.0
+  var simulationTickEvery = 0.2
 
   var world = generateWorld()
   val renderer = new Renderer()
@@ -22,10 +22,9 @@ class GameScreen extends Screen {
   val inputHandler = new InputHandler(world)
   inputHandler.setAsListener()
 
-
-
   def generateWorld() : World = {
     val top = 10
+//    val w = new World(42, 24, Tile.standardGround, 9)
     val w = new World(18, 11, Tile.standardGround, 9)
 
     def placeHomeBaseBackage(v:Vec2i, playerId:Int) {
@@ -44,23 +43,25 @@ class GameScreen extends Screen {
 
     w.simulationTickEvery = simulationTickEvery
 
-    WorldGen.terraform(w, seed, spreadStepMin = 16)
+    WorldGen.terraform(w, seed, spreadStepMin = 40)
 
     val halfHeight = w.height / 2
 
     placeHomeBaseBackage(Vec2i(0, halfHeight), 0)
     placeHomeBaseBackage(Vec2i(w.width - 1, halfHeight), 1)
 
-//    w.placeTileAt(Vec2i(1, halfHeight), Tile.captainSpawner, 0)
+//    w.placeTileAt(Vec2i(1, halfHeight), Tile.eyeBallSpawner, 0)
+//    w.placeTileAt(Vec2i(2, halfHeight), Tile.bigBeetleSpawner, 0)
 //    w.placeTileAt(Vec2i(w.width - 2, halfHeight), Tile.impSpawner, 1)
 
 //    w.placeTileAt(Vec2i(1, halfHeight), Tile.bigBeetleSpawner, 0)
 //    w.placeTileAt(Vec2i(w.width - 2, halfHeight), Tile.fexSpawner, 1)
 
 //        w.placeTileAt(Vec2i(1, halfHeight), Tile.eyeBallSpawner, 0)
-//        w.placeTileAt(Vec2i(w.width - 2, halfHeight), Tile.wormSpawner, 1)
+//   w.placeTileAt(Vec2i(w.width - 2, halfHeight), Tile.fexSpawner, 1)
+//    w.placeTileAt(Vec2i(w.width - 3, halfHeight), Tile.wormSpawner, 1)
 
-    val withGate = false
+    val withGate = true
     if(withGate) {
       w.placeTileAt(Vec2i(4, halfHeight), Tile.gate, 0)
       w.placeTileAt(Vec2i(w.width - 4, halfHeight), Tile.gate, 1)
