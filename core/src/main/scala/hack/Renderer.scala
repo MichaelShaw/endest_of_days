@@ -186,13 +186,32 @@ class Renderer extends AssetLoader {
     }
   }
 
+  val tintAmount = 0.15f
+  val bothPlaceColour = new Color(tintAmount, tintAmount, tintAmount, 0.0f)
+  val playerAPlaceColour = new Color(0f, 0f, tintAmount, 0f)
+  val playerBPlaceColour = new Color(tintAmount, 0f, 0f, 0f)
+
   def renderTiles(world : World) {
     for {
       x <- 0 until world.width
       y <- 0 until world.height
     } {
       val v = Vec2i(x, y)
+      val playerACanPlace = world.canPlaceTileAt(v, world.playerA.id) && world.playerA.canPlaceTiles(world) && world.owned.get(v) != world.playerA.id && !world.playerA.ai
+      val playerBCanPlace = world.canPlaceTileAt(v, world.playerB.id) && world.playerB.canPlaceTiles(world) && world.owned.get(v) != world.playerB.id && !world.playerB.ai
+      val colour = if(playerACanPlace && playerBCanPlace) {
+        bothPlaceColour
+      } else if (playerACanPlace) {
+        playerAPlaceColour
+      } else if (playerBCanPlace) {
+        playerBPlaceColour
+      } else {
+        black
+      }
+
+
       val textureRegion = trForTile(world.tileAt(v), world.owned.get(v))
+      mainBatch.setColor(colour)
       mainBatch.draw(textureRegion, x * Renderer.tileSizeScreen, y * Renderer.tileSizeScreen, Renderer.tileSizeScreen, Renderer.tileSizeScreen)
     }
   }

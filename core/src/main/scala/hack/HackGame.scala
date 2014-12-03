@@ -13,7 +13,7 @@ class GameScreen extends Screen {
   // static initialization hack
   val hck = (Tile.impassableGround, Arch.imp)
 
-  var simulationTickEvery = 0.2
+  var simulationTickEvery = 0.7
 
   var world = generateWorld()
   val renderer = new Renderer()
@@ -61,7 +61,7 @@ class GameScreen extends Screen {
 //   w.placeTileAt(Vec2i(w.width - 2, halfHeight), Tile.fexSpawner, 1)
 //    w.placeTileAt(Vec2i(w.width - 3, halfHeight), Tile.wormSpawner, 1)
 
-    val withGate = true
+    val withGate = false
     if(withGate) {
       w.placeTileAt(Vec2i(4, halfHeight), Tile.gate, 0)
       w.placeTileAt(Vec2i(w.width - 4, halfHeight), Tile.gate, 1)

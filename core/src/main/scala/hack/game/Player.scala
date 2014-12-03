@@ -9,6 +9,8 @@ class Player(val id : Int, var cursorPosition : Vec2i, var tile : Int, val terra
 
   val tileQueue = new mutable.ArrayBuffer[Seq[Tile]]()
 
+  var ai = false
+
   def generateSequence() {
     val rand = new Random()
 

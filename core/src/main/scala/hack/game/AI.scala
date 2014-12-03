@@ -22,7 +22,7 @@ object AI {
       }
     }
     val aiPlayers = world.players.filter { player =>
-      inputHandler.playerAi(player.id)
+      player.ai
     }
     aiPlayers.foreach { player =>
       if(player.canPlaceTiles(world) && world.placementTimer <= 3) {
@@ -56,7 +56,7 @@ object AI {
 
     val canPlaceLegally = GameLogic.matchingTiles(world, { (x, y) =>
       val v = Vec2i(x, y)
-      world.canPlaceTileAt(v, f, player.id) && isNotAGateOrFactory(world.tileAt(v))
+      world.canPlaceTileAt(v, player.id) && isNotAGateOrFactory(world.tileAt(v))
     })
 
     GameLogic.sampleMaybe(canPlaceLegally.toArray)
@@ -71,7 +71,7 @@ object AI {
 
     val canPlaceLegally = GameLogic.matchingTiles(world, { (x, y) =>
       val v = Vec2i(x, y)
-      world.canPlaceTileAt(v, Tile.gate, player.id) && isNotAGateOrFactory(world.tileAt(v))
+      world.canPlaceTileAt(v, player.id) && isNotAGateOrFactory(world.tileAt(v))
     })
 
     homeBase.headOption.flatMap { homeBase =>
@@ -89,7 +89,7 @@ object AI {
   def placeMountain(world:World, player:Player ) : Option[Vec2i] = {
     val canPlaceLegally = GameLogic.matchingTiles(world, { (x, y) =>
       val v = Vec2i(x, y)
-      world.canPlaceTileAt(v, Tile.gate, player.id) && isNotAGateOrFactory(world.tileAt(v))
+      world.canPlaceTileAt(v, player.id) && isNotAGateOrFactory(world.tileAt(v))
     })
 //    canPlaceLegally.find { v =>
 //
@@ -102,7 +102,7 @@ object AI {
   def placeGrassLand(world:World, player:Player): Option[Vec2i] = {
     val canPlaceLegally = GameLogic.matchingTiles(world, { (x, y) =>
       val v = Vec2i(x, y)
-      world.canPlaceTileAt(v, Tile.gate, player.id) && isNotAGateOrFactory(world.tileAt(v))
+      world.canPlaceTileAt(v, player.id) && isNotAGateOrFactory(world.tileAt(v))
     })
     val andWeDontOwn = canPlaceLegally.filter { v =>
       world.owned.get(v) != player.id

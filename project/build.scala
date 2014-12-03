@@ -31,7 +31,7 @@ object Settings {
     scalacOptions ++= Seq(
       "-Xlint",
       "-Ywarn-dead-code",
-      "-Ywarn-value-discard",
+      // "-Ywarn-value-discard",
       // "-Ywarn-numeric-widen",
       "-Ywarn-unused",
       "-Ywarn-unused-import",

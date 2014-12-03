@@ -100,7 +100,7 @@ class World(val width : Int, val height : Int, val startingTile : Tile, val slot
 
   val owned = new MetaLayer(width, height, -1) // since 0 is a player id
 
-  def canPlaceTileAt(v : Vec2i, tile : Tile, player : Int) : Boolean = {
+  def canPlaceTileAt(v : Vec2i, player : Int) : Boolean = {
 
     def notOwnedByOtherPlayer : Boolean = {
       inBounds(v) && (owned.get(v) == -1 || owned.get(v) == player)

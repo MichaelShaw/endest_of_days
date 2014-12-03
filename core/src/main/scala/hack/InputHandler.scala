@@ -17,8 +17,6 @@ class InputHandler(var world : World) extends InputProcessor with ControllerList
   var placeTileSound:Boolean = false
   var triggerSound:Boolean = false
 
-  var playerAi = Array.fill[Boolean](2){ false }
-
   def movePlayer(player : Int, deltaPosition : Vec2i) : Unit = {
     val p : Player = world.players(player)
     val cp = p.cursorPosition + deltaPosition
@@ -45,7 +43,7 @@ class InputHandler(var world : World) extends InputProcessor with ControllerList
     if(p.canPlaceTiles(world)) {
       val t : Tile = p.currentTile
 
-      if (world.canPlaceTileAt(p.cursorPosition, t, p.id)) {
+      if (world.canPlaceTileAt(p.cursorPosition, p.id)) {
         placeTileSound = true
         p.handlePlacement()
         world.placeTileAt(p.cursorPosition, t, p.id)
@@ -77,8 +75,8 @@ class InputHandler(var world : World) extends InputProcessor with ControllerList
       case Keys.X => selectTile(0, 1)
       case Keys.C => placeTile(0)
 
-      case Keys.Y => playerAi(0) = !playerAi(0)
-      case Keys.U => playerAi(1) = !playerAi(1)
+      case Keys.Y => world.playerA.ai = !world.playerA.ai
+      case Keys.U => world.playerB.ai = !world.playerB.ai
 
       case Keys.H => resetWorld = true
 
