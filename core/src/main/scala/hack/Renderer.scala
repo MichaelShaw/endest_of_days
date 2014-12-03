@@ -370,7 +370,7 @@ class Renderer extends AssetLoader {
 
     font.draw(mainBatch, world.placementTimer.toString, world.width * Renderer.tileSizeScreen / 2, -50)
 
-    renderHand(world.playerA, playerACursor, world.width - world.playerB.availableTiles.length)
+    renderHand(world.playerA, playerACursor, world.width - world.playerA.availableTiles.length)
     renderHand(world.playerB, playerBCursor, 0)
   }
 
