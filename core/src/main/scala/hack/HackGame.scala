@@ -46,8 +46,7 @@ class GameScreen extends Screen {
   def generateValidWorld() : World = {
     var w = generateWorld()
     while(!isWorldLegal(w)) {
-
-      println("GENERATED WORLD WAS NOT LEGAL, FORCED TO RE")
+//      println("GENERATED WORLD WAS NOT LEGAL, FORCED TO RE")
       w = generateWorld()
     }
     w
