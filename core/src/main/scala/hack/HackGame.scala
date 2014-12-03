@@ -15,17 +15,57 @@ class GameScreen extends Screen {
 
   var simulationTickEvery = 0.7
 
-  var world = generateWorld()
+  var world = generateValidWorld()
+
+  world.playerB.ai = true
+
   val renderer = new Renderer()
   val audio = new AudioRenderer()
 
   val inputHandler = new InputHandler(world)
   inputHandler.setAsListener()
 
+  def isWorldLegal(world:World) : Boolean = {
+    def homeBase(playerId:Int) = GameLogic.matchingTiles(world, { (x, y) =>
+      val v = Vec2i(x, y)
+      world.tileAt(v) == Tile.cultistSpawner && world.owned.get(v) == playerId
+    }).headOption
+    // walk from one to the other
+    val playerAHomeBase = homeBase(world.playerA.id)
+    val playerBHomeBase = homeBase(world.playerB.id)
+
+    (for {
+      aBase <- playerAHomeBase
+      bBase <- playerBHomeBase
+    } yield {
+      val ff = FloodFill.produceFor(Set(aBase), world, 0)
+      ff.reachable(bBase) && ff.descendFrom(bBase).nonEmpty
+    }).getOrElse(false)
+  }
+
+  def generateValidWorld() : World = {
+    var w = generateWorld()
+    while(!isWorldLegal(w)) {
+
+      println("GENERATED WORLD WAS NOT LEGAL, FORCED TO RE")
+      w = generateWorld()
+    }
+    w
+  }
+
   def generateWorld() : World = {
+    seed += 1
+
     val top = 10
 //    val w = new World(42, 24, Tile.standardGround, 9)
     val w = new World(18, 11, Tile.standardGround, 9)
+
+    // ensure current AI toggle persists to new world
+    if(world != null) {
+      w.playerA.ai = world.playerA.ai
+      w.playerB.ai = world.playerB.ai
+    }
+
 
     def placeHomeBaseBackage(v:Vec2i, playerId:Int) {
       for {
@@ -47,8 +87,8 @@ class GameScreen extends Screen {
 
     val halfHeight = w.height / 2
 
-    placeHomeBaseBackage(Vec2i(0, halfHeight), 0)
-    placeHomeBaseBackage(Vec2i(w.width - 1, halfHeight), 1)
+    placeHomeBaseBackage(Vec2i(w.width - 1, halfHeight), 0)
+    placeHomeBaseBackage(Vec2i(0, halfHeight), 1)
 
 //    w.placeTileAt(Vec2i(1, halfHeight), Tile.eyeBallSpawner, 0)
 //    w.placeTileAt(Vec2i(2, halfHeight), Tile.bigBeetleSpawner, 0)
@@ -98,7 +138,7 @@ class GameScreen extends Screen {
 //    simulationTickEvery *= 0.5
     t = 0.0
     seed += 1
-    world = generateWorld()
+    world = generateValidWorld()
     world.simulationTickEvery = simulationTickEvery
     inputHandler.world = world
   }
@@ -181,6 +221,7 @@ class GameScreen extends Screen {
     world.playBuildingDestroyed = false
   }
 
-  def resize(width : Int, height : Int) {
+  def resize(width : Int, height : Int): Unit = {
+//    println(s"REEEIZE to $width x $height")
   }
 }

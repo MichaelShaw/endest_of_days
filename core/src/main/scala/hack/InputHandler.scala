@@ -58,25 +58,32 @@ class InputHandler(var world : World) extends InputProcessor with ControllerList
   }
 
   override def keyDown(i : Int) : Boolean = {
+    val rightControlsPlayerId = 0
+    val leftControlsPlayerId = 1
+
     i match {
-      case Keys.LEFT => movePlayer(1, Direction.w)
-      case Keys.RIGHT => movePlayer(1, Direction.e)
-      case Keys.DOWN => movePlayer(1, Direction.s)
-      case Keys.UP => movePlayer(1, Direction.n)
-      case Keys.LEFT_BRACKET => selectTile(1, -1)
-      case Keys.RIGHT_BRACKET => selectTile(1, 1)
-      case Keys.BACKSLASH => placeTile(1)
+      case Keys.LEFT => movePlayer(rightControlsPlayerId, Direction.w)
+      case Keys.RIGHT => movePlayer(rightControlsPlayerId, Direction.e)
+      case Keys.DOWN => movePlayer(rightControlsPlayerId, Direction.s)
+      case Keys.UP => movePlayer(rightControlsPlayerId, Direction.n)
+//      case Keys.LEFT_BRACKET => selectTile(1, -1)
+//      case Keys.RIGHT_BRACKET => selectTile(1, 1)
+//      case Keys.BACKSLASH => placeTile(1)
+      case Keys.COMMA => selectTile(rightControlsPlayerId, -1)
+      case Keys.PERIOD => selectTile(rightControlsPlayerId, 1)
+      case Keys.SLASH => placeTile(rightControlsPlayerId)
 
-      case Keys.A => movePlayer(0, Direction.w)
-      case Keys.D => movePlayer(0, Direction.e)
-      case Keys.S => movePlayer(0, Direction.s)
-      case Keys.W => movePlayer(0, Direction.n)
-      case Keys.Z => selectTile(0, -1)
-      case Keys.X => selectTile(0, 1)
-      case Keys.C => placeTile(0)
 
-      case Keys.Y => world.playerA.ai = !world.playerA.ai
-      case Keys.U => world.playerB.ai = !world.playerB.ai
+      case Keys.A => movePlayer(leftControlsPlayerId, Direction.w)
+      case Keys.D => movePlayer(leftControlsPlayerId, Direction.e)
+      case Keys.S => movePlayer(leftControlsPlayerId, Direction.s)
+      case Keys.W => movePlayer(leftControlsPlayerId, Direction.n)
+      case Keys.C => selectTile(leftControlsPlayerId, -1)
+      case Keys.V => selectTile(leftControlsPlayerId, 1)
+      case Keys.B => placeTile(leftControlsPlayerId)
+
+      case Keys.U => world.playerA.ai = !world.playerA.ai
+      case Keys.Y => world.playerB.ai = !world.playerB.ai
 
       case Keys.H => resetWorld = true
 

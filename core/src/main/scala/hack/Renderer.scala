@@ -30,12 +30,17 @@ class Renderer extends AssetLoader {
   def fboWidth = Gdx.graphics.getWidth
   def fboHeight = Gdx.graphics.getHeight
 
-  val fbo = new FrameBuffer(Format.RGBA8888, fboWidth, fboHeight, false)
-  fbo.getColorBufferTexture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest)
+  var fbo : FrameBuffer = produceFrameBuffer()
 
-//  def assetsPath = "../assets"
+  def produceFrameBuffer() : FrameBuffer ={
+    val fb = new FrameBuffer(Format.RGBA8888, fboWidth, fboHeight, false)
+    fb.getColorBufferTexture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest)
+    fb
+  }
 
-
+  def windowSizedChanged : Boolean = {
+    fbo.getWidth != Gdx.graphics.getWidth || fbo.getHeight != fbo.getHeight
+  }
 
   // TO 
   def toFBOVertexShaderText = assetFile(s"toFbo.vert.glsl").readString()
@@ -124,8 +129,22 @@ class Renderer extends AssetLoader {
     new TextureRegion(tileTexture, 48, 112, 16, 16)  // magic
   )
 
+  def adjustToSizeChange(){
+    fbo.dispose()
+    fbo = produceFrameBuffer() // fbo will use proper window height/width
+    camera.setToOrtho(false, fbo.getWidth, fbo.getHeight)
+  }
+
   def render(world : World, delta:Double, wins:Array[Int]) {
     camera.position.set(world.width / 2 * Renderer.tileSizeScreen, world.height / 2 * Renderer.tileSizeScreen, 0)
+
+    if(windowSizedChanged) {
+      adjustToSizeChange()
+//      println(s"WINDOW SIZE CHANGED to ${fbo.getWidth} x ${fbo.getHeight}")
+    }    else {
+//      println(s"didnt change :D ${fbo.getWidth} x ${fbo.getHeight}")
+    }
+
     camera.update()
 
     fbo.begin()
@@ -321,8 +340,8 @@ class Renderer extends AssetLoader {
 
     font.draw(mainBatch, world.placementTimer.toString, world.width * Renderer.tileSizeScreen / 2, -50)
 
-    renderHand(world.playerA, playerACursor, 0)
-    renderHand(world.playerB, playerBCursor, world.width - world.playerB.availableTiles.length)
+    renderHand(world.playerA, playerACursor, world.width - world.playerB.availableTiles.length)
+    renderHand(world.playerB, playerBCursor, 0)
   }
 
   def renderCursors(world : World) : Unit = {
