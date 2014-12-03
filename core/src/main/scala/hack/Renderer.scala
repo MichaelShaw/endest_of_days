@@ -59,6 +59,9 @@ class Renderer extends AssetLoader {
 
 
   val tileTexture = new Texture(assetFile(s"tiles.png"))
+  val helpTexture = new Texture(assetFile(s"help.png"))
+  val rightControlsTexture = new Texture(assetFile(s"right_controls.png"))
+  val leftControlsTexture = new Texture(assetFile(s"left_controls.png"))
 
   val mainBatch = new SpriteBatch
   val postBatch = new SpriteBatch
@@ -135,7 +138,7 @@ class Renderer extends AssetLoader {
     camera.setToOrtho(false, fbo.getWidth, fbo.getHeight)
   }
 
-  def render(world : World, delta:Double, wins:Array[Int]) {
+  def render(world : World, delta:Double, wins:Array[Int], showHelp:Boolean) {
     camera.position.set(world.width / 2 * Renderer.tileSizeScreen, world.height / 2 * Renderer.tileSizeScreen, 0)
 
     if(windowSizedChanged) {
@@ -173,6 +176,29 @@ class Renderer extends AssetLoader {
 
     font.draw(mainBatch, s"${wins(0)} wins" , 15, world.height * Renderer.tileSizeScreen - 15)
     font.draw(mainBatch, s"${wins(1)} wins", world.width * Renderer.tileSizeScreen - 60, world.height * Renderer.tileSizeScreen - 15)
+    font.draw(mainBatch, "[H] Help [R] Reset World [Y] Toggle Left player AI [U] Toggle Right Player AI",world.width * Renderer.tileSizeScreen / 2 - 200, world.height * Renderer.tileSizeScreen + 25)
+
+    mainBatch.draw(leftControlsTexture, 230, -80)
+    // left
+    font.draw(mainBatch, "[C] [V]: change tile", 350, -20)
+    font.draw(mainBatch, "[B] place tile", 350, -40)
+
+
+
+    mainBatch.draw(rightControlsTexture, world.width * Renderer.tileSizeScreen / 2 + 50, -80)
+    val screenWidthPixels =  world.width * Renderer.tileSizeScreen
+    val halfScreenWidth = screenWidthPixels / 2
+
+    font.draw(mainBatch, "[ , ] [ . ]: change tile", halfScreenWidth + 190, -20)
+    font.draw(mainBatch, "[ / ] place tile", halfScreenWidth + 190, -40)
+
+
+    if(showHelp) {
+      mainBatch.draw(helpTexture, -30, -70)
+    }
+
+
+
 
     mainBatch.end()
 
@@ -192,7 +218,11 @@ class Renderer extends AssetLoader {
     postBatch.setProjectionMatrix(m)
     postBatch.begin()
     postBatch.draw(fbo.getColorBufferTexture, 0, 0)
+
+
     postBatch.end()
+
+
 
     postShader.end()
   }

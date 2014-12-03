@@ -154,7 +154,7 @@ class GameScreen extends Screen {
 
 
     t += delta
-    if(running) {
+    if(running && !inputHandler.showHelp) {
       world.simulationAccu += delta
     }
 
@@ -194,7 +194,7 @@ class GameScreen extends Screen {
         false
     }
 
-    renderer.render(world, delta, wins) // t
+    renderer.render(world, delta, wins, inputHandler.showHelp) // t
 
     // SOUND
     if(inputHandler.placeTileSound) {

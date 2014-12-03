@@ -17,6 +17,8 @@ class InputHandler(var world : World) extends InputProcessor with ControllerList
   var placeTileSound:Boolean = false
   var triggerSound:Boolean = false
 
+  var showHelp:Boolean = false
+
   def movePlayer(player : Int, deltaPosition : Vec2i) : Unit = {
     val p : Player = world.players(player)
     val cp = p.cursorPosition + deltaPosition
@@ -74,6 +76,7 @@ class InputHandler(var world : World) extends InputProcessor with ControllerList
       case Keys.SLASH => placeTile(rightControlsPlayerId)
 
 
+
       case Keys.A => movePlayer(leftControlsPlayerId, Direction.w)
       case Keys.D => movePlayer(leftControlsPlayerId, Direction.e)
       case Keys.S => movePlayer(leftControlsPlayerId, Direction.s)
@@ -85,7 +88,8 @@ class InputHandler(var world : World) extends InputProcessor with ControllerList
       case Keys.U => world.playerA.ai = !world.playerA.ai
       case Keys.Y => world.playerB.ai = !world.playerB.ai
 
-      case Keys.H => resetWorld = true
+      case Keys.H => showHelp = !showHelp
+      case Keys.R => resetWorld = true
 
       case Keys.ESCAPE => app.exit()
 

@@ -10,11 +10,11 @@ uniform mat4 u_projTrans;
 
 void main() {
    vec4 baseColor = texture2D(u_texture, v_texCoords);
-   vec4 color = baseColor  + v_color;
+   vec4 color = baseColor + v_color;
 
    if(baseColor.a < 0.05) {
      discard;
    }
 
-   gl_FragColor = vec4(color.rgb, 1.0);
+   gl_FragColor = vec4(color.rgb, baseColor.a);
 }
