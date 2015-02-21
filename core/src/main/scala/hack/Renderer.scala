@@ -174,8 +174,8 @@ class Renderer extends AssetLoader {
 
 
 
-    font.draw(mainBatch, s"${wins(0)} wins" , 15, world.height * Renderer.tileSizeScreen - 15)
-    font.draw(mainBatch, s"${wins(1)} wins", world.width * Renderer.tileSizeScreen - 60, world.height * Renderer.tileSizeScreen - 15)
+    font.draw(mainBatch, s"${wins(1)} wins" , 15, world.height * Renderer.tileSizeScreen - 15)
+    font.draw(mainBatch, s"${wins(0)} wins", world.width * Renderer.tileSizeScreen - 60, world.height * Renderer.tileSizeScreen - 15)
     font.draw(mainBatch, "[H] Help [R] Reset World [Y] Toggle Left player AI [U] Toggle Right Player AI",world.width * Renderer.tileSizeScreen / 2 - 200, world.height * Renderer.tileSizeScreen + 25)
 
     mainBatch.draw(leftControlsTexture, 230, -80)

@@ -54,9 +54,9 @@ object Arch {
   val worm = Arch(2, "worm", attack = 6, maxHealth = 18, ticksToMove = 2, instakillBuildings = true)
   // due to 2 ticks to move it sits vulnerable for a long time ... so it underperforms relative to it's combat stats
   // this slowness means after winning a standoff, and their friendlies surge forward, they fall behind, weakending the momentum of the wave
-  val fex = Arch(3, "fex", attack = 4, maxHealth = 16, aeDamage = 1)
+  val fex = Arch(3, "fex", attack = 5, maxHealth = 16, aeDamage = 2)
 
-  val captain = Arch(4, "captain", attack = 3, maxHealth = 9)
+  val captain = Arch(4, "captain", attack = 3, maxHealth = 7)
   val eyeBall = Arch(5, "eye_ball", attack = 3, maxHealth = 7)
 
   val smallBeetle = Arch(6, "small_beetle", attack = 1, maxHealth = 2)

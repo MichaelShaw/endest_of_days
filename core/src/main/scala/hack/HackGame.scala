@@ -17,7 +17,8 @@ class GameScreen extends Screen {
 
   var world = generateValidWorld()
 
-  world.playerB.ai = true
+  world.playerB.ai = false
+  world.playerA.ai = true
 
   val renderer = new Renderer()
   val audio = new AudioRenderer()
