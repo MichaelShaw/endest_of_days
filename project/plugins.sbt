@@ -2,6 +2,4 @@ resolvers += Resolver.url("scalasbt snapshots", new URL("http://repo.scala-sbt.o
 
 addSbtPlugin("com.hanhuy.sbt" % "android-sdk-plugin" % "1.3.6")
 
-addSbtPlugin("org.roboscala" % "sbt-robovm" % "1.0.0-alpha-04-SNAPSHOT")
-
 addSbtPlugin("com.github.mpeltonen" % "sbt-idea" % "1.6.0")

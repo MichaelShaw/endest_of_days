@@ -3,7 +3,6 @@ import Keys._
 
 import android.Keys._
 import android.Plugin.androidBuild
-import sbtrobovm.RobovmPlugin._
 
 object Settings {
   import LibgdxBuild.libgdxVersion
